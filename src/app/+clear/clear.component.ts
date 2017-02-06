@@ -2,10 +2,10 @@ import { Injectable, Inject}     from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { SharedComponent } from './../shared/shared.component';
 import { UsersService } from './../services/users.service';
-import {user} from './../model/user';
+import { user } from './../model/user';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import { AngularFire, FirebaseListObservable,FirebaseObjectObservable, FirebaseRef} from 'angularfire2';
+import { AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseRef} from 'angularfire2';
 
 // import 'rxjs/add/operator/map';
 // import 'rxjs/add/operator/catch';

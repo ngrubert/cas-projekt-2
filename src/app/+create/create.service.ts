@@ -19,21 +19,19 @@ export class CreateService {
     invitedUsers: Array<any> = [];
     private sList: any;
     private sListUsersKey: any;
-    roorRef;
+    usersRef;
     sListUsersRef;
     mailedUsers:Array<any>=[];
     constructor( @Inject(FirebaseRef) public fb, private http: Http, af: AngularFire) {
         this.af = af;
-        this.roorRef = fb.database().ref('users');
+        this.usersRef = fb.database().ref('users');
         this.sListUsersRef=fb.database().ref('sListUsers');
     }
 
     createSList(list: list): FirebaseObjectObservable<any> {
         const sListRef = this.af.database.list(`sList`);
-
         this.sList = sListRef.push(list);
         this.sListUsersKey = this.sList.child("users");
-
         return this.af.database.object(`sList/${this.sList.getKey()}`);
     }
     resetSList():void{
@@ -119,7 +117,7 @@ export class CreateService {
          for (var property in catalog) {
             if (catalog.hasOwnProperty(property)) {
                 let insertData={};
-                let myArtcileArr=[];
+                let myArticleArr=[];
                 let myCatalogObj={};
                 let catalogObj={};
                 catalogObj["name"]=property;
@@ -139,7 +137,7 @@ export class CreateService {
                       insertData[key]=true;
                       let addToCatalog=this.af.database.list(`catalog/english/${propertyAdded.key}/articles`)
                       addToCatalog.push(key);
-                      myArtcileArr.push(insertData);
+                      myArticleArr.push(insertData);
                       catalogObj["articles"].push(key);
                 }
             }
