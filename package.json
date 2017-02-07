@@ -52,5 +52,8 @@
     "tslint": "^4.0.2",
     "typescript": "~2.0.3",
     "webdriver-manager": "10.2.5"
+  },
+  "scripts": {
+    "start": "ng serve --port 4300"
   }
 }
