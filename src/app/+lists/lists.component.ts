@@ -75,13 +75,11 @@ export class ListsComponent implements OnInit {
     getAllLists(){
         let self=this;
         this.af.database.list('sList').map(x=>{
-            //console.log("getAllLists(), x.length -->" + x.length);
             return x;
         }).subscribe(x=>{
             this.sLists=[];
             if(x && x.length>0){
                 for(let i=0;i<x.length;i++){
-                    console.log(x[i]);
                     if(x[i] && x[i].users && x[i].users.length){
                         for(let j=0;j<x[i].users.length;j++){
                             if(x[i].users[j]==this.url){

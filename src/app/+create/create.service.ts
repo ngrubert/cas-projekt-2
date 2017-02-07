@@ -1,7 +1,7 @@
 import { Injectable, Inject}     from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
-import { user,list } from './../model/user';
+import {Observable} from 'rxjs/Rx';
+import {user,list} from './../model/user';
 
 import { AngularFire, FirebaseListObservable,FirebaseObjectObservable, FirebaseRef} from 'angularfire2';
 
@@ -19,19 +19,21 @@ export class CreateService {
     invitedUsers: Array<any> = [];
     private sList: any;
     private sListUsersKey: any;
-    usersRef;
+    roorRef;
     sListUsersRef;
     mailedUsers:Array<any>=[];
     constructor( @Inject(FirebaseRef) public fb, private http: Http, af: AngularFire) {
         this.af = af;
-        this.usersRef = fb.database().ref('users');
+        this.roorRef = fb.database().ref('users');
         this.sListUsersRef=fb.database().ref('sListUsers');
     }
 
     createSList(list: list): FirebaseObjectObservable<any> {
         const sListRef = this.af.database.list(`sList`);
+
         this.sList = sListRef.push(list);
         this.sListUsersKey = this.sList.child("users");
+
         return this.af.database.object(`sList/${this.sList.getKey()}`);
     }
     resetSList():void{
@@ -117,7 +119,7 @@ export class CreateService {
          for (var property in catalog) {
             if (catalog.hasOwnProperty(property)) {
                 let insertData={};
-                let myArticleArr=[];
+                let myArtcileArr=[];
                 let myCatalogObj={};
                 let catalogObj={};
                 catalogObj["name"]=property;
@@ -137,7 +139,7 @@ export class CreateService {
                       insertData[key]=true;
                       let addToCatalog=this.af.database.list(`catalog/english/${propertyAdded.key}/articles`)
                       addToCatalog.push(key);
-                      myArticleArr.push(insertData);
+                      myArtcileArr.push(insertData);
                       catalogObj["articles"].push(key);
                 }
             }

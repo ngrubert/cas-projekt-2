@@ -23,18 +23,23 @@ export class AppComponent implements OnInit,OnDestroy {
     this.db = new PouchDB("sList");
   }
 
+
+  
   isMobile;
 
   ngOnInit() {
     let self=this;
+    debugger
     this.user=this.route.params
             .switchMap((params: Params) => {
+              debugger
                 this.url = params['email'];
                 this.sList = params['id'];
                 return Observable.from([1,2,3]).map(x=>x);
             });
         this.user.subscribe(c=>console.log(c));
     this.detectDevice();
+      
     this.syncChanges();
     
   }

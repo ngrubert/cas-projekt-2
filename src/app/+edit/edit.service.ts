@@ -20,12 +20,12 @@ export class EditService {
     invitedUsers: Array<any> = [];
     private sList: any;
     private sListUsersKey: any;
-    usersRef;
+    roorRef;
     sListUsersRef;
     mailedUsers:Array<any>=[];
     constructor( @Inject(FirebaseRef) public fb, private http: Http, af: AngularFire) {
         this.af = af;
-        this.usersRef = fb.database().ref('users');
+        this.roorRef = fb.database().ref('users');
         this.sListUsersRef=fb.database().ref('sListUsers');
         
     }
@@ -118,7 +118,7 @@ export class EditService {
          for (var property in catalog) {
             if (catalog.hasOwnProperty(property)) {
                 let insertData={};
-                let myArticleArr=[];
+                let myArtcileArr=[];
                 let myCatalogObj={};
                 let catalogObj={};
                 catalogObj["name"]=property;
@@ -138,7 +138,7 @@ export class EditService {
                       insertData[key]=true;
                       let addToCatalog=this.af.database.list(`catalog/english/${propertyAdded.key}/articles`)
                       addToCatalog.push(key);
-                      myArticleArr.push(insertData);
+                      myArtcileArr.push(insertData);
                       catalogObj["articles"].push(key);
                 }
             }

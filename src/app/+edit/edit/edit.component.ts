@@ -1,6 +1,6 @@
 import { Component, OnInit,OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { MdSnackBar } from '@angular/material';
+import {MdSnackBar} from '@angular/material';
 import { SharedComponent } from './../../shared/shared.component';
 import { EditService } from './../edit.service';
 import {user} from './../../model/user';
@@ -8,7 +8,7 @@ import {user} from './../../model/user';
 import { Observable } from 'rxjs/Observable';
 
 import { list } from './../../model/user';
-import { AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseRef } from 'angularfire2';
+import {AngularFire,FirebaseListObservable,FirebaseObjectObservable,FirebaseRef} from 'angularfire2';
 
 
 declare var PouchDB: any;
@@ -52,7 +52,8 @@ export class EditComponent implements OnInit,OnDestroy {
         this.getSId();
         this.showSideMenu();
     }
-    showSideMenu() {
+    showSideMenu(){
+        
         document.getElementById('edit').style.display='block';
         document.getElementById('clear').style.display='block';
         document.getElementById('finished').style.display='block';
