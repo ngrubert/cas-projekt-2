@@ -1,5 +1,5 @@
+// firebase frontend configuration
 // See https://console.firebase.google.com/project/fergg-c183c/database/data to live view the data
-// @ Andi: Remind me to create a user for you for our firebase app
 export const firebaseConfig = {
     apiKey: "AIzaSyBhKvr6vwoG54uSQlGuafR3c277tNA9ihc",
     authDomain: "fergg-c183c.firebaseapp.com",

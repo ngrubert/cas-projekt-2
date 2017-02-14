@@ -1,15 +1,13 @@
-import { Component, OnInit ,Inject} from '@angular/core';
+import { Component, OnInit, Inject} from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseRef } from 'angularfire2';
+import { Observable } from 'rxjs/Observable';
 
 import { SharedComponent } from './../../../shared/shared.component';
 import { ManageService } from './../../manage.service';
 import { user } from './../../../model/user';
-
-import { Observable } from 'rxjs/Observable';
-
 import { list } from './../../../model/user';
 
-import {AngularFire,FirebaseListObservable,FirebaseObjectObservable,FirebaseRef} from 'angularfire2';
 declare var PouchDB: any;
 
 export class catalog{
@@ -34,12 +32,13 @@ export class DeleteCategoryComponent implements OnInit {
     private sId;
     private catId;
 	private modelValue;
+    private language;
     af: AngularFire;
     catalogs:catalog[]=[];
     title:string='Edit Category';
     list:Array<any>=[];
     category:Object={};
-    constructor(@Inject(FirebaseRef) public fb,  af: AngularFire,
+    constructor(  af: AngularFire,
         public _manageService: ManageService,
         private route: ActivatedRoute,
         private router: Router
@@ -53,6 +52,7 @@ export class DeleteCategoryComponent implements OnInit {
             .switchMap((params: Params) => {
                 // this.url = '-K_PcS3U-bzP0Jgye_Xo';
 				this.catId=params['id'];
+                this.language=params['lan'];
                 // this.catId=params['catId'];
                 return Observable.from([1,2,3]).map(x=>x);
             });
@@ -61,35 +61,37 @@ export class DeleteCategoryComponent implements OnInit {
         });
         
     }
-    
-    syncChanges(){
+    // get user email from local databas(pouch db)
+    syncChanges() {
         let self=this;
         this.db.allDocs({include_docs: true, descending: true}, function(err, docs) {
-            if(err){
+            if (err){
             console.log(err);
             return err;
             }
-            if(docs && docs.rows.length>0){
+            if (docs && docs.rows.length>0){
             self.url=docs.rows[0].doc.user;
             self.getCategory();
             }
         });
     }
-
-    getCategory(){
-        let getCategory$=this._manageService.getCategoryById(this.catId);
+    // get category
+    getCategory() {
+        let getCategory$=this._manageService.getCategoryById(this.catId,this.language);
         getCategory$.subscribe(x=>{
             this.category=x;
             this.modelValue=x.name;
         })
     }
-	cancelDeleteCategory(){
-        this.router.navigate(['manage']);
-    }
-    deleteCategory(id){
-        this._manageService.deleteCategory(id);
-        this.router.navigate(['manage']);
-    }
-	
 
+    // cancelDeleteCategory click redirect to manage page
+	cancelDeleteCategory() {
+        this.router.navigate(['manage']);
+    }
+
+    // delete category by id and language
+    deleteCategory(id){
+        this._manageService.deleteCategory(id,this.language);
+        this.router.navigate(['manage',{lan:this.language}]);
+    }
 }

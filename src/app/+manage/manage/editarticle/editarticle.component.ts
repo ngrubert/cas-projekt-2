@@ -1,16 +1,15 @@
 import { Component, OnInit ,Inject,OnDestroy} from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseRef } from 'angularfire2';
+import { Observable } from 'rxjs/Observable';
 
 import { SharedComponent } from './../../../shared/shared.component';
 import { ManageService } from './../../manage.service';
 import { user } from './../../../model/user';
-
-import { Observable } from 'rxjs/Observable';
-
 import { list } from './../../../model/user';
 
-import {AngularFire,FirebaseListObservable,FirebaseObjectObservable,FirebaseRef} from 'angularfire2';
 declare var PouchDB: any;
+
 export class catalog{
     constructor(
         public id?: string,
@@ -42,7 +41,7 @@ export class EditArticleComponent implements OnInit,OnDestroy {
     title:string='Edit Article';
     list:Array<any>=[];
 	listDup:Array<any>=[];
-    constructor(@Inject(FirebaseRef) public fb,  af: AngularFire,
+    constructor(  af: AngularFire,
         public _manageService: ManageService,
         private route: ActivatedRoute,
         private router: Router
@@ -68,37 +67,40 @@ export class EditArticleComponent implements OnInit,OnDestroy {
         
 		
     }
-
-	syncChanges(){
+// get user email from local databas(pouch db)
+	syncChanges() {
         let self=this;
         this.db.allDocs({include_docs: true, descending: true}, function(err, docs) {
-            if(err){
+            if (err){
             console.log(err);
             return err;
             }
-            if(docs && docs.rows.length>0){
+            if (docs && docs.rows.length>0){
             self.url=docs.rows[0].doc.user;
+			// get all Category for user
             self.getAllCategoriesForUser();
+			// get article for user
 			self.getArticle();
             }
         });
     }
 
-	ngOnDestroy(){
+	ngOnDestroy() {
 		
 	}
 	
-    getAllCategoriesForUser(){
+    getAllCategoriesForUser() {
         // this.list.push({name:'Category'});
         let categoryObs=this._manageService.getAllCategoriesForUser(this.url);
         categoryObs.subscribe(x=>{
 			this.list=[];
             this.listDup=x;
-			for(let i=0;i<x.length;i++){
+			for (let i=0;i<x.length;i++){
 				let val:any=x[i];
 				let item={
 					name:val.name,
 					value:val.$key,
+					language:val.language
 				}
 				this.list.push(item);
 			}
@@ -106,48 +108,55 @@ export class EditArticleComponent implements OnInit,OnDestroy {
         });
     }
 	
-	getArticle(){
+	getArticle() {
 		let article=this._manageService.getArticle(this.aId)
 			.map(x=>x);
 		article.subscribe(x=>{
-			if(x){
+			if (x){
 				this.article=x;
 				this.titleValue=x.name;
 			}
 		});
 	}
+
+	// on save click from shared component
 	onSaved(obj){
 		obj.isDefault=false;
 		//this._manageService.editCategory(obj,this.sId,this.catId);
-		if(this.objChanged(obj)){
+		if (this.objChanged(obj)){
 			this.checkArticleExists(obj);
 		}
 		this.router.navigate(['manage']);
 	}
 	
+	// check if categoryObs changed 
 	objChanged(obj):boolean{
 		let objChangedValue=true;
-		if(obj.name == this.article.name && obj.order == this.catId){
+		if (obj.name == this.article.name && obj.order == this.catId){
 			objChangedValue =false;
 		}
 		return objChangedValue;
 	}
 	
+	// check if article exists
 	checkArticleExists(obj){
+		let languageObj=this.list.find(function(item){
+            return item.value==obj.order;
+        })
 		let self=this;
 		this.checkArticle$=this._manageService.checkArticleExists(obj.name);
 			this.checkArticle$.subscribe(x=>{
-				if(x && x.length>0){
-					self._manageService.addArticleToCategory(x[0].$key,obj.order)
-				}else{
+				if (x && x.length>0){
+					self._manageService.addArticleToCategory(x[0].$key,obj.order,languageObj.language)
+				} else {
 					let item={
 						name:obj.name,
 						isDefault:false
 					};
-					self._manageService.addArticleAndAddToCategory(item,obj.order)
+					self._manageService.addArticleAndAddToCategory(item,obj.order,languageObj.language)
 				}
-				if(obj.order != this.catId && x && x.length >0){
-					self._manageService.removeArticleFromCategory(x[0].$key,this.catId)
+				if (obj.order != this.catId && x && x.length >0){
+					self._manageService.removeArticleFromCategory(x[0].$key,this.catId,languageObj.language)
 				}
 			});
 	}

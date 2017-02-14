@@ -1,13 +1,12 @@
-import { Injectable, Inject}     from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import {Observable} from 'rxjs/Rx';
-import {user,list} from './../model/user';
-
+import { Observable } from 'rxjs/Rx';
 import { AngularFire, FirebaseListObservable,FirebaseObjectObservable, FirebaseRef} from 'angularfire2';
-
 // Import RxJs required methods
 // import 'rxjs/add/operator/map';
 // import 'rxjs/add/operator/catch';
+
+import { user, list } from './../model/user';
 
 @Injectable()
 export class EditService {
@@ -19,46 +18,68 @@ export class EditService {
     testArry: Observable<Array<user>>;
     invitedUsers: Array<any> = [];
     private sList: any;
+    private sListKey: any;
     private sListUsersKey: any;
     roorRef;
-    sListUsersRef;
     mailedUsers:Array<any>=[];
-    constructor( @Inject(FirebaseRef) public fb, private http: Http, af: AngularFire) {
+    constructor(  private http: Http, af: AngularFire) {
         this.af = af;
-        this.roorRef = fb.database().ref('users');
-        this.sListUsersRef=fb.database().ref('sListUsers');
         
     }
 
+    // edit shopping list by id
     editSList(key,list: list) {
         const sListRef = this.af.database.object(`sList/${key}`);
+        this.sListKey=key;
         sListRef.update(list);
         
     }
+
+    //reset inivied and emailed users
     resetSList():void{
         this.resetInvitedUsers();
         this.resetMailedUsers;
     }
+
+    //reset inivied users
     resetInvitedUsers(): void {
         this.invitedUsers.length = 0;
     }
+    //reset emailed users
     resetMailedUsers(): void {
         this.mailedUsers.length = 0;
     }
-
+    //create Shopping list 
     createSListUser(usr: any): void {
         console.log(this.sList);
-        let sListKey=usr.$key;
+        let userKey=usr.$key;
         let insertData={};
-        insertData[sListKey]=true;
+        insertData[userKey]=true;
         let testme = this.af.database.object(`sListUsers`);
         if (this.invitedUsers.indexOf(usr.$key) < 0) {
             this.invitedUsers.push(usr.$key);
             // this.sListUsersKey.update(this.invitedUsers);
-            this.sListUsersRef.child(this.sList.getKey()).update(insertData);
+             let dataExists=this.af.database.list(`sListUsers/${this.sListKey}`).map(x=>x)
+                .subscribe(x=>{
+                    debugger
+                    if (x && x.length>0){
+                        let exists=false;
+                        for (let i=0;i<x.length;i++){
+                            if (x[i].$key==userKey){
+                                exists=true;
+                            }
+                        }
+                        if (!exists)
+                            this.af.database.object(`sListUsers/${this.sListKey}`).update(insertData);
+                            dataExists.unsubscribe();
+                    }
+                })
+            // this.af.database.object(`sListUsers/${this.sListKey}`).update(insertData);
             // this.sendEmailToUser(usr.$key);
         }
     }
+
+    // send email to user (not used)
     sendEmailToUser(usr:any):void{
         if (this.mailedUsers.indexOf(usr.$key) < 0) {
             this.mailedUsers.push(usr.$key);
@@ -68,11 +89,14 @@ export class EditService {
             result.subscribe(x=>console.log(x));
         }
     }
+
+    // add user to users collection
     addtoFirebase(element: user): void {
         const users = this.af.database.list(`users`);
         users.push(element);
     }
 
+    //get user by email
     getItemFromFirebase(email: string): Observable<user> {
         let tempUsr: user;
         const usr = this.af.database.list('users', {
@@ -90,6 +114,8 @@ export class EditService {
         });
         return usr;
     }
+
+    //add id user not exists
     addIfNotExists(email: string): Observable<user[]> {
         const usr = this.af.database.list('users', {
             query: {
@@ -100,6 +126,7 @@ export class EditService {
         return usr;
     }
 
+
     getUsers(): Observable<user[]> {
         // ...using get request
         var result = this.http.get(this.users)
@@ -108,10 +135,14 @@ export class EditService {
         return result;
 
     }
+
+    // get all users
     getUsersFirebase(): Observable<any[]> {
         var result = this.af.database.list('/users');
         return result;
     }
+
+    // dump default cataloge english
     createFirebaseCatalog(catalog:Object){
          const addArticle = this.af.database.list(`articles`);
          const addCatalog = this.af.database.list(`catalog/english`);
@@ -126,7 +157,7 @@ export class EditService {
                 catalogObj["articles"]=[];
                
                 let propertyAdded=addCatalog.push(catalogObj)
-                for(var i=0;i<catalog[property].length;i++)
+                for (var i=0;i<catalog[property].length;i++)
                 {
                       let val=catalog[property][i];
                       var obj={
@@ -144,13 +175,31 @@ export class EditService {
             }
         }
     }
-
+    // get shopping list by id
     getSListData(id){
+        this.sListKey=id;
         return this.af.database.object(`sList/${id}`).map(x=>x);
     }
 
+    //get shopping list users by id
     getSListUsersData(id){
         return this.af.database.object(`sListUsers/${id}`).map(x=>x);
+    }
+
+    // get userid by email
+    getIdFromEmail(email){
+        return this.af.database.list(`users`,{
+            query:{
+                orderByChild:'email',
+                equalTo:email
+            }
+        }).map(x=>x);
+    }
+
+    //remove users from list
+    removeUserFromsListUsers(key){
+        let item=this.af.database.object(`sListUsers/${this.sListKey}/${key}`);
+        item.remove();
     }
     
 }

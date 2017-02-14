@@ -1,14 +1,15 @@
 import { Injectable, Inject}     from '@angular/core';
 import { Component, OnInit } from '@angular/core';
-import { SharedComponent } from './../shared/shared.component';
-import { UsersService } from './../services/users.service';
-import {user} from './../model/user';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import { AngularFire, FirebaseListObservable,FirebaseObjectObservable, FirebaseRef} from 'angularfire2';
-
+import { AngularFire, FirebaseListObservable,FirebaseObjectObservable, FirebaseRef } from 'angularfire2';
 // import 'rxjs/add/operator/map';
 // import 'rxjs/add/operator/catch';
+
+import { SharedComponent } from './../shared/shared.component';
+import { UsersService } from './../services/users.service';
+import { user } from './../model/user';
+
 declare var PouchDB: any;
 
 @Component({
@@ -25,31 +26,36 @@ export class DeleteComponent implements OnInit {
     modelValue:any;
     localDBID;
     constructor(public _userService: UsersService,private route: ActivatedRoute,
-        private router: Router,@Inject(FirebaseRef) public fb,af: AngularFire) {
+        private router: Router,af: AngularFire) {
 this.db = new PouchDB("sList");
         this.af = af;
     }
 
     ngOnInit() {
         // this.getUsers();
+
         this.syncChanges();
         this.showSideMenu();
     }
-    showSideMenu(){
+
+    // show side nav extras
+    showSideMenu() {
         
         document.getElementById('edit').style.display='block';
         document.getElementById('clear').style.display='block';
         document.getElementById('finished').style.display='block';
         document.getElementById('delete').style.display='block';
     }
-     syncChanges(){
+
+    //get or set email id from localDB
+     syncChanges() {
         let self=this;
         this.db.allDocs({include_docs: true, descending: true}, function(err, docs) {
-            if(err){
+            if (err){
             console.log(err);
             return err;
             }
-            if(docs && docs.rows.length>0){
+            if (docs && docs.rows.length>0){
                 debugger
                self.sList=docs.rows[0].doc.sList;
                self.url=docs.rows[0].doc.user;
@@ -59,13 +65,16 @@ this.db = new PouchDB("sList");
         });
     }
 
-    getSListDetail(){
+    // get shopping list details by id
+    getSListDetail() {
         this.af.database.object(`sList/${this.sList}`).map(x=>x).subscribe(x=>{
             this.modelValue=x.title;
         })
     }
 
-    deleteSList(){
+    // delete shopping list by id
+
+    deleteSList() {
         let self=this;
         this.af.database.list(`sList/${this.sList}`).remove();
         this.db.get(this.localDBID).then(function (doc) {
@@ -77,7 +86,8 @@ this.db = new PouchDB("sList");
         this.router.navigate([`lists`,{email:this.url}]);
     }
 
-    cancel(){
+// cancel redirect ti lists
+    cancel() {
         this.router.navigate([`lists`,{email:this.url}]);
     }
 

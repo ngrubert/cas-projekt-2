@@ -1,14 +1,15 @@
-import { Component, OnInit ,Inject} from '@angular/core';
+import { Component, OnInit, Inject} from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseRef } from 'angularfire2';
+import { Observable } from 'rxjs/Observable';
 
 import { SharedComponent } from './../../../shared/shared.component';
 import { ManageService } from './../../manage.service';
 import { user } from './../../../model/user';
-import { Observable } from 'rxjs/Observable';
 import { list } from './../../../model/user';
 
-import {AngularFire,FirebaseListObservable,FirebaseObjectObservable,FirebaseRef} from 'angularfire2';
 declare var PouchDB: any;
+
 export class catalog{
     constructor(
         public id?: string,
@@ -35,7 +36,7 @@ export class AddArticleComponent implements OnInit {
     title:string='Add Article';
     list:Array<any>=[];
 	listDup:Array<any>=[];
-    constructor(@Inject(FirebaseRef) public fb,  af: AngularFire,
+    constructor(  af: AngularFire,
         public _manageService: ManageService,
         private route: ActivatedRoute,
         private router: Router
@@ -57,38 +58,40 @@ export class AddArticleComponent implements OnInit {
         });
         
     }
-    syncChanges(){
+    // get user email from local databas(pouch db)
+    syncChanges() {
         let self=this;
         this.db.allDocs({include_docs: true, descending: true}, function(err, docs) {
-            if(err){
+            if (err){
             console.log(err);
             return err;
             }
-            if(docs && docs.rows.length>0){
+            if (docs && docs.rows.length>0){
             self.url=docs.rows[0].doc.user;
             self.getAllCategoriesForUser();
             }
         });
     }
-
-   getAllCategoriesForUser(){
+// get all Category for user
+   getAllCategoriesForUser() {
         // this.list.push({name:'Category'});
         let categoryObs=this._manageService.getAllCategoriesForUser(this.url);
         categoryObs.subscribe(x=>{
 			this.list=[];
             this.listDup=x;
-			for(let i=0;i<x.length;i++){
+			for (let i=0;i<x.length;i++){
 				let val:any=x[i];
 				let item={
 					name:val.name,
 					value:val.$key,
+                    language:val.language
 				}
 				this.list.push(item);
 			}
 			
         });
     }
-	
+	// on save click from SharedComponent
 	onSaved(obj){
 		obj.isDefault=false;
 		this.checkArticleExists(obj);
@@ -97,17 +100,21 @@ export class AddArticleComponent implements OnInit {
 	}
 	
 	checkArticleExists(obj){
+        debugger
+        let languageObj=this.list.find(function(item){
+            return item.value==obj.order;
+        })
 		let self=this;
 		this._manageService.checkArticleExists(obj.name)
 			.subscribe(x=>{
-				if(x && x.length>0){
-					self._manageService.addArticleToCategory(x[0].$key,obj.order)
-				}else{
+				if (x && x.length>0){
+					self._manageService.addArticleToCategory(x[0].$key,obj.order,languageObj.language)
+				} else {
 					let item={
 						name:obj.name,
 						isDefault:false
 					};
-					self._manageService.addArticleAndAddToCategory(item,obj.order)
+					self._manageService.addArticleAndAddToCategory(item,obj.order,languageObj.language)
 				}
 			});
 	}

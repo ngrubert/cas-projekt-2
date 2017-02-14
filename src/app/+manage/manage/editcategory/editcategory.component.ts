@@ -1,16 +1,15 @@
-import { Component, OnInit ,Inject} from '@angular/core';
+import { Component, OnInit, Inject} from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseRef } from 'angularfire2';
+import { Observable } from 'rxjs/Observable';
 
 import { SharedComponent } from './../../../shared/shared.component';
 import { ManageService } from './../../manage.service';
 import { user } from './../../../model/user';
-
-import { Observable } from 'rxjs/Observable';
-
 import { list } from './../../../model/user';
 
-import {AngularFire,FirebaseListObservable,FirebaseObjectObservable,FirebaseRef} from 'angularfire2';
 declare var PouchDB: any;
+
 export class catalog{
     constructor(
         public id?: string,
@@ -31,6 +30,7 @@ export class EditCategoryComponent implements OnInit {
     private user;
     private sId;
     private catId;
+    private language;
 	private modelValue;
     af: AngularFire;
     catalogs:catalog[]=[];
@@ -38,7 +38,7 @@ export class EditCategoryComponent implements OnInit {
     list:Array<any>=[];
     category:Object={};
     db:any;
-    constructor(@Inject(FirebaseRef) public fb,  af: AngularFire,
+    constructor(  af: AngularFire,
         public _manageService: ManageService,
         private route: ActivatedRoute,
         private router: Router
@@ -53,6 +53,7 @@ export class EditCategoryComponent implements OnInit {
                 // this.url = '-K_PcS3U-bzP0Jgye_Xo';
 				this.sId=params['id'];
                 this.catId=params['catId'];
+                this.language=params['lan'];
                 return Observable.from([1,2,3]).map(x=>x);
             });
         this.user.subscribe(c=>{
@@ -60,23 +61,23 @@ export class EditCategoryComponent implements OnInit {
         });
         
     }
-    
-    syncChanges(){
+    // get user email from local databas(pouch db)
+    syncChanges() {
         let self=this;
         this.db.allDocs({include_docs: true, descending: true}, function(err, docs) {
-            if(err){
+            if (err){
             console.log(err);
             return err;
             }
-            if(docs && docs.rows.length>0){
+            if (docs && docs.rows.length>0){
             self.url=docs.rows[0].doc.user;
             self.getCategory();
             }
         });
     }
-
-    getCategory(){
-        let getCategory$=this._manageService.getCategoryById(this.catId);
+    // get category by category id from route and language
+    getCategory() {
+        let getCategory$=this._manageService.getCategoryById(this.catId,this.language);
         getCategory$.subscribe(x=>{
             this.category=x;
             this.modelValue=x.order;
@@ -88,13 +89,13 @@ export class EditCategoryComponent implements OnInit {
 			this.list=[];
             var flags = [], output = [], l = x.length, i;
             for( i=0; i<l; i++) {
-                if( flags[x[i].$key]) continue;
+                if ( flags[x[i].$key]) continue;
                 flags[x[i].$key] = true;
                 output.push(x[i].$key);
             }
 			let listArr=Array.apply(1, {length: output.length}).map(Number.call, Number);
 			let listArrMap= listArr.map(function(val){return ++val;});
-			for(let i=0;i<listArrMap.length;i++){
+			for (let i=0;i<listArrMap.length;i++){
 				let val=listArrMap[i];
 				let item={
 					name:val,
@@ -105,12 +106,15 @@ export class EditCategoryComponent implements OnInit {
         });
     }
 	
+
+    // on save click from shared component
 	onSaved(obj){
 		obj.isDefault=false;
-		this._manageService.editCategory(obj,this.catId);
+		this._manageService.editCategory(obj,this.catId,this.language);
 		this.router.navigate(['manage']);
 	}
 
+    // deleteCategory click redirect to deletecategory component
     deleteCategory(id){
         this.router.navigate(['manage/deletecategory',id])
     }
