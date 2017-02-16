@@ -31,7 +31,7 @@ var sendUrl;
 // firebase server initialization
 firebaseAdmin.initializeApp({
     credential: firebaseAdmin.credential.cert(serviceAccount),
-    databaseURL: "https://shoppinglist-12407.firebaseio.com"
+    databaseURL: "https://fergg-c183c.firebaseio.com"
 });
 
 
