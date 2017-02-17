@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '@angular/material';
+import { TranslateModule } from '@ngx-translate/core';
+
 
 import { HomeRoutingModule } from './home.routing';
 import { SharedModule } from './../shared/shared.module';
@@ -12,7 +14,8 @@ import { UsersService } from './../services/users.service';
   imports: [
     HomeRoutingModule,SharedModule,
     MaterialModule.forRoot(),
-    CommonModule
+    CommonModule,
+    TranslateModule.forChild()
   ],
   exports: [],
   declarations: [HomeComponent],

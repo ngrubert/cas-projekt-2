@@ -11,6 +11,7 @@ import { IndexModule } from './index/index.module';
 import { firebaseConfig } from './config/firebase-config';
 import { UsersService } from './services/users.service';
 import { AppComponent } from './app.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 // app main bootstrap
@@ -25,7 +26,8 @@ import { AppComponent } from './app.component';
     MaterialModule.forRoot(),
     AngularFireModule.initializeApp(firebaseConfig),
     AppRoutingModule,
-    IndexModule
+    IndexModule,
+    TranslateModule.forRoot()
   ],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }, UsersService],
   bootstrap: [AppComponent]
