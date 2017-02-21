@@ -30,10 +30,3 @@ Run `ng github-pages:deploy` to deploy to Github Pages.
 
 To get more help on the `angular-cli` use `ng --help` or go check out the [Angular-CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
-## Firebase
-
-https://console.firebase.google.com/project/fergg-c183c/database/data?pli=1
-
-Important files:
-- src/firebase-secret.js
-- src/app/config/firebase-config.ts
