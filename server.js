@@ -7,6 +7,10 @@ var nodemailer = require('nodemailer');
 var firebaseAdmin = require('firebase-admin');
 var serviceAccount = require("./firebase-secret.js");
 
+var smtpHost = 'saphir.metanet.ch';
+var smtpUser = 'fergg@karrer.net';
+var smtpPass = 'Urc0u5-0';
+
 
 // add middleware
 app.use(express.static(path.join(__dirname, './dist')));
@@ -15,15 +19,18 @@ app.use(bodyParser.json())
 
 
 //email code
-var transporter = nodemailer.createTransport('smtps://nicogrubert%40gmail.com:Test@smtp.gmail.com');
+//var transporter = nodemailer.createTransport('smtps://nicogrubert%40gmail.com:Test@smtp.gmail.com');
 // @ Andi: if you have a gmail account, you can use the commented code to enable email sending; otherwise you will get an auth error "response: '535-5.7.8 Username and Password not accepted"
-// var transporter = nodemailer.createTransport({
-//     service: 'Gmail',
-//     auth: {
-//         user: 'nicogrubert@gmail.com',
-//         pass: 'my-secret-pass'
-//     }
-// });
+var transporter = nodemailer.createTransport({
+    host: smtpHost,
+    port: 587,
+    secure: false,
+    auth: {
+         user: smtpUser,
+         pass: smtpPass
+    }
+});
+
 var siteUrl;
 var sendUrl;
 
@@ -37,8 +44,8 @@ firebaseAdmin.initializeApp({
 
 var listRef = firebaseAdmin.database().ref();
 
-// sListUsers collection child_changed event send email 
-listRef.child('sListUsers').on('child_changed', function(dataSnapshot) { 
+// sListUsers collection child_changed event send email
+listRef.child('sListUsers').on('child_changed', function(dataSnapshot) {
     const msg = dataSnapshot.val();
     const key = dataSnapshot.key;
     for (var property in msg) {
@@ -56,7 +63,7 @@ listRef.child('sListUsers').on('child_changed', function(dataSnapshot) {
             // queryEmail(property);
             listRef.child('sListUsers').child(key).update(msg);
         }
-    }    
+    }
 });
 
 // email id from user id
@@ -89,6 +96,17 @@ var sendEmail = function(key,property,mailId) {
         console.log('Message sent: ' + info.response);
     });
 }
+
+
+// verify connection configuration
+transporter.verify(function(error, success) {
+    if (error) {
+        console.log('Testing SMTP: user ' + smtpUser + ' at ' + smtpHost + ': ' + error);
+        return;
+    } else {
+        console.log('Smtp user ' + smtpUser + ' at ' + smtpHost + ' seems ok');
+    }
+});
 
 
 // start the server

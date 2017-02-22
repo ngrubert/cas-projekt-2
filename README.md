@@ -2,7 +2,28 @@
 
 This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.22-1.
 
+# UPGRADE
+
+ - install nodejs 6.9.5
+ 
+ - install angular-cli 1.0.0-beta.32.3
+ 
+    Global package:
+
+      npm uninstall -g angular-cli @angular/cli
+      npm cache clean
+      npm install -g @angular/cli@latest
+      
+    Local project package:
+
+      rm -rf node_modules dist # use rmdir on Windows
+      npm install --save-dev @angular/cli@latest
+      npm install
+
 ## Development server
+
+Run `node server` to run the email server that listens to events from the firebase database.
+
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 ## Code scaffolding
