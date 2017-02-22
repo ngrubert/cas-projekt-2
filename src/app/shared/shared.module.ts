@@ -1,11 +1,15 @@
 import { NgModule } from '@angular/core';
 
-import { SharedComponent }   from './shared.component';
+import { SharedComponent } from './shared.component';
+import { TranslateModule } from '@ngx-translate/core';
+
 
 @NgModule({
-  imports: [
+  imports: [],
+  exports: [
+    SharedComponent,
+    TranslateModule
   ],
-  exports: [SharedComponent],
   declarations: [SharedComponent],
   providers: [],
 })

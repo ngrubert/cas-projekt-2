@@ -11,12 +11,11 @@ import { list } from './../../model/user';
 import { Subject } from 'rxjs/Subject';
 import {AngularFire,FirebaseListObservable,FirebaseObjectObservable,FirebaseRef} from 'angularfire2';
 declare var PouchDB: any;
-export class catalog{
-    constructor(
-        public id?: string,
-        public name?: string,
-        public articles?:Array<any>    
-        ){}   
+export class catalog {
+    constructor(public id?: string,
+                public name?: string,
+                public articles?: Array<any>) {
+    }
 }
 
 @Component({

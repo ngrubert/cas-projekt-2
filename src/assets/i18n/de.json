@@ -1,0 +1,80 @@
+{
+  "APP": {
+    "SUBTITLE": "Online Einkaufsliste",
+    "CREATE": "Neue Einkaufsliste",
+    "CATALOG": "Katalog bearbeiten",
+    "CLEAR": "Einkaufsliste zurücksetzen",
+    "CONTACT": "Kontakt",
+    "DELETE": "Einkaufsliste löschen",
+    "EDIT": "Einkaufsliste bearbeiten",
+    "FINISH": "Einkaufsliste fertig",
+    "HELP": "Hilfe",
+    "LIST": "Meine Einkaufslisten"
+  },
+  "CLEAR": {
+    "CANCEL": "Abbrechen",
+    "CLEAR": "Alle Artikel von der Einkaufsliste entfernen?",
+    "YES": "Ja, zurücksetzen"
+  },
+  "CREATE": {
+    "ADDMOREUSERS": "Weitere Adressen",
+    "CANCEL": "Abbrechen",
+    "CREATE": "Erzeugen",
+    "INVITEUSER": "Andere einladen",
+    "SAVE": "Speichern",
+    "TITLE": "Neue Einkaufsliste"
+  },
+  "DELETE": {
+    "CANCEL": "Abbrechen",
+    "DELETE": "Löschen",
+    "TITLE": "Einkaufsliste löschen"
+  },
+  "FINISH": {
+    "CANCEL": "Abbrechen",
+    "REMOVE": "Alle Artikel aus der Einkaufsliste entfernen",
+    "SAVE": "Speichern",
+    "TICKTHIS": "Ankreuzen entfernt alle Artikel aus der aktuellen Einkaufsliste. Sonst bleiben die Artikel im Status 'neu'",
+    "TITLE": "Einkauf beendet?",
+    "YES": "Ja! Einkaufsliste als 'fertig' markieren"
+  },
+  "HOME": {
+    "GETSTARTED": "Get started !",
+    "HELP": "Hilfe-Seite",
+    "LETSGO": "Let's get started and create your shopping list ...",
+    "QUESTIONS": "Fragen? Anwtworten auf unserer ",
+    "TXT1": "Einkaufslisten on- und off-line verwalten",
+    "TXT2": "Mit Freunden teilen",
+    "TXT3": "Keine Registration notwendig",
+    "TXT4": "Simple and Useful"
+  },
+  "LIST": {
+    "ADDARTICLES": "Suche und erfasse Artikel oder stöbere in unserem Katalog",
+    "AMOUNT": "Menge",
+    "CLEARLIST": "Einkaufsliste leeren",
+    "OKOK": "Ok",
+    "RECENT": "Zuletzt verwendet",
+    "WELCOME": "Hallo"
+  },
+  "LISTS": {
+    "CREATELIST": "Neue Einkaufsliste anlegen",
+    "NEWDEVICE": "Neues Gerät? Nach bestehenden Einkaufsliste suchen",
+    "NONEFOUND": "Keine Einkaufsliste gefunden",
+    "RECENTLISTS": "Zuletzt verwendete Einkaufslisten",
+    "TITLE": "Meine Einkaufslisten"
+  },
+  "MANAGE": {
+    "ADDARTICLE": "Neuer Artikel",
+    "ADDCATEGORY": "Neue Kategorie",
+    "DELETEARTICLE": "Artikel löschen?",
+    "MANAGE": "Katalog bearbeiten",
+    "CANCEL": "Abbrechen",
+    "DELETECAT": "Kategorie löschen",
+    "DELETECAT2": "Beim Löschen einer Kategorie",
+    "DELETECAT3": "werden alle Artikel darin mitgelöscht",
+    "DELETECAT4": "Willst du die Kategorie wirklich löschen?",
+    "OKOK": "Löschen",
+    "SAVE": "Speichern",
+    "WARNING": "ACHTUNG"
+  }
+
+}

@@ -1,21 +1,19 @@
 <div class="box-alignment">
-    <div class="item-alignment title"><b>Delete Category</b></div>
+    <div class="item-alignment title"><b>{{'MANAGE.DELETECAT'|translate}}</b></div>
     <div class="delete-warning">
         <div class="delete-align">
-            <h3>WARNING</h3>
+            <h3>{{'MANAGE.WARNING'|translate}}</h3>
         </div>
         <div>
         <div>
-            <div class="delete-align">
-                Deleting category <span>{{modelValue}}</span> will remove this category and all items within that category
+            <div class="delete-align"><ng-container>{{'MANAGE.DELETECAT2'|translate}}</ng-container>
+                <span>{{modelValue}}</span> <ng-container>{{'MANAGE.DELETECAT3'|translate}}</ng-container>
             </div>
-            <div class="delete-align">
-                Do you really want to delete this category?
-            </div>
+            <div class="delete-align">{{'MANAGE.DELETECAT4'|translate}}</div>
         </div>
         <div class="delete-buttons">
-            <button style="background: #a94442" md-button (tap)="deleteCategory(category.$key)">Delete</button>
-            <button style="background: gray" md-button (tap)="cancelDeleteCategory()">Delete</button>
+            <button style="background: #a94442" md-button (tap)="deleteCategory(category.$key)">{{'MANAGE.OKOK'|translate}}</button>
+            <button style="background: gray" md-button (tap)="cancelDeleteCategory()">{{'MANAGE.CANCEL'|translate}}</button>
         </div>
     </div>
 </div>

@@ -1,7 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpModule, Http } from '@angular/http';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AngularFireModule } from 'angularfire2';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { MaterialModule } from '@angular/material';
@@ -12,6 +14,10 @@ import { firebaseConfig } from './config/firebase-config';
 import { UsersService } from './services/users.service';
 import { AppComponent } from './app.component';
 
+// AoT requires an exported function for factories
+export function HttpLoaderFactory(http: Http) {
+  return new TranslateHttpLoader(http);
+}
 
 // app main bootstrap
 @NgModule({
@@ -22,7 +28,14 @@ import { AppComponent } from './app.component';
     BrowserModule,
     FormsModule,
     HttpModule,
-    MaterialModule.forRoot(),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [Http]
+      }
+    }),
+    MaterialModule,
     AngularFireModule.initializeApp(firebaseConfig),
     AppRoutingModule,
     IndexModule

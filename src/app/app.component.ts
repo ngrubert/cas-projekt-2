@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild,OnDestroy,HostListener } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
@@ -26,8 +27,17 @@ export class AppComponent implements OnInit,OnDestroy {
   }
 
   constructor(private route: ActivatedRoute,
-        private router: Router){
+        private router: Router,
+        private translate: TranslateService) {
     this.db = new PouchDB("sList");
+
+    // this language will be used as a fallback when a translation isn't found in the current language
+    translate.addLangs(["en", "de"]);
+    translate.setDefaultLang('en');
+
+    let browserLang = translate.getBrowserLang();
+    //translate.use(browserLang.match(/en|de/) ? browserLang : 'en');
+    translate.use("de");
   }
  
 

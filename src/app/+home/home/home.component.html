@@ -1,16 +1,18 @@
 
 <div class="start-container start-alignment">
     <div class="start-alignment start-content">
-        <span>Manage your shopping list online and offline</span>
-        <span>Share it with friends</span>
-        <span>No registration or login required</span>
-        <span>Simple and Useful</span>
+        <span>{{'HOME.TXT1'|translate}}</span>
+        <span>{{'HOME.TXT2'|translate}}</span>
+        <span>{{'HOME.TXT3'|translate}}</span>
+        <span>{{'HOME.TXT4'|translate}}</span>
     </div>
     <div class="start-alignment start-button">
-        <a [routerLink]="['/create']" md-raised-button>Get started !</a>
-        <span>Let's get started and create your shopping list ...</span>
+        <a [routerLink]="['/create']" md-raised-button>{{'HOME.GETSTARTED'|translate}}</a>
+        <span>{{'HOME.LETSGO'|translate}}</span>
     </div>
     <div class="start-alignment start-help">
-        <span>Any questions ? Visit our <a [routerLink]="['/help']"> help page</a></span>
+        <span><ng-container>{{'HOME.QUESTIONS'|translate}}</ng-container>ng-container>
+          <a [routerLink]="['/help']"><ng-container>{{'HOME.HELP'|translate}}</ng-container>ng-container></a>
+        </span>
     </div>
 </div>
