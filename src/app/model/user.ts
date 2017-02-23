@@ -7,7 +7,7 @@ export class user{
 }
 
 // list class 
-export class list{
+export class list {
     constructor(
         public isFinished:boolean,
         public title?:string,
@@ -15,8 +15,8 @@ export class list{
         public language?:string,
         public name?:string,
         public email?:string,
+        public siteUrl?: string,
         public users?:Array<string>
-
     ){
 
     }

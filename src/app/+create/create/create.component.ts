@@ -17,7 +17,7 @@ import { list } from './../../model/user';
 })
 export class CreateComponent implements OnInit,OnDestroy {
     // shoppingList :list; 
-    model=new list(false);
+    model = new list(false);
     title:string;
     users=[];
     usersFirebase=[];
@@ -113,8 +113,9 @@ export class CreateComponent implements OnInit,OnDestroy {
             }
         }
         
-        this.model.isFinished=false;
-        let sListTemp:list =this.model;
+        this.model.isFinished = false;
+        this.model.siteUrl = window.location.origin;
+        let sListTemp:list = this.model;
         sListTemp.users=[];
         let sListCreated$=self._createService.createSList(sListTemp);
         sListCreated$.subscribe(x=>{
