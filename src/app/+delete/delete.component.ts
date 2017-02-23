@@ -27,7 +27,7 @@ export class DeleteComponent implements OnInit {
     localDBID;
     constructor(public _userService: UsersService,private route: ActivatedRoute,
         private router: Router,af: AngularFire) {
-this.db = new PouchDB("sList");
+        this.db = new PouchDB("sList");
         this.af = af;
     }
 
@@ -40,7 +40,6 @@ this.db = new PouchDB("sList");
 
     // show side nav extras
     showSideMenu() {
-        
         document.getElementById('edit').style.display='block';
         document.getElementById('clear').style.display='block';
         document.getElementById('finished').style.display='block';
@@ -72,11 +71,13 @@ this.db = new PouchDB("sList");
         })
     }
 
-    // delete shopping list by id
+    // delete shopping list and also the sListUsers by id
 
     deleteSList() {
-        let self=this;
+        let self = this;
         this.af.database.list(`sList/${this.sList}`).remove();
+        this.af.database.list(`sListUsers/${this.sList}`).remove();
+        // TODO: remove sListUsers in PouchDB
         this.db.get(this.localDBID).then(function (doc) {
                 debugger
                 doc.user = self.url;
