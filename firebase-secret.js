@@ -1,5 +1,4 @@
 // See https://console.firebase.google.com/project/fergg-c183c/settings/serviceaccounts/adminsdk to create this private key
-// @ Andi: remind me to create an account for you
 var firebase = {
     "type": "service_account",
     "project_id": "fergg-c183c",

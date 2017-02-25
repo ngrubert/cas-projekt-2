@@ -4,21 +4,20 @@ This project was generated with [angular-cli](https://github.com/angular/angular
 
 # UPGRADE
 
- - install nodejs 6.9.5
+ - install nodejs 6.10.0
+ - install angular-cli 1.0.0-rc.0
  
- - install angular-cli 1.0.0-beta.32.3
- 
-    Global package:
+  Global package:
 
-      npm uninstall -g angular-cli @angular/cli
-      npm cache clean
-      npm install -g @angular/cli@latest
+    $ npm uninstall -g angular-cli @angular/cli
+    $ npm cache clean
+    $ npm install -g @angular/cli@latest`
       
-    Local project package:
+  Local project package:
 
-      rm -rf node_modules dist # use rmdir on Windows
-      npm install --save-dev @angular/cli@latest
-      npm install
+    $ rm -rf node_modules dist # use rmdir on Windows
+    $ npm install --save-dev @angular/cli@latest
+    $ npm install
 
 ## Development server
 
@@ -61,37 +60,38 @@ Important files:
 
 ## Firebase hosting
 
- - Install firebase tools, login and initialize the firebase project:
+Install firebase tools, login and initialize the firebase project:
  
-    > npm i -g firebase-tools
-    > firebase login
-    > firebase init
-    >  - we're outside of our home dir
-    >    proceed: Y
-    >
-    >   (*) Database
-    >  >(*) Hosting
-    >
-    > default project
-    > > Fergg! (fergg-c183c)
-    >
-    > ? What do you want to use as your public directoru (public) dist
-    >
-    > ? configure as a SPA (rewrite all urls to index.html)? N
-    >
-    > ? index.,html exists. Overwrite? N
-    >
-    >  - skipping write of index.html
-    >  - writing config info tofirebase.json
-    >  - writing projetc infot to .firebaserc
-    >
-    >  - initialization complete
+    $ npm i -g firebase-tools
+    $ firebase login
+    $ firebase init
+     - we're outside of our home dir
+       proceed: Y
+    
+      (*) Database
+     >(*) Hosting
+    
+    default project
+    > Fergg! (fergg-c183c)
+    
+    ? What do you want to use as your public directoru (public) dist
+    
+    ? configure as a SPA (rewrite all urls to index.html)? N
+    
+    ? index.,html exists. Overwrite? N
+    
+     - skipping write of index.html
+     - writing config info tofirebase.json
+     - writing projetc infot to .firebaserc
+    
+     - initialization complete
     
 ## Firebase deploy
 
-  Make a build locally in ./dist:
-    > cd <top directory of project>
-    > ng build --prod
+Make a build locally in ./dist:
+
+    $ cd <top directory of project>
+    $ ng build --prod
     chunk    {0} 0.0c98c5bc0a9d5b9c313b.chunk.js 333 kB {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} [rendered]
     chunk    {1} 1.48105112e5b10e770836.chunk.js 205 kB {0} {2} {3} {4} {5} {6} {7} {8} {9} {10} [rendered]
     chunk    {2} 2.b0ef991dc7e6b519ade3.chunk.js 209 kB {0} {1} {3} {4} {5} {6} {7} {8} {9} {10} [rendered]
@@ -106,7 +106,10 @@ Important files:
     chunk   {11} styles.4ba17cb5afe9dad72bd2.bundle.css (styles) 122 bytes {13} [initial] [rendered]
     chunk   {12} vendor.f81d7c654f3b1a97cadf.bundle.js (vendor) 3.49 MB [initial] [rendered]
     chunk   {13} inline.f3f65f8f74d285f485ac.bundle.js (inline) 0 bytes [entry] [rendered]
-    > firebase deploy
+    
+Deploy the dist folder to firebase hosting:
+    
+    $ firebase deploy
     === Deploying to 'fergg-c183c'...
     i  deploying database, hosting
     +  database: rules ready to deploy.
