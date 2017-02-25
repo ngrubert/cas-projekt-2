@@ -1,0 +1,80 @@
+{
+  "APP": {
+    "SUBTITLE": "A Mobile Shopping List",
+    "CREATE": "Create new shopping list",
+    "CATALOG": "Manage catalog",
+    "CLEAR": "Clear shopping list",
+    "CONTACT": "Get in touch with us",
+    "DELETE": "Delete shopping list",
+    "EDIT": "Edit shopping list",
+    "FINISH": "Mark shopping as finished",
+    "HELP": "Help",
+    "LIST": "My shopping lists"
+  },
+  "CLEAR": {
+    "CANCEL": "Cancel",
+    "CLEAR": "Clear shopping list and remove all items?",
+    "YES": "Yes, clear it"
+  },
+  "CREATE": {
+    "ADDMOREUSERS": "Add more users",
+    "CANCEL": "Cancel",
+    "CREATE": "Create",
+    "INVITEUSER": "Invite user",
+    "SAVE": "Save",
+    "TITLE": "Create new shopping list"
+  },
+  "DELETE": {
+    "CANCEL": "Cancel",
+    "DELETE": "Delete",
+    "TITLE": "Delete shopping list"
+  },
+  "FINISH": {
+    "CANCEL": "Cancel",
+    "REMOVE": "Remove all items from shopping list",
+    "SAVE": "Save",
+    "TICKTHIS": "Tick this checkbox to remove all articles from your current shopping list. Otherwise all articles stay in your shopping list, labeled as articles to buy",
+    "TITLE": "Finished shopping?",
+    "YES": "Yes! Mark shopping list as 'finished'"
+  },
+  "HOME": {
+    "GETSTARTED": "Get started !",
+    "HELP": "help page",
+    "LETSGO": "Let's get started and create your shopping list ...",
+    "QUESTIONS": "Any questions ? Visit our ",
+    "TXT1": "Manage your shopping list online and offline",
+    "TXT2": "Share it with friends",
+    "TXT3": "No registration or login required",
+    "TXT4": "Simple and Useful"
+  },
+  "LIST": {
+    "ADDARTICLES": "Add articles to your shopping list by searching or browsing through the article catalog",
+    "AMOUNT": "Amount",
+    "CLEARLIST": "Empty shopping list",
+    "OKOK": "Ok",
+    "RECENT": "Recent articles",
+    "WELCOME": "Welcome"
+  },
+  "LISTS": {
+    "CREATELIST": "Create new shopping list",
+    "NEWDEVICE": "If you use a new device, please search for your lists",
+    "NONEFOUND": "No shopping lists found",
+    "RECENTLISTS": "Recently used shopping lists",
+    "TITLE": "My shopping lists"
+  },
+  "MANAGE": {
+    "ADDARTICLE": "Add new article",
+    "ADDCATEGORY": "Add new category",
+    "DELETEARTICLE": "Delete this article?",
+    "MANAGE": "Manage Catalog",
+    "CANCEL": "Cancel",
+    "DELETECAT": "Delete Category",
+    "DELETECAT2": "Deleting category",
+    "DELETECAT3": "will remove this category and all items within that category",
+    "DELETECAT4": "Do you really want to delete this category?",
+    "OKOK": "Delete",
+    "SAVE": "Save",
+    "WARNING": "WARNING"
+  }
+
+}

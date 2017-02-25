@@ -1,13 +1,13 @@
-<h3>Welcome {{title}}</h3>
+<h3><ng-container>{{'LIST.WELCOME'|translate}}</ng-container> {{title}}</h3>
 <div class="slist">
     <div class="slist-search">
         <form>
             <md-input-container style="width: 100%;" >
-                <input md-input placeholder="What do you want to buy?" id="listSearch" #term type="search" name="search" [(ngModel)]="search">
+                <input mdInput placeholder="What do you want to buy ?" id="listSearch" #term type="search" name="search" [(ngModel)]="search">
             </md-input-container>
         </form>
         <div class="slist-article-direction" style="margin: 1em 0;">
-            <div class="slist-article" *ngFor="let a of searchArticles"  [style.background]="a.backGroundColor">
+            <div class="slist-article" *ngFor="let a of searchArticles" [style.background]="a.backGroundColor">
                 <div class="article-item" (tap)="addToLIst(a)">
                     {{a.name}}
                 </div>
@@ -17,16 +17,17 @@
     </div>
 
     <div class="slist-articles" style="margin: 1em 0;display: flex;justify-content: center;align-items: center;flex-direction: column;" *ngIf="articlesList.length==0">
-        <span style="margin: 1em;"><b>Empty shopping list</b></span>
-        <span style="margin: 1em;">Add articles to your shopping list by searching or browsing through the article catalog</span>
+        <span style="margin: 1em;"><b>{{'LIST.CLEARLIST'|translate}}</b></span>
+        <span style="margin: 1em;">{{'LIST.ADDARTICLES'|translate}}</span>
     </div>
 
     <div class="slist-articles" style="margin: 1em 0;">
         <div class="slist-article-direction">
             <div class="slist-article" *ngFor="let a of articlesList"  [style.background]="a.backGroundColor">
-                <div style="width: 90%;margin: 0.1em;"><span class="info-icon" *ngIf="a.description">i</span></div>
+                <!--<div style="width: 90%;margin: 0.1em;"></div>-->
                     <div class="slist-article-item" (tap)="selectedArticleInList(a)">
-                        <span style="height: 60%;text-align: center;justify-content: center;display: flex;flex-direction: column;">{{a.amount}}</span>
+                        <span class="info-icon" *ngIf="a.description" style="align-self: flex-end;margin: 5px;">i</span>
+                        <span style="height: 50%;text-align: center;justify-content: center;display: flex;flex-direction: column;">{{a.amount}}</span>
                         <span style="height:40%">{{a.name}}</span>
                     </div>
             </div>
@@ -36,11 +37,11 @@
     <div class="slist-article-details" >
         <div class="slist-article-detail-box">
             <div class="slist-article-detail-box-content">
-                <div style="margin:1em;">Amount</div>
+                <div style="margin:1em;">{{'LIST.AMOUNT'|translate}}</div>
                 <div>
                     <span>
                     <md-input-container style="width: 50%;background: white; border-radius: 2px;" >
-                        <input md-input placeholder="Amount" type="input" name="amount" [(ngModel)]="selectedArticleList.amount">
+                        <input mdInput placeholder="Amount" type="input" name="amount" [(ngModel)]="selectedArticleList.amount">
                     </md-input-container>
                     </span>
                     <span style="flex:1"></span>
@@ -49,7 +50,7 @@
                 </div>
                 <div style="margin:1em 0">
                     <md-input-container style="width: 100%;background: white; border-radius: 2px;" >
-                        <textarea md-input placeholder="Description" type="input" name="description" [(ngModel)]="selectedArticleList.description"></textarea>
+                        <textarea mdInput placeholder="Description" type="input" name="description" [(ngModel)]="selectedArticleList.description"></textarea>
                     </md-input-container>
                 </div>
             </div>
@@ -72,7 +73,7 @@
             </div>
         </div>
         <div style="text-align: center;" (tap)="updateSList(selectedArticleList)">
-        <button md-raised-button style="margin:1em auto;">Ok</button>
+        <button md-raised-button style="margin:1em auto;">{{'LIST.OKOK'|translate}}</button>
         </div>
     </div>
 
@@ -81,7 +82,7 @@
         <span class="sList-catalog-item-name-default" >
             <i *ngIf=" userarticleRecent.style.display=='none'" class="material-icons">keyboard_arrow_down</i>
             <i *ngIf=" userarticleRecent.style.display!='none'" class="material-icons">keyboard_arrow_up</i>
-            <span (tap)="toggleCatalog(userarticleRecent)" style="cursor: pointer;">Recent articles</span>
+            <span (tap)="toggleCatalog(userarticleRecent)" style="cursor: pointer;">{{'LIST.RECENT'|translate}}</span>
         </span>
         <div style="display:none;" class="slist-articles" #userarticleRecent>
         <div class="slist-article-direction">

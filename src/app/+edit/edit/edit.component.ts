@@ -19,7 +19,7 @@ declare var PouchDB: any;
 })
 export class EditComponent implements OnInit,OnDestroy {
     // shoppingList :list; 
-    model=new list(false);
+    model = new list(false);
     title:string;
     users=[];
     usersEdit=[];
@@ -57,7 +57,6 @@ export class EditComponent implements OnInit,OnDestroy {
 
     // show side menu extas
     showSideMenu() {
-        
         document.getElementById('edit').style.display='block';
         document.getElementById('clear').style.display='block';
         document.getElementById('finished').style.display='block';
@@ -152,32 +151,33 @@ export class EditComponent implements OnInit,OnDestroy {
 
     // check if users exists and edit shoppingList and save users
     CheckUsers() {
-        let self=this;
-        self.emailedUsers=[];
-        for (let i=0;i<this.inviteUsers.length;i++){
-            if (this.inviteUsers && this.inviteUsers[i]!=""){
-                let obj={
+        let self = this;
+        self.emailedUsers = [];
+        for (let i = 0; i < this.inviteUsers.length; i++){
+            if (this.inviteUsers && this.inviteUsers[i] != ""){
+                let obj = {
                     email:this.inviteUsers[i]
-                }
+                };
                 self.array.push(obj);
             }
         }
         
-        this.model.isFinished=false;
-        let sListTemp:list ={
-            email:this.model.email,
-            isFinished:false,
-            description:this.model.description,
-            title:this.model.title,
-            language:this.model.language,
-            name:this.model.name
+        this.model.isFinished = false;
+        let sListTemp: list = {
+            email: this.model.email,
+            isFinished: false,
+            description: this.model.description,
+            title: this.model.title,
+            language: this.model.language,
+            name: this.model.name,
+            siteUrl: window.location.origin
         };
         
-        let sListCreated$=self._editService.editSList(this.sList,sListTemp);
+        let sListCreated$=self._editService.editSList(this.sList, sListTemp);
         
         self._editService.resetSList();
         
-        let request$=Observable.from(this.array)
+        let request$ = Observable.from(this.array)
                 .mergeMap(data=>{
                     return this.addIfnotExists(data);
                 })

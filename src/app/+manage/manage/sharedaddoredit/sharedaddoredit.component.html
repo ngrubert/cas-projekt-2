@@ -2,7 +2,7 @@
     <div class="item-alignment title"><b>{{title}}</b></div>
     <div class="item-alignment">
         <md-input-container style="width: 100%;" >
-            <input md-input placeholder="name" type="input" name="input" [(ngModel)]="titleValue">
+            <input mdInput placeholder="name" type="input" name="input" [(ngModel)]="titleValue">
         </md-input-container>
     </div>
     <div class="item-alignment">
@@ -23,10 +23,9 @@
 	
     <div class="button-container">
         <div class="buttons">
-        <button md-raised-button class="button-align" (tap)="Save()">Save</button>
+        <button md-raised-button class="button-align" (tap)="Save()">{{'MANAGE.SAVE'|translate}}</button>
         </div>
         <div class="buttons">
-        <button md-raised-button class="button-align" (tap)="Cancel()">Cancel</button>
         </div>
     </div>
 </div>

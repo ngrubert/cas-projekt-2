@@ -1,15 +1,15 @@
 <div class="slist">
-<h3>Manage Catalog</h3>
+<h3>{{'MANAGE.MANAGE'|translate}}</h3>
 <div>
     <a [routerLink]="['/manage/addarticle']">
         <img class="manage-catalog-item" height="24px;" width="24px;" src="./../assets/images/nav_manage_catalog.png">
-        <span style="margin: 1em;color: orange">Add new article</span>
+        <span style="margin: 1em;color: orange">{{'MANAGE.ADDARTICLE'|translate}}</span>
     </a>
 </div>
 <div>
     <a [routerLink]="['/manage/addcategory']">
         <img class="manage-catalog-item" height="24px;" width="24px;" src="./../assets/images/nav_manage_catalog.png">
-        <span style="margin: 1em;color: orange">Add new category</span>
+        <span style="margin: 1em;color: orange">{{'MANAGE.ADDCATEGORY'|translate}}</span>
     </a>
 </div>
 <div class="slist-catalog">
@@ -32,10 +32,10 @@
                         <span (tap)="showDelete(deleteButton,delete)" style="cursor: pointer;"><img class="manage-catalog-item" height="24px;" width="24px;" src="./../assets/images/delete_button.png"></span>
                     </div>
                     <div #delete style="display:none;">
-                        <span style="color: #a94442">Delete this article?</span>
+                        <span style="color: #a94442">{{'MANAGE.DELETEARTICLE'|translate}}</span>
                         <div>
-                            <button md-button (tap)="deleteArticle(a.$key,p.id,p.language)" style="background: #a94442">Delete</button>
-                            <button md-button (tap)="hideDelete(deleteButton,delete)" style="background: grey">Cancel</button>
+                            <button md-button (tap)="deleteArticle(a.$key,p.id,p.language)" style="background: #a94442">{{'MANAGE.OKOK'|translate}}</button>
+                            <button md-button (tap)="hideDelete(deleteButton,delete)" style="background: grey">{{'MANAGE.CANCEL'|translate}}</button>
                         </div>
                     </div>
                 </div>

@@ -1,2 +1,4 @@
 node_modules
 dist
+.idea/
+fergg.iml

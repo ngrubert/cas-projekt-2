@@ -1,5 +1,6 @@
 var express = require('express');
 var path = require('path');
+var util = require('util');
 var app = express();
 var router = express.Router();
 var bodyParser = require('body-parser')
@@ -7,6 +8,23 @@ var nodemailer = require('nodemailer');
 var firebaseAdmin = require('firebase-admin');
 var serviceAccount = require("./firebase-secret.js");
 
+var smtpHost = 'saphir.metanet.ch';
+var smtpUser = 'fergg@karrer.net';
+var fromUser = smtpUser;
+var smtpPass = 'Urc0u5-0';
+
+var MAIL = {
+    'English': {
+        'subj': 'Fergg! New Shopping list "%s"',
+        'text': 'A new shopping list "%s" has been created by %s: %s',
+        'html': '<p>A new shopping list "%s" has been created by %s</p><a href="%s">Click here to see it.</a>'
+    },
+    'German': {
+        'subj': 'Fergg! Neue Einkaufsliste "%s"',
+        'text': 'Neue Einkaufsliste "%s" von %s: %s',
+        'html': '<p>Neue Einkaufsliste "%s" von %s</p><a href="%s">Ansehen!</a>'
+    }
+}
 
 // add middleware
 app.use(express.static(path.join(__dirname, './dist')));
@@ -15,80 +33,97 @@ app.use(bodyParser.json())
 
 
 //email code
-var transporter = nodemailer.createTransport('smtps://nicogrubert%40gmail.com:Test@smtp.gmail.com');
+//var transporter = nodemailer.createTransport('smtps://nicogrubert%40gmail.com:Test@smtp.gmail.com');
 // @ Andi: if you have a gmail account, you can use the commented code to enable email sending; otherwise you will get an auth error "response: '535-5.7.8 Username and Password not accepted"
-// var transporter = nodemailer.createTransport({
-//     service: 'Gmail',
-//     auth: {
-//         user: 'nicogrubert@gmail.com',
-//         pass: 'my-secret-pass'
-//     }
-// });
-var siteUrl;
-var sendUrl;
+var transporter = nodemailer.createTransport({
+    host: smtpHost,
+    port: 587,
+    secure: false,
+    auth: { user: smtpUser, pass: smtpPass }
+});
+
+var sList;
 
 
 // firebase server initialization
 firebaseAdmin.initializeApp({
     credential: firebaseAdmin.credential.cert(serviceAccount),
-    databaseURL: "https://shoppinglist-12407.firebaseio.com"
+    databaseURL: "https://fergg-c183c.firebaseio.com"
 });
 
 
 var listRef = firebaseAdmin.database().ref();
 
-// sListUsers collection child_changed event send email 
-listRef.child('sListUsers').on('child_changed', function(dataSnapshot) { 
+// sListUsers collection child_changed event send email
+listRef.child('sListUsers').on('child_changed', function(dataSnapshot) {
     const msg = dataSnapshot.val();
     const key = dataSnapshot.key;
+
+    firebaseAdmin.database().ref("sList/" + key).once('value').then(function(snap) {
+        sList = snap.val();
+        console.log("sList title = " + JSON.stringify(sList.title));
+        console.log("sList siteUrl = " + JSON.stringify(sList.siteUrl));
+    });
+
     for (var property in msg) {
         if (msg.hasOwnProperty(property)) {
             if(msg[property]) {
-                msg[property]=false;
-                queryEmail(key,property);
+                msg[property] = false;
+                queryEmail(key, property);
                 // listRef.child('sListUsers').child(key).update(msg);
             }
         }
     }
     for (var property in msg) {
         if (msg.hasOwnProperty(property)) {
-            msg[property]=false;
+            msg[property] = false;
             // queryEmail(property);
             listRef.child('sListUsers').child(key).update(msg);
         }
-    }    
+    }
 });
 
 // email id from user id
 var queryEmail = function(key,property){
-    listRef.child('users').orderByKey().equalTo(property).limitToLast(1).on("value",function(data) {
-        var obj =data.val();
+    listRef.child('users').orderByKey().equalTo(property).limitToLast(1).on("value", function(data) {
+        var obj = data.val();
         if (obj) {
-            sendEmail(key,property, obj[property].email)
+            sendEmail(key, property, obj[property].email)
         }
     });
 }
 
 
 // send email
-var sendEmail = function(key,property,mailId) {
-    siteUrl = 'http://localhost:4200';
-    sendUrl = siteUrl + "/#/list/" + key + ";email=" + property;
+var sendEmail = function(key, property, mailId) {
+    var sendUrl = sList.siteUrl + "/#/list/" + key + ";email=" + property;
+    var FMT = MAIL[sList.language];
     var mailOptions = {
-        from: 'nicogrubert@gmail.com', // sender address
-        to: mailId, // list of receivers
-        subject: 'New Shopping list', // Subject line
-        text: 'A new shopping list has been created', // plaintext body
-        html: '<p>A new shopping list has been created</p><a href='+sendUrl+'>Click here to see it.</a>' // html body
+        from: fromUser,                                                // sender address
+        to: mailId,                                                    // list of receivers
+        subject: util.format(FMT.subj, sList.title),                   // Subject line
+        text: util.format(FMT.text, sList.title, sList.name, sendUrl), // plaintext body
+        html: util.format(FMT.html, sList.title, sList.name, sendUrl)  // html body
     };
     // send mail with defined transport object
     transporter.sendMail(mailOptions, function(error, info){
         if (error) {
-            return console.log(error);
+            return console.log('Error sending mail to ' + mailId + ': ' + error);
         }
-        console.log('Message sent: ' + info.response);
+        console.log('Mail sent to ' + mailId + ': ' + info.response);
     });
 }
+
+
+// verify connection configuration
+transporter.verify(function(error, success) {
+    if (error) {
+        console.log('Testing SMTP: user ' + smtpUser + ' at ' + smtpHost + ': ' + error);
+        return;
+    } else {
+        console.log('Smtp user ' + smtpUser + ' at ' + smtpHost + ' seems ok');
+    }
+});
 
 
 // start the server
