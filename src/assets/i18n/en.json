@@ -22,7 +22,13 @@
     "CREATE": "Create",
     "INVITEUSER": "Invite user",
     "SAVE": "Save",
-    "TITLE": "Create new shopping list"
+    "HEADER": "Create new shopping list",
+    "TITLE": "List name",
+    "DESCRIPTION": "Description",
+    "YOURNAME": "Your name",
+    "YOUREMAIL": "Your e-mail address",
+    "EMAIL": "E-mail address",
+    "LANGUAGE": "Language"
   },
   "DELETE": {
     "CANCEL": "Cancel",
@@ -41,7 +47,7 @@
     "GETSTARTED": "Get started !",
     "HELP": "help page",
     "LETSGO": "Let's get started and create your shopping list ...",
-    "QUESTIONS": "Any questions ? Visit our ",
+    "QUESTIONS": "Any questions? Visit our ",
     "TXT1": "Manage your shopping list online and offline",
     "TXT2": "Share it with friends",
     "TXT3": "No registration or login required",
@@ -53,20 +59,27 @@
     "CLEARLIST": "Empty shopping list",
     "OKOK": "Ok",
     "RECENT": "Recent articles",
-    "WELCOME": "Welcome"
+    "WELCOME": "Welcome",
+    "WHATDOYOUWANT": "What do you want to buy?",
+    "DESCRIPTION": "Description"
   },
   "LISTS": {
     "CREATELIST": "Create new shopping list",
     "NEWDEVICE": "If you use a new device, please search for your lists",
     "NONEFOUND": "No shopping lists found",
     "RECENTLISTS": "Recently used shopping lists",
-    "TITLE": "My shopping lists"
+    "TITLE": "My shopping lists",
+    "NAME": "Name",
+    "EMAIL": "E-mail address"
   },
   "MANAGE": {
-    "ADDARTICLE": "Add new article",
-    "ADDCATEGORY": "Add new category",
+    "ADDNEWARTICLE": "Add new article",
+    "ADDNEWCATEGORY": "Add new category",
+    "ADDARTICLE": "Add article",
+    "ADDCATEGORY": "Add category",
     "DELETEARTICLE": "Delete this article?",
     "MANAGE": "Manage Catalog",
+    "NAME": "Name",
     "CANCEL": "Cancel",
     "DELETECAT": "Delete Category",
     "DELETECAT2": "Deleting category",

@@ -14,7 +14,11 @@ export class ListService {
     private user;
 	private sId;
     private myUsers;
-    constructor(private http: Http, af: AngularFire,private router: Router,private route: ActivatedRoute,) {
+
+    constructor(private http: Http,
+                af: AngularFire,
+                private router: Router,
+                private route: ActivatedRoute) {
         this.af = af;
         this.getAllRelatedUsers();
         this.user=this.route.params
@@ -49,7 +53,7 @@ export class ListService {
             }
             findArtInList.unsubscribe();
         })
-        
+
     }
 
 // add article and add article id to list
@@ -67,10 +71,10 @@ export class ListService {
                 let obj={
                     id:x[0].$key
                 }
-                this.addArticleToList(sList,obj);        
+                this.addArticleToList(sList,obj);
             } else {
                 let articleAdded:any = addArticle.push(obj);
-                this.addArticleToList(sList,articleAdded.key); 
+                this.addArticleToList(sList,articleAdded.key);
             }
             checkInAArticle.unsubscribe();
         });
@@ -115,7 +119,7 @@ export class ListService {
 
     // search articles
     searchArticles(val:string):Observable<any>{
-        
+
         return this.af.database.list('articles', {
             query: {
                 orderByChild: '$value',
@@ -126,7 +130,7 @@ export class ListService {
         })
     }
     // check if article exists
-	
+
 	checkArticleExists(obj):Observable<any>{
 		let article=this.af.database.list(`articles`,{
 			query:{
@@ -138,14 +142,14 @@ export class ListService {
         });
 		return article;
 	}
-	
+
 	// get artcile by id
 	getArticle(id):Observable<any>{
         return this.af.database.object(`/articles/${id}`).map(x=>{
             return x;
         });
     }
-	
+
 
     // get all related users
     getAllRelatedUsers() {
@@ -170,11 +174,11 @@ export class ListService {
                     arr.push(arrMap[i]);
                 }
             }
-        }    
+        }
         for (let j=0;j<arr.length;j++){
             for (let k=0;k<arr[j].length;k++){
                 arrFinal.push(arr[j][k]);
-            }    
+            }
         }
         return arrFinal.filter((v, i, a) => a.indexOf(v) === i); ;
     }
@@ -239,7 +243,7 @@ export class ListService {
                 });
             }
             article.unsubscribe();
-        })       
+        })
     }
     // get recent articles (to be used later)
     getRecentSListArticles(sList){

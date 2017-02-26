@@ -94,16 +94,7 @@ Make a build locally in ./dist:
     $ ng build --prod
     chunk    {0} 0.0c98c5bc0a9d5b9c313b.chunk.js 333 kB {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} [rendered]
     chunk    {1} 1.48105112e5b10e770836.chunk.js 205 kB {0} {2} {3} {4} {5} {6} {7} {8} {9} {10} [rendered]
-    chunk    {2} 2.b0ef991dc7e6b519ade3.chunk.js 209 kB {0} {1} {3} {4} {5} {6} {7} {8} {9} {10} [rendered]
-    chunk    {3} 3.1d104f0c30f20ec4a61d.chunk.js 242 kB {0} {1} {2} {4} {5} {6} {7} {8} {9} {10} [rendered]
-    chunk    {4} 4.3337b4a4943d74fcb7a1.chunk.js 132 kB {0} {1} {2} {3} {5} {6} {7} {8} {9} {10} [rendered]
-    chunk    {5} 5.ba973b405463ee46a883.chunk.js 109 kB {0} {1} {2} {3} {4} {6} {7} {8} {9} {10} [rendered]
-    chunk    {6} 6.22d0f19cf5ac5000c421.chunk.js 52.8 kB {0} {1} {2} {3} {4} {5} {7} {8} {9} {10} [rendered]
-    chunk    {7} 7.70bba4848029b5c4fadc.chunk.js 16.5 kB {0} {1} {2} {3} {4} {5} {6} {8} {9} {10} [rendered]
-    chunk    {8} 8.ec59b91370e0afe2a32c.chunk.js 49.9 kB {0} {1} {2} {3} {4} {5} {6} {7} {9} {10} [rendered]
-    chunk    {9} 9.f1075596e9ac0cd7e082.chunk.js 48.7 kB {0} {1} {2} {3} {4} {5} {6} {7} {8} {10} [rendered]
-    chunk   {10} main.d00db78db6f6d3b0640d.bundle.js (main) 403 kB {12} [initial] [rendered]
-    chunk   {11} styles.4ba17cb5afe9dad72bd2.bundle.css (styles) 122 bytes {13} [initial] [rendered]
+    [...]
     chunk   {12} vendor.f81d7c654f3b1a97cadf.bundle.js (vendor) 3.49 MB [initial] [rendered]
     chunk   {13} inline.f3f65f8f74d285f485ac.bundle.js (inline) 0 bytes [entry] [rendered]
     

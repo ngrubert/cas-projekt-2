@@ -13,7 +13,6 @@ import { IndexModule } from './index/index.module';
 import { firebaseConfig } from './config/firebase-config';
 import { UsersService } from './services/users.service';
 import { AppComponent } from './app.component';
-import { TranslateModule } from '@ngx-translate/core';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
@@ -39,8 +38,7 @@ export function HttpLoaderFactory(http: Http) {
     MaterialModule,
     AngularFireModule.initializeApp(firebaseConfig),
     AppRoutingModule,
-    IndexModule,
-    TranslateModule.forRoot()
+    IndexModule
   ],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }, UsersService],
   bootstrap: [AppComponent]

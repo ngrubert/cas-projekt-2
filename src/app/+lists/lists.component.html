@@ -4,10 +4,10 @@
         <div class="mylists-no">{{'LISTS.NONEFOUND'|translate}}</div>
         <div class="mylists-no">{{'LISTS.NEWDEVICE'|translate}}</div>
         <md-input-container style="width: 100%">
-            <input mdInput placeholder="name"  name="name" [(ngModel)]="name">
+            <input mdInput placeholder="{{'LISTS.NAME'|translate}}"  name="name" [(ngModel)]="name">
         </md-input-container>
         <md-input-container style="width: 100%">
-            <input mdInput placeholder="email"  name="email" [(ngModel)]="email">
+            <input mdInput placeholder="{{'LISTS.EMAIL'|translate}}"  name="email" [(ngModel)]="email">
         </md-input-container>
         <button md-button style="background:gray;margin: auto;display: flex;align-items: center;justify-content: center;" (tap)="searchSLists()">search</button>
     </div>

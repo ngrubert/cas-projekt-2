@@ -19,10 +19,16 @@
   "CREATE": {
     "ADDMOREUSERS": "Weitere Adressen",
     "CANCEL": "Abbrechen",
-    "CREATE": "Erzeugen",
+    "CREATE": "Einkaufsliste anlegen",
     "INVITEUSER": "Andere einladen",
     "SAVE": "Speichern",
-    "TITLE": "Neue Einkaufsliste"
+    "HEADER": "Neue Einkaufsliste",
+    "TITLE": "Name der Liste",
+    "DESCRIPTION": "Beschreibung",
+    "YOURNAME": "Dein Name",
+    "YOUREMAIL": "Deine E-Mail-Adresse",
+    "EMAIL": "E-Mail-Adresse",
+    "LANGUAGE": "Sprache"
   },
   "DELETE": {
     "CANCEL": "Abbrechen",
@@ -53,20 +59,27 @@
     "CLEARLIST": "Einkaufsliste ist leer",
     "OKOK": "Ok",
     "RECENT": "Zuletzt verwendet",
-    "WELCOME": "Hallo"
+    "WELCOME": "",
+    "WHATDOYOUWANT": "Was willst du einkaufen?",
+    "DESCRIPTION": "Beschreibung"
   },
   "LISTS": {
     "CREATELIST": "Neue Einkaufsliste anlegen",
-    "NEWDEVICE": "Neues Gerät? Nach bestehenden Einkaufsliste suchen",
+    "NEWDEVICE": "Neues Gerät? Nach bestehenden Einkaufslisten suchen",
     "NONEFOUND": "Keine Einkaufsliste gefunden",
     "RECENTLISTS": "Zuletzt verwendete Einkaufslisten",
-    "TITLE": "Meine Einkaufslisten"
+    "TITLE": "Meine Einkaufslisten",
+    "NAME": "Name",
+    "EMAIL": "E-Mail-Adresse"
   },
   "MANAGE": {
-    "ADDARTICLE": "Neuer Artikel",
-    "ADDCATEGORY": "Neue Kategorie",
+    "ADDNEWARTICLE": "Neuer Artikel",
+    "ADDNEWCATEGORY": "Neue Kategorie",
+    "ADDARTICLE": "Artikel hinzufügen",
+    "ADDCATEGORY": "Kategorie hinzufügen",
     "DELETEARTICLE": "Artikel löschen?",
     "MANAGE": "Katalog bearbeiten",
+    "NAME": "Name",
     "CANCEL": "Abbrechen",
     "DELETECAT": "Kategorie löschen",
     "DELETECAT2": "Beim Löschen einer Kategorie",

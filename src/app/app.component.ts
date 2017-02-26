@@ -37,6 +37,7 @@ export class AppComponent implements OnInit,OnDestroy {
 
     let browserLang = translate.getBrowserLang();
     //translate.use(browserLang.match(/en|de/) ? browserLang : 'en');
+    console.log("Browser language: " + browserLang.toString());
     translate.use("de");
   }
  
