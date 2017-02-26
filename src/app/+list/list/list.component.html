@@ -2,14 +2,16 @@
 <div class="slist">
     <div class="slist-search">
         <form>
-            <md-input-container style="width: 100%;" >
-                <input mdInput placeholder="What do you want to buy ?" id="listSearch" #term type="search" name="search" [(ngModel)]="search">
+            <md-input-container style="width:100%; color:white" >
+                <input mdInput placeholder="{{'LIST.WHATDOYOUWANT'|translate}}" id="listSearch" #term type="search" name="search" [(ngModel)]="search">
             </md-input-container>
         </form>
         <div class="slist-article-direction" style="margin: 1em 0;">
             <div class="slist-article" *ngFor="let a of searchArticles" [style.background]="a.backGroundColor">
                 <div class="article-item" (tap)="addToLIst(a)">
-                    {{a.name}}
+                    <img *ngIf="a.img" src="./../../../assets/articles/{{a.img}}">
+                    <img *ngIf="!a.img" src="./../../../assets/articles/empty.png">
+                    <span class="article-item-nameonly">{{a.name}}</span>
                 </div>
             </div>
             
@@ -23,12 +25,13 @@
 
     <div class="slist-articles" style="margin: 1em 0;">
         <div class="slist-article-direction">
-            <div class="slist-article" *ngFor="let a of articlesList"  [style.background]="a.backGroundColor">
+            <div class="slist-article" *ngFor="let a of articlesList" [style.background]="a.backGroundColor">
                 <!--<div style="width: 90%;margin: 0.1em;"></div>-->
-                    <div class="slist-article-item" (tap)="selectedArticleInList(a)">
-                        <span class="info-icon" *ngIf="a.description" style="align-self: flex-end;margin: 5px;">i</span>
-                        <span style="height: 50%;text-align: center;justify-content: center;display: flex;flex-direction: column;">{{a.amount}}</span>
-                        <span style="height:40%">{{a.name}}</span>
+                    <div class="article-item" (tap)="selectedArticleInList(a)">
+                        <img src="./../../../assets/articles/{{a.img}}">
+                        <span class="article-item-info-icon" *ngIf="a.description" style="align-self: flex-end;margin: 5px;">i</span>
+                        <span class="article-item-name">{{a.name}}</span>
+                        <span class="article-item-amount" styyle="height: 50%;text-align: center;justify-content: center;display: flex;flex-direction: column;">{{a.amount}}</span>
                     </div>
             </div>
         </div>
@@ -41,7 +44,7 @@
                 <div>
                     <span>
                     <md-input-container style="width: 50%;background: white; border-radius: 2px;" >
-                        <input mdInput placeholder="Amount" type="input" name="amount" [(ngModel)]="selectedArticleList.amount">
+                        <input mdInput placeholder="{{'LIST.AMOUNT'|translate}}" type="input" name="amount" [(ngModel)]="selectedArticleList.amount">
                     </md-input-container>
                     </span>
                     <span style="flex:1"></span>
@@ -50,7 +53,7 @@
                 </div>
                 <div style="margin:1em 0">
                     <md-input-container style="width: 100%;background: white; border-radius: 2px;" >
-                        <textarea mdInput placeholder="Description" type="input" name="description" [(ngModel)]="selectedArticleList.description"></textarea>
+                        <textarea mdInput placeholder="{{'LIST.DESCRIPTION'|translate}}" type="input" name="description" [(ngModel)]="selectedArticleList.description"></textarea>
                     </md-input-container>
                 </div>
             </div>
@@ -77,6 +80,7 @@
         </div>
     </div>
 
+    <!-- Recent articles - w amount -->
 <div class="slist-catalog" style="margin: 1em 0;">
     <div style="margin: 1em 0;">
         <span class="sList-catalog-item-name-default" >
@@ -88,13 +92,18 @@
         <div class="slist-article-direction">
             <div class="slist-article" *ngFor="let a of recentArticles" style="background: #F24646">
                 <div class="article-item" >
-                    {{a}}
+                    <img src="./../../../assets/articles/{{a.img}}">
+                    <span class="article-item-info-icon" *ngIf="a.description" style="align-self: flex-end;margin: 5px;">i</span>
+                    <span class="article-item-name" styyle="height:40%">{{a.name}}</span>
+                    <span class="article-item-amount" styyle="height: 50%;text-align: center;justify-content: center;display: flex;flex-direction: column;">{{a.amount}}</span>
                 </div>
             </div>
         </div>
 </div>
 </div>
 </div>
+
+    <!-- users own articles - w amount -->
 
 <div class="slist-catalog" style="margin: 1em 0;">
     <div *ngFor="let p of usersCatalogs; let i=index" style="margin: 1em 0;">
@@ -107,7 +116,10 @@
         <div class="slist-article-direction">
             <div class="slist-article" *ngFor="let a of p.articles" (tap)="addToLIst(a)">
                 <div class="article-item" >
-                    {{a.name}}
+                    <img src="./../../../assets/articles/{{a.img}}">
+                    <span class="article-item-info-icon" *ngIf="a.description" style="align-self: flex-end;margin: 5px;">i</span>
+                    <span class="article-item-name" styyle="height:40%">{{a.name}}</span>
+                    <span class="article-item-amount" styyle="height: 50%;text-align: center;justify-content: center;display: flex;flex-direction: column;">{{a.amount}}</span>
                 </div>
             </div>
         </div>
@@ -115,7 +127,7 @@
 </div>
 </div>
 
-
+<!-- main catalog - w/o amount -->
 <div class="slist-catalog" style="margin: 1em 0;">
     <div *ngFor="let p of catalogs; let i=index" style="margin: 1em 0;">
         <span class="sList-catalog-item-name-default" >
@@ -127,7 +139,9 @@
         <div class="slist-article-direction">
             <div class="slist-article" *ngFor="let a of p.articles" (tap)="addToLIst(a)">
                 <div class="article-item" >
-                    {{a.name}}
+                    <img src="./../../../assets/articles/{{a.img}}">
+                    <span class="article-item-info-icon" *ngIf="a.description" style="align-self: flex-end;margin: 5px;">i</span>
+                    <span class="article-item-nameonly" styyle="height:40%">{{a.name}}</span>
                 </div>
             </div>
         </div>
