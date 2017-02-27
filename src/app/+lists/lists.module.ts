@@ -6,8 +6,7 @@ import {MaterialModule} from '@angular/material';
 import {ListsRoutingModule} from './lists.routing';
 import {SharedModule} from './../shared/shared.module';
 import {ListsComponent} from './lists.component';
-import {UsersService} from './../services/users.service'
-//import { ListsService } from './lists.service';
+import {ListsService} from './lists.service';
 
 // show user shopping lists module
 @NgModule({
@@ -16,7 +15,7 @@ import {UsersService} from './../services/users.service'
     ],
     exports: [],
     declarations: [ListsComponent],
-    providers: [UsersService],
+    providers: [ListsService],
 })
 export class ListsModule {
 }
