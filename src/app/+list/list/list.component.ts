@@ -12,6 +12,11 @@ import {Subject} from 'rxjs/Subject';
 import {AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseRef} from 'angularfire2';
 
 declare var PouchDB: any;
+const MAX_HITS_DISPLAYED = 30;
+const COLOR_CATALOGITEM = '#58c';
+const COLOR_INSLIST = '#f44';
+const COLOR_INBASKET = '#792';
+
 
 export class catalog {
     constructor(public id?: string,
@@ -52,7 +57,8 @@ export class ListComponent implements OnInit,OnDestroy {
     searchitems: Observable<Array<string>>;
     articles: Array<any> = [];
     recentArticles: Array<any> = [];
-    title: any;
+    title: String;
+    lang: String;
     searchArticles: Array<any> = [];
     articlesList: Array<listArticle> = [];
     selectedArticleList: listArticle = {};
@@ -98,7 +104,7 @@ export class ListComponent implements OnInit,OnDestroy {
         // get all articles for shopping list
         this.getArticleBySlist();
 
-        /// search article observable
+        // search article observable
         const search = document.getElementById("listSearch");
         let search$ = Observable.fromEvent(search, "keyup")
             .map((x: any) => x.target.value)
@@ -123,7 +129,7 @@ export class ListComponent implements OnInit,OnDestroy {
     getSTitle() {
         this._listService.getSDetails(this.sList).map(x => x).subscribe(x => {
             this.title = x.title;
-
+            this.lang = (x.language.toLowerCase() == 'English') ? 'en' : 'de';
             // get catalog based on the user selected shopping list language
             this.getCatalog(x.language.toLowerCase());
             this.getUsersCatalog(x.language.toLowerCase());
@@ -183,26 +189,40 @@ export class ListComponent implements OnInit,OnDestroy {
         if (!inp || inp.trim() == '') {
             return [];
         }
-        let arr = []
-        for (let i = 0; i < this.articles.length; i++) {
-            if (this.articles[i].name.toLowerCase().search(inp.toLowerCase()) > -1) {
+        let foundArticles = [];
+        let foundNames = new Set();
+        // first find articles that start with the search string...
+        let startsWith = new RegExp("^" + inp, "i");
+        for (let i = 0; i < this.articles.length && foundArticles.length < MAX_HITS_DISPLAYED; i++) {
+            let lcName = this.articles[i].name.toLowerCase();
+            if (lcName.match(startsWith) && ! foundNames.has(lcName)) {
+                foundNames.add(lcName);
                 let item = this.articles[i];
-                if (this.findInListArticles(item.$key)) {
-                    item.backGroundColor = '#F24646';
-                } else {
-                    item.backGroundColor = '#6BaE83';
-                }
-                arr.push(this.articles[i]);
+                item.backGroundColor = (this.findInListArticles(item.$key)) ? COLOR_INSLIST : COLOR_CATALOGITEM;
+                foundArticles.push(this.articles[i]);
             }
         }
-        if (arr.length == 0) {
+        console.log(foundArticles.length+" hits that start with "+inp);
+        // if we still don't have enough, also show articles that contain the search string somewhere in the middle
+        let contains = new RegExp(inp, "i"); // \\B is "non-word boundary"
+        for (let i = 0; i < this.articles.length && foundArticles.length < MAX_HITS_DISPLAYED; i++) {
+            let lcName = this.articles[i].name.toLowerCase();
+            if (lcName.match(contains) && ! lcName.match(startsWith) && ! foundNames.has(lcName)) {
+                foundNames.add(lcName);
+                let item = this.articles[i];
+                item.backGroundColor = (this.findInListArticles(item.$key)) ? COLOR_INSLIST : COLOR_CATALOGITEM;
+                foundArticles.push(this.articles[i]);
+            }
+        }
+        console.log(foundArticles.length+" hits that start with or contain "+inp);
+        if (foundArticles.length == 0) {
             var obj = {
                 name: inp,
                 default: false
             };
-            arr.push(obj);
+            foundArticles.push(obj);
         }
-        return arr;
+        return foundArticles;
     }
 
     // find in articles by key
@@ -238,11 +258,7 @@ export class ListComponent implements OnInit,OnDestroy {
                     item.id = x[i].id;
                     item.description = x[i].description;
                     item.isBasked = x[i].isBasked;
-                    if (x[i].isBasked) {
-                        item.backGroundColor = '#6B8E23';
-                    } else {
-                        item.backGroundColor = '#F24646';
-                    }
+                    item.backGroundColor = (x[i].isBasked) ? COLOR_INBASKET : COLOR_INSLIST;
                     item.amount = x[i].amount;
                     item.price = x[i].price;
                     this.articlesList.push(item);
@@ -296,7 +312,6 @@ export class ListComponent implements OnInit,OnDestroy {
     }
 
     // add article to shopping list
-
     addArticleToLIst(key: string) {
         let obj: listArticle = {
             id: key
@@ -305,7 +320,7 @@ export class ListComponent implements OnInit,OnDestroy {
 
     }
 
-// get users catalog (category, articles) user defined
+    // get users catalog (category, articles) user defined
     getUsersCatalog(language) {
         let self = this;
         let items = this.af.database.list(`/catalog/${language}`, {
@@ -329,7 +344,9 @@ export class ListComponent implements OnInit,OnDestroy {
                     for (var property in x[i].articles) {
                         if (x[i].articles.hasOwnProperty(property)) {
                             self.af.database.object(`/articles/${x[i].articles[property]}`).subscribe(p => {
-                                if (! p.img) { p.img = "empty.png"}
+                                if (!p.img) {
+                                    p.img = "empty.png"
+                                }
                                 this.usersCatalogs[i].articles.push(p);
                             });
                         }
@@ -339,7 +356,7 @@ export class ListComponent implements OnInit,OnDestroy {
         });
     }
 
-// get users catalog (category, articles) default
+    // get users catalog (category, articles) default
     getCatalog(language) {
         let self = this;
         let items = this.af.database.list(`/catalog/${language}`, {
@@ -369,7 +386,9 @@ export class ListComponent implements OnInit,OnDestroy {
                     for (var property in x[i].articles) {
                         if (x[i].articles.hasOwnProperty(property)) {
                             self.af.database.object(`/articles/${x[i].articles[property]}`).subscribe(p => {
-                                if (! p.img) { p.img = "empty.png"}
+                                if (!p.img) {
+                                    p.img = "empty.png"
+                                }
                                 this.catalogs[i].articles.push(p);
                             });
                         }
@@ -379,7 +398,7 @@ export class ListComponent implements OnInit,OnDestroy {
         });
     }
 
-// push article to catalog
+    // push article to catalog
     pushToCatalog(item) {
         let updated: boolean = false;
         for (let i = 0; i < this.catalogs.length; i++) {
@@ -393,7 +412,7 @@ export class ListComponent implements OnInit,OnDestroy {
 
     }
 
-// check changeInCatalogs and add to articles
+    // check changeInCatalogs and add to articles
     changeInCatalogs(item, id) {
         for (var i = 0; i <= this.catalogs.length; i++) {
             if (this.catalogs[i] && this.catalogs[i].id == id) {
@@ -470,7 +489,7 @@ export class ListComponent implements OnInit,OnDestroy {
     }
 
 
-// toggle catalog ui based on (tap/click ) event
+    // toggle catalog ui based on (tap/click ) event
     toggleCatalog(evt) {
         // let parentNode=evt.target.parentElement;
         // let currentEle=parentNode.getElementsByClassName('slist-articles')[0];
@@ -529,11 +548,7 @@ export class ListComponent implements OnInit,OnDestroy {
         var floats = str.match(regex).map(function (v) {
             return parseFloat(v);
         });
-        if (floats && floats.length > 0) {
-            return floats[0];
-        } else {
-            return null;
-        }
+        return (floats && floats.length > 0) ? floats[0] : null;
     }
 
     // reduce article amount size
@@ -588,7 +603,7 @@ export class ListComponent implements OnInit,OnDestroy {
         box[0].style.display = 'none';
     }
 
-// update shopping list ui
+    // update shopping list ui
     updateSList(item) {
         this._listService.updateSList(item, this.sList);
         let box: any = document.getElementsByClassName('slist-article-details');
