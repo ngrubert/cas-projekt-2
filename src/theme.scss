@@ -38,12 +38,13 @@ $my-color: (
 $primary: mat-palette($my-color);
 $accent: mat-palette($mat-amber);
 
+
 $theme: mat-light-theme($primary, $accent);
 
 @include angular-material-theme($theme);
 
 .dark-theme {
-  $dark-p: mat-palette($mat-pink, 700);
+  $dark-p: mat-palette($mat-blue, 900);
   $dark-a: mat-palette($mat-blue-grey);
 
   $dark-t: mat-dark-theme($dark-p, $dark-a);

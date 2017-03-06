@@ -1,7 +1,7 @@
     <div class="help-container help-alignment">
         <h3>{{'DELETE.TITLE'|translate}}</h3>
         <div style="text-align: center">
-            Delete <span>{{modelValue}}</span>?
+            <ng-container>{{'DELETE.ASK1'|translate}}</ng-container>{{modelValue}}<ng-container>{{'DELETE.ASK2'|translate}}</ng-container>
         </div>
         <div class="delete-buttons">
             <button style="background: #a94442" md-button (tap)="deleteSList()">{{'DELETE.DELETE'|translate}}</button>

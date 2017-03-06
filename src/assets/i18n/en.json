@@ -31,6 +31,8 @@
     "LANGUAGE": "Language"
   },
   "DELETE": {
+    "ASK1": "Delete '",
+    "ASK2": "'?",
     "CANCEL": "Cancel",
     "DELETE": "Delete",
     "TITLE": "Delete shopping list"

@@ -1,5 +1,5 @@
 <div class="box-alignment">
-    <div class="item-alignment title"><b>{{'LISTS.TITLE'|translate}}</b></div>
+    <div class="item-alignment title"><h3>{{'LISTS.TITLE'|translate}}</h3></div>
     <div *ngIf="sListsEmpty">
         <div class="mylists-no">{{'LISTS.NONEFOUND'|translate}}</div>
         <div class="mylists-no">{{'LISTS.NEWDEVICE'|translate}}</div>
@@ -12,9 +12,9 @@
         <button md-button style="background:gray;margin: auto;display: flex;align-items: center;justify-content: center;" (tap)="searchSLists()">search</button>
     </div>
     <div *ngIf="sLists && sLists.length>0">
-        <div class="mylists-no" style="color: #1c5792">{{'LISTS.RECENTLISTS'|translate}}</div>
+        <div class="mylists-no">{{'LISTS.RECENTLISTS'|translate}}</div>
         <div *ngFor="let a of sLists" class="sList" (tap)="goToSlist(a)">
-            <div class="list-details"><h5>{{a.title}}</h5></div>
+            <div class="list-details"><h4>{{a.title}}</h4></div>
             <div class="list-details">{{a.description}}</div>
         </div>
         <button md-button style="background:gray;margin: auto;display: flex;align-items: center;justify-content: center;" (tap)="createNewList()">{{'LISTS.CREATELIST'|translate}}</button>

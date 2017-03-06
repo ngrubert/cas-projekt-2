@@ -31,6 +31,8 @@
     "LANGUAGE": "Sprache"
   },
   "DELETE": {
+    "ASK1": "Einkaufsliste '",
+    "ASK2": "' löschen?",
     "CANCEL": "Abbrechen",
     "DELETE": "Löschen",
     "TITLE": "Einkaufsliste löschen"
