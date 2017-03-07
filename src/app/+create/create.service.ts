@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
-import { AngularFire, FirebaseListObservable,FirebaseObjectObservable, FirebaseRef} from 'angularfire2';
+import { AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseRef} from 'angularfire2';
 // Import RxJs required methods
 // import 'rxjs/add/operator/map';
 // import 'rxjs/add/operator/catch';
@@ -119,37 +119,112 @@ export class CreateService {
     }
     // dump default cataloge english
     createFirebaseCatalog(catalog:Object){
-         const addArticle = this.af.database.list(`articles`);
-         const addCatalog = this.af.database.list(`catalog/english`);
-         for (var property in catalog) {
+        const addArticle = this.af.database.list(`articles`);
+        const addCatalog = this.af.database.list(`catalog/english`);
+        for (var property in catalog) {
             if (catalog.hasOwnProperty(property)) {
                 let insertData={};
                 let myArtcileArr=[];
                 let myCatalogObj={};
                 let catalogObj={};
                 catalogObj["name"]=property;
-				catalogObj["isDefault"]=true;
+                catalogObj["isDefault"]=true;
                 catalogObj["articles"]=[];
-               
+
                 let propertyAdded=addCatalog.push(catalogObj)
                 for (var i=0;i<catalog[property].length;i++)
                 {
-                      let val=catalog[property][i];
-                      var obj={
-                          name:val,
-                          isDefault:true
-                      }
-                      let articleAdded= addArticle.push(obj);
-                      var key=articleAdded.key;
-                      insertData[key]=true;
-                      let addToCatalog=this.af.database.list(`catalog/english/${propertyAdded.key}/articles`)
-                      addToCatalog.push(key);
-                      myArtcileArr.push(insertData);
-                      catalogObj["articles"].push(key);
+                    let val=catalog[property][i];
+                    var obj={
+                        name:val,
+                        isDefault:true
+                    }
+                    let articleAdded= addArticle.push(obj);
+                    var key=articleAdded.key;
+                    insertData[key]=true;
+                    let addToCatalog=this.af.database.list(`catalog/english/${propertyAdded.key}/articles`)
+                    addToCatalog.push(key);
+                    myArtcileArr.push(insertData);
+                    catalogObj["articles"].push(key);
                 }
             }
         }
     }
-    
-    
+
+    // dump default catalogs with en and de names, articles with imgs
+    createFirebaseCatalogn(catalog: Object) {
+        const addArticle = this.af.database.list(`articlesn`);
+        const addCatalog = this.af.database.list(`catalogn`);
+        for (let property in catalog) {
+            if (catalog.hasOwnProperty(property)) {
+                let insertData = {};
+                let myArtcileArr = [];
+                let catalogObj = {};
+                let names = property.split("|");
+                catalogObj["name"] = { en: names[0], de: names[1] };
+                catalogObj["isDefault"] = true;
+                catalogObj["articles"] = [];
+
+                let propertyAdded = addCatalog.push(catalogObj)
+                for (let i = 0; i < catalog[property].length; i++) {
+                    let val = catalog[property][i];
+                    let articleItems = val.split("|");
+                    let img = articleItems[2];
+                    if (!img.match(/\.(png|svg|jpg|jpeg|gif)/i)) { img += ".png" };
+                    let articleObj = {
+                        name: { en: articleItems[0], de: articleItems[1] },
+                        img: img,
+                        isDefault: true
+                    };
+                    let articleAdded = addArticle.push(articleObj);
+                    let key = articleAdded.key;
+                    insertData[key] = true;
+                    let addToCatalog = this.af.database.list(`catalogn/${propertyAdded.key}/articles`)
+                    addToCatalog.push(key);
+                    myArtcileArr.push(insertData);
+                    catalogObj["articles"].push(key);
+                }
+            }
+        }
+    }
+    // dump default catalogs with en and de names, articles with imgs
+    createFirebaseCatalogx(catalog: Object) {
+        let langs = ["en", "de"];
+        for (let iLang in langs) {
+            const addArticle = this.af.database.list(`articlesx/${langs[iLang]}`);
+            const addCatalog = this.af.database.list(`catalogx/${langs[iLang]}`);
+            for (let property in catalog) {
+                if (catalog.hasOwnProperty(property)) {
+                    let insertData = {};
+                    let myArtcileArr = [];
+                    let catalogObj = {};
+                    let names = property.split("|");
+                    catalogObj["name"] = names[iLang];
+                    catalogObj["isDefault"] = true;
+                    catalogObj["articles"] = [];
+
+                    let propertyAdded = addCatalog.push(catalogObj);
+                    for (let i = 0; i < catalog[property].length; i++) {
+                        let val = catalog[property][i];
+                        let articleItems = val.split("|");
+                        let img = articleItems[2];
+                        if (!img.match(/\.(png|svg|jpg|jpeg|gif)/i)) { img += ".png"}
+                        let articleObj = {
+                            name: articleItems[iLang],
+                            img: img,
+                            isDefault: true
+                        };
+                        let articleAdded = addArticle.push(articleObj);
+                        let key = articleAdded.key;
+                        insertData[key] = true;
+                        let addToCatalog = this.af.database.list(`catalogx/${langs[iLang]}/${propertyAdded.key}/articles`)
+                        addToCatalog.push(key);
+                        myArtcileArr.push(insertData);
+                        catalogObj["articles"].push(key);
+                    }
+                }
+            }
+        }
+    }
+
 }

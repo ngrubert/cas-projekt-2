@@ -78,7 +78,7 @@ export class AppComponent implements OnInit,OnDestroy {
       });
   }
 
-  goToShoppingLIst(){
+  goToShoppingList(){
     if(this.sList){
       this.router.navigate(['list',this.sList,{email:this.localUser}]);
     }else{

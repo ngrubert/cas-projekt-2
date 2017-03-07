@@ -18,7 +18,7 @@ const COLOR_INSLIST = '#f44';
 const COLOR_INBASKET = '#792';
 
 
-export class catalog {
+export class listCatalog {
     constructor(public id?: string,
                 public name?: string,
                 public articles?: Array<any>) {
@@ -26,9 +26,9 @@ export class catalog {
 }
 
 export class listArticle {
-    constructor(public isBasked?: boolean,
-                public id?: string,
+    constructor(public id?: string,
                 public name?: string,
+                public isInBasket?: boolean,
                 public description?: string,
                 public amount?: string,
                 public price?: string,
@@ -44,7 +44,7 @@ export class listArticle {
     providers: [ListService]
 })
 
-export class ListComponent implements OnInit,OnDestroy {
+export class ListComponent implements OnInit, OnDestroy {
     private url;
     private sList;
     private user;
@@ -52,13 +52,13 @@ export class ListComponent implements OnInit,OnDestroy {
     db: any;
     clearArticle: any;
     af: AngularFire;
-    catalogs: catalog[] = [];
-    usersCatalogs: catalog[] = [];
+    catalogs: listCatalog[] = [];
+    usersCatalogs: listCatalog[] = [];
     searchitems: Observable<Array<string>>;
     articles: Array<any> = [];
     recentArticles: Array<any> = [];
-    title: String;
-    lang: String;
+    title: string;
+    lang: string;
     searchArticles: Array<any> = [];
     articlesList: Array<listArticle> = [];
     selectedArticleList: listArticle = {};
@@ -78,14 +78,14 @@ export class ListComponent implements OnInit,OnDestroy {
 
     }
 
-    /// load initial required data
+    // load initial required data
     ngOnInit() {
         this.user = this.route.params
             .switchMap((params: Params) => {
-                /// stored in browse db(PouchDB)
+                // stored in browse db(PouchDB)
                 this.url = params['email'];
                 this.sList = params['id'];
-                /// clear articles from Shopping list when true
+                // clear articles from Shopping list when true
                 this.clearArticle = params['clearArticle'];
                 if (params['again'] == "true") {
                     this.af.database.list(`sList/${this.sList}/articles`).remove();
@@ -95,14 +95,20 @@ export class ListComponent implements OnInit,OnDestroy {
                     window.location.reload();
                 }
 
-                ///get or add user from/to local database Pouchdb
+                // get or add user from/to local database Pouchdb
                 this.getOrAddUsernameToLocalDB();
                 return Observable.from([1, 2, 3]).map(x => x);
             });
         this.user.subscribe(c => console.log(c));
 
+        // get the List title an the language
+        this.getSTitle();
+        console.log("init: name="+JSON.stringify(this.articlesList[0]));
+
         // get all articles for shopping list
         this.getArticleBySlist();
+        console.log("init: name="+JSON.stringify(this.articlesList[0]));
+
 
         // search article observable
         const search = document.getElementById("listSearch");
@@ -121,30 +127,27 @@ export class ListComponent implements OnInit,OnDestroy {
 
         /// show extra side nav menus
         this.showSideMenu();
-
-        //get title for shopping list 
-        this.getSTitle();
     }
 
     getSTitle() {
         this._listService.getSDetails(this.sList).map(x => x).subscribe(x => {
             this.title = x.title;
             this.lang = (x.language.toLowerCase() == 'English') ? 'en' : 'de';
+            console.log("getSTitle: slist title="+this.title+", lang="+this.lang);
             // get catalog based on the user selected shopping list language
-            this.getCatalog(x.language.toLowerCase());
-            this.getUsersCatalog(x.language.toLowerCase());
+            this.getCatalog(this.lang); //x.language.toLowerCase());
+            this.getUsersCatalog(this.lang);
         })
     }
 
     showSideMenu() {
-
         document.getElementById('edit').style.display = 'block';
         document.getElementById('clear').style.display = 'block';
         document.getElementById('finished').style.display = 'block';
         document.getElementById('delete').style.display = 'block';
     }
 
-/// get user email from local databas(pouch db)
+    /// get user email from local databas(pouch db)
     getOrAddUsernameToLocalDB() {
         let self = this;
         self.db.allDocs({include_docs: true, descending: true}, function (err, doc) {
@@ -183,18 +186,29 @@ export class ListComponent implements OnInit,OnDestroy {
         this.db.post({user: this.url});
     }
 
-
-    /// find article from the list of all articles
+    // remove accents so we can search for "apfel" and find "äpfel"
+    private unaccentedLC(s: string): string {
+        if (s) {
+            return s.toLowerCase().replace(/[àáâãäå]/g,"a").replace(/ç/g,"c").replace(/[èéêë]/g,"e")
+                .replace(/[ìíîï]/g,"i").replace(/ñ/g,"n").replace(/[òóôõö]/g,"o").replace(/[ùúûü]/g,"u")
+                .replace(/ß/g,"ss");
+        }
+        return s;
+    }
+    // find article from the list of all articles
     performSearch(inp): Array<any> {
         if (!inp || inp.trim() == '') {
             return [];
         }
+        for (let i = 0; i < this.articles.length; i++) {
+            console.log("ART:"+this.articles[i].name+">");
+        }
         let foundArticles = [];
         let foundNames = new Set();
         // first find articles that start with the search string...
-        let startsWith = new RegExp("^" + inp, "i");
+        let startsWith = new RegExp("^" + this.unaccentedLC(inp), "i");
         for (let i = 0; i < this.articles.length && foundArticles.length < MAX_HITS_DISPLAYED; i++) {
-            let lcName = this.articles[i].name.toLowerCase();
+            let lcName = this.unaccentedLC(this.articles[i].name);
             if (lcName.match(startsWith) && ! foundNames.has(lcName)) {
                 foundNames.add(lcName);
                 let item = this.articles[i];
@@ -204,10 +218,10 @@ export class ListComponent implements OnInit,OnDestroy {
         }
         console.log(foundArticles.length+" hits that start with "+inp);
         // if we still don't have enough, also show articles that contain the search string somewhere in the middle
-        let contains = new RegExp(inp, "i"); // \\B is "non-word boundary"
+        let contains = new RegExp(this.unaccentedLC(inp), "i"); // \\B is "non-word boundary"
         for (let i = 0; i < this.articles.length && foundArticles.length < MAX_HITS_DISPLAYED; i++) {
-            let lcName = this.articles[i].name.toLowerCase();
-            if (lcName.match(contains) && ! lcName.match(startsWith) && ! foundNames.has(lcName)) {
+            let lcName = this.unaccentedLC(this.articles[i].name);
+            if (lcName.match(contains) && ! foundNames.has(lcName)) {
                 foundNames.add(lcName);
                 let item = this.articles[i];
                 item.backGroundColor = (this.findInListArticles(item.$key)) ? COLOR_INSLIST : COLOR_CATALOGITEM;
@@ -216,11 +230,11 @@ export class ListComponent implements OnInit,OnDestroy {
         }
         console.log(foundArticles.length+" hits that start with or contain "+inp);
         if (foundArticles.length == 0) {
-            var obj = {
+            let art = {
                 name: inp,
-                default: false
+                'default': false
             };
-            foundArticles.push(obj);
+            foundArticles.push(art);
         }
         return foundArticles;
     }
@@ -228,10 +242,9 @@ export class ListComponent implements OnInit,OnDestroy {
     // find in articles by key
     findInListArticles(nameKey) {
         let exists = false;
-        for (var i = 0; i < this.articlesList.length; i++) {
+        for (let i = 0; i < this.articlesList.length; i++) {
             if (this.articlesList[i].id === nameKey) {
                 exists = true;
-                ;
             }
         }
         return exists;
@@ -240,7 +253,7 @@ export class ListComponent implements OnInit,OnDestroy {
 
     // get all articles
     getAllArticles() {
-        let articles$ = this._listService.getAllArticles();
+        let articles$ = this._listService.getAllArticles(this.lang);
         articles$.subscribe(x => {
             this.articles = x;
         });
@@ -254,76 +267,76 @@ export class ListComponent implements OnInit,OnDestroy {
             this.articlesList = [];
             if (x && x.length) {
                 for (let i = 0; i < x.length; i++) {
+                    // get amount, description etc from the sList
                     let item: listArticle = {};
                     item.id = x[i].id;
                     item.description = x[i].description;
-                    item.isBasked = x[i].isBasked;
-                    item.backGroundColor = (x[i].isBasked) ? COLOR_INBASKET : COLOR_INSLIST;
+                    item.isInBasket = x[i].isInBasket;
+                    item.backGroundColor = (x[i].isInBasket) ? COLOR_INBASKET : COLOR_INSLIST;
                     item.amount = x[i].amount;
                     item.price = x[i].price;
                     this.articlesList.push(item);
-                    let articleDetail = this.af.database.object(`/articles/${x[i].id}`);
+                    console.log("SL1: "+JSON.stringify(item));
+                    // get name and image from the article catalog
+                    let articleDetail = this.af.database.object(`/articlesx/${this.lang}/${x[i].id}`);
                     articleDetail.subscribe(p => {
                         if (p) {
                             for (let j = 0; j < this.articlesList.length; j++) {
                                 if (this.articlesList[j].id == p.$key) {
-                                    this.articlesList[j].name = p.name;
+                                    this.articlesList[j].name = p.name; // {de:Öl,en:oil}
                                     this.articlesList[j].img = (p.img) ? p.img : "empty.png";
+                                    console.log("SL2: l="+this.lang+" : "+JSON.stringify(this.articlesList[j]));
+                                    console.log("SL3: name="+this.articlesList[j].name);
                                 }
                             }
                         }
-
                     });
                 }
             }
         })
     }
 
-    // add articles to shopping
-
-    addToLIst(item: any) {
+    // add articles to shopping list
+    addToList(item: any) {
         this.recentArticles.push(item);
         this.searchArticles = [];
         this.search = '';
         if (item.$key) {
-            this.addArticleToLIst(item.$key);
+            this.addArticleToList(item.$key);
         } else {
-            let obj = {
+            // add a new article with the name the user has just given as a search string
+            let art = {
                 name: item.name,
+                img: 'empty.png',
                 isDefault: false
-            }
-            let article$ = this._listService.getArticleByName(obj.name).map(x => x);
+            };
+            let article$ = this._listService.getArticleByName(art.name, this.lang).map(x => x);
             article$.subscribe(x => {
                 if (item) {
-
                     if (x && x.length > 0) {
                         item.$key = x[0].$key;
-                        this.addArticleToLIst(x[0].$key);
+                        this.addArticleToList(x[0].$key);
                     } else {
-                        this._listService.addArticleAndAddToList(this.sList, obj);
+                        this._listService.addArticleAndAddToList(this.sList, art, this.lang);
                     }
-
                     article$.unsubscribe();
                 }
-
             })
-
         }
     }
 
     // add article to shopping list
-    addArticleToLIst(key: string) {
-        let obj: listArticle = {
+    addArticleToList(key: string) {
+        let art: listArticle = {
             id: key
         };
-        this._listService.addArticleToList(this.sList, obj);
-
+        this._listService.addArticleToList(this.sList, art);
     }
 
     // get users catalog (category, articles) user defined
-    getUsersCatalog(language) {
+    getUsersCatalog(lang) {
         let self = this;
-        let items = this.af.database.list(`/catalog/${language}`, {
+        let items = this.af.database.list(`/catalogx/${lang}`, {
             query: {
                 orderByChild: 'isDefault',
                 equalTo: false
@@ -341,9 +354,9 @@ export class ListComponent implements OnInit,OnDestroy {
                         articles: []
                     };
                     this.usersCatalogs.push(item);
-                    for (var property in x[i].articles) {
+                    for (let property in x[i].articles) {
                         if (x[i].articles.hasOwnProperty(property)) {
-                            self.af.database.object(`/articles/${x[i].articles[property]}`).subscribe(p => {
+                            self.af.database.object(`/articlesx/${lang}/${x[i].articles[property]}`).subscribe(p => {
                                 if (!p.img) {
                                     p.img = "empty.png"
                                 }
@@ -357,16 +370,16 @@ export class ListComponent implements OnInit,OnDestroy {
     }
 
     // get users catalog (category, articles) default
-    getCatalog(language) {
+    getCatalog(lang) {
         let self = this;
-        let items = this.af.database.list(`/catalog/${language}`, {
+        let items = this.af.database.list(`/catalogx/${lang}`, {
             query: {
                 orderByChild: 'isDefault',
                 equalTo: true
             }
         }).map(x => {
             return x.sort(function (a, b) {
-                var keyA = a.order,
+                let keyA = a.order,
                     keyB = b.order;
                 // Compare the 2 dates
                 if (keyA < keyB) return -1;
@@ -383,12 +396,13 @@ export class ListComponent implements OnInit,OnDestroy {
                         articles: []
                     };
                     this.catalogs.push(item);
-                    for (var property in x[i].articles) {
+                    for (let property in x[i].articles) {
                         if (x[i].articles.hasOwnProperty(property)) {
-                            self.af.database.object(`/articles/${x[i].articles[property]}`).subscribe(p => {
+                            self.af.database.object(`/articlesx/${lang}/${x[i].articles[property]}`).subscribe(p => {
                                 if (!p.img) {
                                     p.img = "empty.png"
                                 }
+                                //debugger;
                                 this.catalogs[i].articles.push(p);
                             });
                         }
@@ -403,20 +417,22 @@ export class ListComponent implements OnInit,OnDestroy {
         let updated: boolean = false;
         for (let i = 0; i < this.catalogs.length; i++) {
             if (this.catalogs[i].id == item.id) {
+                console.log("pushToCatalog item.name="+JSON.stringify(item.name));
                 this.catalogs[i].name = item.name;
                 updated = true;
             }
         }
-        if (!updated)
+        if (!updated) {
             this.catalogs.push(item);
-
+        }
     }
 
     // check changeInCatalogs and add to articles
     changeInCatalogs(item, id) {
-        for (var i = 0; i <= this.catalogs.length; i++) {
+        for (let i = 0; i <= this.catalogs.length; i++) {
             if (this.catalogs[i] && this.catalogs[i].id == id) {
-                var obj: catalog = {};
+                let obj: listCatalog = {};
+                console.log("changeInCatalog item.name="+JSON.stringify(item.name));
                 obj.name = item.name;
                 obj.id = item.$key;
                 this.pushToArticles(obj, this.catalogs[i].id);
@@ -430,20 +446,23 @@ export class ListComponent implements OnInit,OnDestroy {
         let updated: boolean = false;
         for (let i = 0; i < this.usersCatalogs.length; i++) {
             if (this.usersCatalogs[i].id == item.id) {
+                console.log("pushToUsersCatalog item.name="+JSON.stringify(item.name));
                 this.usersCatalogs[i].name = item.name;
                 updated = true;
             }
         }
-        if (!updated)
+        if (!updated) {
             this.usersCatalogs.push(item);
+        }
 
     }
 
     //check in changeInUsersCatalogs add to articles
     changeInUsersCatalogs(item, id) {
-        for (var i = 0; i <= this.catalogs.length; i++) {
+        for (let i = 0; i <= this.catalogs.length; i++) {
             if (this.usersCatalogs[i] && this.usersCatalogs[i].id == id) {
-                var obj: catalog = {};
+                let obj: listCatalog = {};
+                console.log("changeInUsersCatalogs item.name="+JSON.stringify(item.name));
                 obj.name = item.name;
                 obj.id = item.$key;
                 this.pushToUserArticles(obj, this.usersCatalogs[i].id);
@@ -459,6 +478,7 @@ export class ListComponent implements OnInit,OnDestroy {
             if (this.usersCatalogs[i].id == id) {
                 for (let j = 0; j < this.usersCatalogs[i].articles.length; j++) {
                     if (this.usersCatalogs[i].articles[j].id == item.id) {
+                        console.log("pushToUserArticles item.name="+JSON.stringify(item.name));
                         this.usersCatalogs[i].articles[j].name = item.name;
                         updated = true;
                     }
@@ -477,6 +497,7 @@ export class ListComponent implements OnInit,OnDestroy {
             if (this.catalogs[i].id == id) {
                 for (let j = 0; j < this.catalogs[i].articles.length; j++) {
                     if (this.catalogs[i].articles[j].id == item.id) {
+                        console.log("pushToArticles item.name="+JSON.stringify(item.name));
                         this.catalogs[i].articles[j].name = item.name;
                         updated = true;
                     }
@@ -494,11 +515,7 @@ export class ListComponent implements OnInit,OnDestroy {
         // let parentNode=evt.target.parentElement;
         // let currentEle=parentNode.getElementsByClassName('slist-articles')[0];
         if (evt) {
-            if (evt.style.display == 'none') {
-                evt.style.display = 'block';
-            } else {
-                evt.style.display = 'none';
-            }
+            evt.style.display = (evt.style.display == 'none') ? 'block' : 'none';
         }
     }
 
@@ -512,7 +529,7 @@ export class ListComponent implements OnInit,OnDestroy {
 
     // add article amount
     addArticleAmount(amount) {
-        var regex = /(\d+)/g;
+        let regex = /(\d+)/g;
         let split = '';
         if (amount == '' || amount === undefined || parseInt(amount) <= 0) {
             this.selectedArticleList.amount = "1";
@@ -544,8 +561,8 @@ export class ListComponent implements OnInit,OnDestroy {
 
     // convert to number from string
     getNumberFromString(str) {
-        var regex = /[+-]?\d+(\.\d+)?/g;
-        var floats = str.match(regex).map(function (v) {
+        let regex = /[+-]?\d+(\.\d+)?/g;
+        let floats = str.match(regex).map(function (v) {
             return parseFloat(v);
         });
         return (floats && floats.length > 0) ? floats[0] : null;
@@ -553,7 +570,7 @@ export class ListComponent implements OnInit,OnDestroy {
 
     // reduce article amount size
     reduceArticleAmount(amount) {
-        var regex = /(\d+)/g;
+        let regex = /(\d+)/g;
         let split = '';
         if (amount == '' || amount === undefined || parseInt(amount) <= 0) {
             return;
@@ -589,9 +606,9 @@ export class ListComponent implements OnInit,OnDestroy {
         return amount.toLowerCase().indexOf('g') !== -1
     }
 
-    // add to basked
-    addToBasked(item) {
-        this._listService.addIsBasked(item.id, this.sList);
+    // add to basket
+    addToBasket(item) {
+        this._listService.addIsInBasket(item.id, this.sList);
         let box: any = document.getElementsByClassName('slist-article-details');
         box[0].style.display = 'none';
     }
