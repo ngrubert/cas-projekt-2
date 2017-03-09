@@ -125,6 +125,10 @@ md-sidenav-container.md-sidenav-content {
   border-bottom: 1px solid black;
   background-color: $menu-item-bg;
   cursor: pointer;
+  &:hover {
+    color: #eee;
+    background-color: darken($menu-item-bg, 2%);
+  }
 }
 
 .nav-item img {
@@ -136,6 +140,7 @@ md-sidenav-container.md-sidenav-content {
 .sidenav-tems-align {
   display: inline-block;
   vertical-align: middle;
+  height:24px;
 }
 
 md-sidenav-container {

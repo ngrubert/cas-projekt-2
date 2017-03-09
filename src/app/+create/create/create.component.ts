@@ -1,53 +1,59 @@
-import { Component, OnInit,OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
-import { MdSnackBar } from '@angular/material';
-import { FirebaseObjectObservable} from 'angularfire2';
-import { Observable } from 'rxjs/Observable';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Router} from '@angular/router';
+import {MdSnackBar} from '@angular/material';
+import {FirebaseObjectObservable} from 'angularfire2';
+import {Observable} from 'rxjs/Observable';
+import {TranslateService} from '@ngx-translate/core';
 
-import { SharedComponent } from './../../shared/shared.component';
-import { CreateService } from './../create.service';
-import { user } from './../../model/user';
-import { list } from './../../model/user';
+import {SharedComponent} from './../../shared/shared.component';
+import {CreateService} from './../create.service';
+import {user} from './../../model/user';
+import {list} from './../../model/user';
 
 @Component({
     selector: 'create',
     templateUrl: './create.component.html',
     styleUrls: ['./create.component.scss'],
-    providers:[CreateService,MdSnackBar]
+    providers: [CreateService, MdSnackBar]
 })
 export class CreateComponent implements OnInit,OnDestroy {
     // shoppingList :list; 
     model = new list(false);
-    title:string;
-    users=[];
-    usersFirebase=[];
-    initialEmail:string;
-    inviteUsers:Array<string>;
-    emailedUsers:Array<any>=[];
-    languages = ['Select catalog language','English', 'German'];
-    exists:user[];
-    notexists:user[];
-    array:Array<any>=[];
-    sList:FirebaseObjectObservable<any>;
+    title: string;
+    users = [];
+    usersFirebase = [];
+    initialEmail: string;
+    inviteUsers: Array<string>;
+    emailedUsers: Array<any> = [];
+    lang: string;
+    languages = ['Select catalog language', 'English', 'German'];
+    exists: user[];
+    notexists: user[];
+    array: Array<any> = [];
+    sList: FirebaseObjectObservable<any>;
     reqSubscribe;
-    sListKey:string;
+    sListKey: string;
     snackBar;
-    constructor(
-        public _createService: CreateService,
-        private router: Router,snackBar: MdSnackBar) {
-            this.router=router;
-            this.snackBar=snackBar;
+
+    constructor(public _createService: CreateService,
+                private router: Router,
+                snackBar: MdSnackBar,
+                private translate: TranslateService) {
+        this.router = router;
+        this.snackBar = snackBar;
+        this.lang = translate.currentLang;
     }
 
     ngOnInit() {
-        this.model.language=this.languages[0];
+        this.model.language = this.languages[0];
         // get all users
         this.getUsers();
         // add articles
         this.addArticles();
     }
+
     addArticles() {
-        let catalog =   {
+        let catalog = {
             "Fruits & Vegetables|Früchte & Gemüse": [
                 "Apples|Äpfel|apple",
                 "Apricot|Aprikosen|apricot",
@@ -404,9 +410,9 @@ export class CreateComponent implements OnInit,OnDestroy {
         console.log(this.model);
         // this.model.users.push(this.model.email);
         // this.model.users.push(this.initialEmail);
-        this.array=[];
-        this.inviteUsers=JSON.parse(JSON.stringify(this.users));
-        if (this.initialEmail && this.initialEmail!=""){
+        this.array = [];
+        this.inviteUsers = JSON.parse(JSON.stringify(this.users));
+        if (this.initialEmail && this.initialEmail != "") {
             this.inviteUsers.push(this.initialEmail);
         }
         this.inviteUsers.push(this.model.email);
@@ -418,136 +424,141 @@ export class CreateComponent implements OnInit,OnDestroy {
     addInvitedUsers() {
         this.users.push('');
     }
+
     // angular2 pipe for filtering in ui
     customTrackBy(index: number, obj: any): any {
         return index;
     }
+
     // item not exists
-    ItemNotIn(obj){
-        let exists=this.exists.filter(function(item){
+    ItemNotIn(obj) {
+        let exists = this.exists.filter(function (item) {
             return item.email === obj.email;
         });
-        if (exists && exists.length>0){
+        if (exists && exists.length > 0) {
             return false;
         } else {
             return true;
         }
     }
+
     // check if users exists and edit shoppingList and save users
     CheckUsers() {
-        let self=this;
-        self.emailedUsers=[];
-        for (let i=0;i<this.inviteUsers.length;i++){
-            if (this.inviteUsers && this.inviteUsers[i]!=""){
-                let obj={
-                    email:this.inviteUsers[i]
+        let self = this;
+        self.emailedUsers = [];
+        for (let i = 0; i < this.inviteUsers.length; i++) {
+            if (this.inviteUsers && this.inviteUsers[i] != "") {
+                let obj = {
+                    email: this.inviteUsers[i]
                 }
                 self.array.push(obj);
             }
         }
-        
+
         this.model.isFinished = false;
         this.model.siteUrl = window.location.origin;
-        let sListTemp:list = this.model;
-        sListTemp.users=[];
-        let sListCreated$=self._createService.createSList(sListTemp);
-        sListCreated$.subscribe(x=>{
-            this.sList=x;
-            this.sListKey=x.$key;
+        let sListTemp: list = this.model;
+        sListTemp.users = [];
+        let sListCreated$ = self._createService.createSList(sListTemp);
+        sListCreated$.subscribe(x => {
+            this.sList = x;
+            this.sListKey = x.$key;
         });
         self._createService.resetSList();
-        
-        let request$=Observable.from(this.array)
-                .mergeMap(data=>{
-                    return this.addIfnotExists(data);
-                })
-                .mergeMap(data=>{
-                    return this.getUserObjs(data);
-                })
-                .map(data=>{
-                    this.createSListUser(data);
-                    return this.sendKeys(data);
-                });
-                // .map(data=>{
-                //     this.sendEmail(data);
-                //     return this.sendKeys(data);
-                // });
-                
-        this.reqSubscribe=request$.subscribe(
-                val=>{
-                    if (val){
-                        self.emailedUsers.push(val);
-                        if (self.emailedUsers.length == self.inviteUsers.length)
-                        {
-                            if (self.sList) 
-                            {
-                                let userEmailKey=self.emailedUsers.find(self.findUserEmailKey,self);
-                                self.router.navigate([`list/${self.sListKey}`,{email:userEmailKey.$key}])
-                            }
+
+        let request$ = Observable.from(this.array)
+            .mergeMap(data => {
+                return this.addIfnotExists(data);
+            })
+            .mergeMap(data => {
+                return this.getUserObjs(data);
+            })
+            .map(data => {
+                this.createSListUser(data);
+                return this.sendKeys(data);
+            });
+        // .map(data=>{
+        //     this.sendEmail(data);
+        //     return this.sendKeys(data);
+        // });
+
+        this.reqSubscribe = request$.subscribe(
+            val => {
+                if (val) {
+                    self.emailedUsers.push(val);
+                    if (self.emailedUsers.length == self.inviteUsers.length) {
+                        if (self.sList) {
+                            let userEmailKey = self.emailedUsers.find(self.findUserEmailKey, self);
+                            self.router.navigate([`list/${self.sListKey}`, {email: userEmailKey.$key}])
                         }
                     }
-                    console.log(val);
                 }
-            );
+                console.log(val);
+            }
+        );
         // if (!window.navigator.onLine)
         // {
         //     self.snackBar.open('Shopping List will be Created and email will be sent, once device comes online, Don\'t close the Browser', 'Okay');
         // }
-        
+
     }
 
     // find user email by key
-    findUserEmailKey(item:any):boolean{
-        return item.email==this.model.email;
+    findUserEmailKey(item: any): boolean {
+        return item.email == this.model.email;
     }
 
     // send email by keys
-    sendKeys(data: any):Observable<any>{
+    sendKeys(data: any): Observable<any> {
         return data;
     }
-    sendEmail(usr:any):void{
-        if (usr){
+
+    sendEmail(usr: any): void {
+        if (usr) {
             this._createService.sendEmailToUser(usr);
         }
     }
+
     // create shopping list user
-    createSListUser(usr) : void{
-        if (usr){
+    createSListUser(usr): void {
+        if (usr) {
             this._createService.createSListUser(usr);
             console.log(usr);
         }
     }
 
     // get users 
-    getUserObjs(usr:user):Observable<user>{
-        var self=this;
+    getUserObjs(usr: user): Observable<user> {
+        var self = this;
         return self._createService.getItemFromFirebase(usr.email)
-            .map(x=>x);
+            .map(x => x);
     }
+
     // add if users not exists
-    addIfnotExists(usr:user):Observable<user> {
-        var self=this;
-        let exists=self.usersFirebase.filter((item)=>item.email==usr.email);
-        if (exists && exists.length>0){}
-        else{
+    addIfnotExists(usr: user): Observable<user> {
+        var self = this;
+        let exists = self.usersFirebase.filter((item) => item.email == usr.email);
+        if (exists && exists.length > 0) {
+        }
+        else {
             self._createService.addtoFirebase(usr);
         }
-        let arr=[];
+        let arr = [];
         arr.push(usr);
         return Observable.from(arr);
     }
+
     // get users
     getUsers() {
         this._createService.getUsersFirebase()
             .subscribe(
-                
-            users => {
-                this.usersFirebase = users;    
-        }, //Bind to view
-            err => {
-                // Log errors if any
-                console.log(err);
-            });
+                users => {
+                    this.usersFirebase = users;
+                }, //Bind to view
+                err => {
+                    // Log errors if any
+                    console.log(err);
+                });
     }
 
 }

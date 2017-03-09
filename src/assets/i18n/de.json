@@ -14,7 +14,8 @@
   "CLEAR": {
     "CANCEL": "Abbrechen",
     "CLEAR": "Alle Artikel von der Einkaufsliste entfernen?",
-    "YES": "Ja, zurücksetzen"
+    "YES": "Ja, zurücksetzen",
+    "TITLE": "Einkaufsliste zurücksetzen"
   },
   "CREATE": {
     "ADDMOREUSERS": "Weitere Adressen",
@@ -46,10 +47,10 @@
     "YES": "Ja! Einkaufsliste als 'fertig' markieren"
   },
   "HOME": {
-    "GETSTARTED": "Get started !",
+    "GETSTARTED": "Los geht's!",
     "HELP": "Hilfe-Seite",
     "LETSGO": "Let's get started and create your shopping list ...",
-    "QUESTIONS": "Fragen? Anwtworten auf unserer ",
+    "QUESTIONS": "Fragen? Antworten auf unserer ",
     "TXT1": "Einkaufslisten on- und off-line verwalten",
     "TXT2": "Mit Freunden teilen",
     "TXT3": "Keine Registration notwendig",

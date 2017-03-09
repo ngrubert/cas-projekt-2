@@ -14,8 +14,8 @@
             <div class="slist-article" *ngFor="let a of searchArticles" [style.background]="a.backGroundColor">
                 <div class="article-item" (tap)="addToList(a)">
                     <span class="article-item-name">{{a.name}}</span>
-                    <img *ngIf="a.img" src="./../../../assets/articles/{{a.img}}">
-                    <img *ngIf="!a.img" src="./../../../assets/articles/empty.png">
+                    <img alt="" *ngIf="a.img" src="./../../../assets/articles/{{a.img}}">
+                    <img alt="" *ngIf="!a.img" src="./../../../assets/articles/empty.png">
                 </div>
             </div>
 
@@ -36,7 +36,7 @@
                 <!--<div style="width: 90%;margin: 0.1em;"></div>-->
                 <div class="article-item" (tap)="selectedArticleInList(a)">
                     <span class="article-item-name">{{a.name}}</span>
-                    <img src="./../../../assets/articles/{{a.img}}">
+                    <img alt="" src="./../../../assets/articles/{{a.img}}">
                     <span class="article-item-info-icon" *ngIf="a.description"style="align-self: flex-end;margin: 5px;">i</span>
                     <span class="article-item-amount">{{a.amount}}</span>
                 </div>
@@ -73,16 +73,16 @@
             </div>
             <div class="slist-article-detail-box-buttons">
                 <div class="slist-article-detail-button" *ngIf="!selectedArticleList.isInBasket" (tap)="setToBasket(selectedArticleList, true)">
-                    <img class="slist-article-detail-button" src="./../assets/images/button_article_not_in_basket.png">
+                    <img alt="put in basket" class="slist-article-detail-button" src="./../assets/images/button_article_not_in_basket.png">
                 </div>
                 <div class="slist-article-detail-button" *ngIf="selectedArticleList.isInBasket" (tap)="setToBasket(selectedArticleList, false)">
-                    <img class="slist-article-detail-button" src="./../assets/images/button_article_in_basket.png">
+                    <img alt="remove from basket" class="slist-article-detail-button" src="./../assets/images/button_article_in_basket.png">
                 </div>
                 <div class="slist-article-detail-button" (tap)="removeArticleFromSList(selectedArticleList)">
-                    <img class="slist-article-detail-button" src="./../assets/images/button_remove_from_shopping_list.png">
+                    <img alt="remove from shopping list" class="slist-article-detail-button" src="./../assets/images/button_remove_from_shopping_list.png">
                 </div>
                 <div class="slist-article-detail-button">
-                    <img class="slist-article-detail-button" src="./../assets/images/button_remove_from_catalog.png">
+                    <img alt="remove from catalog" class="slist-article-detail-button" src="./../assets/images/button_remove_from_catalog.png">
                 </div>
             </div>
         </div>
@@ -104,7 +104,7 @@
                     <div class="slist-article" *ngFor="let a of recentArticles" style="background: #F24646">
                         <div class="article-item">
                             <span class="article-item-name">{{a.name}}</span>
-                            <img src="./../../../assets/articles/{{a.img}}">
+                            <img alt="" src="./../../../assets/articles/{{a.img}}">
                             <span class="article-item-info-icon" *ngIf="a.description" style="align-self: flex-end;margin: 5px;">i</span>
                             <span class="article-item-amount">{{a.amount}}</span>
                         </div>
@@ -128,7 +128,7 @@
                     <div class="slist-article" *ngFor="let a of p.articles" (tap)="addToList(a)">
                         <div class="article-item">
                             <span class="article-item-name">{{a.name}}</span>
-                            <img src="./../../../assets/articles/{{a.img}}">
+                            <img alt="" src="./../../../assets/articles/{{a.img}}">
                             <span class="article-item-info-icon" *ngIf="a.description" style="align-self: flex-end;margin: 5px;">i</span>
                             <span class="article-item-amount">{{a.amount}}</span>
                         </div>
@@ -151,7 +151,7 @@
                     <div class="slist-article" *ngFor="let a of p.articles" (tap)="addToList(a)">
                         <div class="article-item">
                             <span class="article-item-name">{{a.name}}</span>
-                            <img src="./../../../assets/articles/{{a.img}}">
+                            <img alt="" src="./../../../assets/articles/{{a.img}}">
                             <span class="article-item-info-icon" *ngIf="a.description">i</span>
                         </div>
                     </div>

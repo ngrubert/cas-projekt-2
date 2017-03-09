@@ -58,7 +58,7 @@ export class ListComponent implements OnInit, OnDestroy {
     articles: Array<any> = [];
     recentArticles: Array<any> = [];
     title: string;
-    lang: string;
+    slistLang: string;
     searchArticles: Array<any> = [];
     articlesList: Array<listArticle> = [];
     selectedArticleList: listArticle = {};
@@ -132,11 +132,14 @@ export class ListComponent implements OnInit, OnDestroy {
     getSTitle() {
         this._listService.getSDetails(this.sList).map(x => x).subscribe(x => {
             this.title = x.title;
-            this.lang = (x.language.toLowerCase() == 'English') ? 'en' : 'de';
-            console.log("getSTitle: slist title="+this.title+", lang="+this.lang);
+            this.slistLang = x.language;
+            if (! this.slistLang.match(/^(de|en)$/)) {
+                this.slistLang = (x.language.toLowerCase() == 'english') ? 'en' : 'de';
+            }
+            console.log("getSTitle: slist title="+this.title+", slistLang="+this.slistLang);
             // get catalog based on the user selected shopping list language
-            this.getCatalog(this.lang); //x.language.toLowerCase());
-            this.getUsersCatalog(this.lang);
+            this.getCatalog(this.slistLang);
+            this.getUsersCatalog(this.slistLang);
         })
     }
 
@@ -254,7 +257,7 @@ export class ListComponent implements OnInit, OnDestroy {
 
     // get all articles
     getAllArticles() {
-        let articles$ = this._listService.getAllArticles(this.lang);
+        let articles$ = this._listService.getAllArticles(this.slistLang);
         articles$.subscribe(x => {
             this.articles = x;
         });
@@ -279,14 +282,14 @@ export class ListComponent implements OnInit, OnDestroy {
                     this.articlesList.push(item);
                     // console.log("SL1: "+JSON.stringify(item));
                     // get name and image from the article catalog
-                    let articleDetail = this.af.database.object(`/articlesx/${this.lang}/${x[i].id}`);
+                    let articleDetail = this.af.database.object(`/articlesx/${this.slistLang}/${x[i].id}`);
                     articleDetail.subscribe(p => {
                         if (p) {
                             for (let j = 0; j < this.articlesList.length; j++) {
                                 if (this.articlesList[j].id == p.$key) {
                                     this.articlesList[j].name = p.name;
                                     this.articlesList[j].img = (p.img) ? p.img : "empty.png";
-                                    // console.log("SL2: l="+this.lang+" : "+JSON.stringify(this.articlesList[j]));
+                                    // console.log("SL2: l="+this.slistLang+" : "+JSON.stringify(this.articlesList[j]));
                                     // console.log("SL3: name="+this.articlesList[j].name);
                                 }
                             }
@@ -308,14 +311,14 @@ export class ListComponent implements OnInit, OnDestroy {
         } else {
             // add a new article with the name the user has just given as a search string
             let art = item;
-            let article$ = this._listService.getArticleByName(art.name, this.lang).map(x => x);
+            let article$ = this._listService.getArticleByName(art.name, this.slistLang).map(x => x);
             article$.subscribe(x => {
                 if (item) {
                     if (x && x.length > 0) {
                         item.$key = x[0].$key;
                         this.addArticleToList(x[0].$key);
                     } else {
-                        this._listService.addArticleAndAddToList(this.sList, art, this.lang);
+                        this._listService.addArticleAndAddToList(this.sList, art, this.slistLang);
                     }
                     // getting "article$_1.unsubscribe is undefined" here
                     // // article$.unsubscribe();

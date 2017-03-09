@@ -1,117 +1,186 @@
-.slist{
-    height:100%;
-}
-.slist-search{
-    height:10%;
-}
-.slist-myItems{
-    min-height: 20vh;
-}
-.slist-catalog div span{
-    margin: 1em 0;
-    cursor: pointer;
-    padding: 5px 0;
-}
-.sList-catalog-item-name{
-    background: orange;
-    width: 90%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    height: 30px;
-}
-.sList-catalog-item-name-default{
-    background: orange;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    height: 30px;
-}
-.slist-article-direction{
-    display: flex;
-    font-size: 16px;
-    flex-wrap:wrap;
-    width:90%;
+$COLOR_CATALOGITEM: #58c;
+
+.slist {
+  height: 100%;
 }
 
-.slist-article{
-    display: inline-block;
-    margin:10px 0 0 10px;
-    flex-grow: 1;
-    height:100px;    
-    width: calc(100% * (1/4) - 10px - 1px);
-    border-radius: 5px;
-    
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-    margin:1em;;
-    cursor: pointer;
+.slist-search {
+  height: 10%;
 }
 
-.slist-article-default{
-    display: flex;
-    margin:10px 0 0 10px;
-    flex-grow: 1;
-    height:100px;    
-    width: calc(100% * (1/4) - 10px - 1px);
-    border-radius: 5px;
-    max-width: 100px;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-    margin:1em;;
-    cursor: pointer;
+.slist-myItems {
+  min-height: 20vh;
 }
 
-.manage-catalog-item{
-    display:inline-block;
-    vertical-align: middle;
+.slist-catalog div span {
+  margin: 1em 0;
+  cursor: pointer;
+  padding: 5px 0;
 }
 
-div a{
-    cursor:pointer;
-    text-decoration: none;
+.sList-catalog-item-name {
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 30px;
+  background: #555;
 }
 
-.manage-article-item{
-    width:100%;
-    display: flex;
-    flex-direction: row;
-
+.sList-catalog-item-name-default {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 30px;
+  background: #555;
 }
 
-.manage-article-item-name{
-    width:50%;
-    max-width: 100px;
-    background: #90CAF9;
-    vertical-align: middle;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.slist-article-direction {
+  display: flex;
+  font-size: 16px;
+  flex-wrap: wrap;
+}
+
+.slist-article {
+  display: inline-block;
+  flex-grow: 1;
+  height: 110px;
+  width: calc(100% * (1 / 3) - 10px - 1px);
+  max-width: 110px;
+  margin: 0.3em;
+  border-radius: 5px;
+  background: $COLOR_CATALOGITEM;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 415px) { // iphone 6/7plus 414px, nexus 6P 412
+  .slist-article {
     height: 100px;
-    border-radius: 5px;
-    background: #90CAF9;
+    width: 24.15%;
+    max-width: 24.15%;
+    margin: 0.42%;
+  }
 }
 
-.manage-article-item-name-default{
-    width:100%;
-    height: 100px;
-    border-radius: 5px;
-    background: #90CAF9;
+@media only screen and (max-width: 376px) { // iphone 6/7: 375 px
+  //.slist-article { height: 114px; width: calc(100% * (1/3) - 2px); max-width: 114px; margin: 3px;}
+  .slist-article {
+    height: 115px;
+    width: 31%;
+    max-width: 31%;
+    margin: 1.166%;
+  }
 }
 
-.manage-article-item-buttons{
-    width:25%;
-    height: 100px;
-    margin: 0 1em;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
+@media only screen and (max-width: 361px) { // Galaxy 5s: 360 px
+  .slist-article {
+    height: 111px;
+    width: 31%;
+    max-width: 31%;
+    margin: 1.166%;
+  }
 }
-.sList-catalog-item{
-    width: 100%;
-    display: flex;
-    flex-direction: row;
+
+@media only screen and (max-width: 321px) { // iphone oroig: 320
+  .slist-article {
+    height: 100px;
+    width: 31.25%;
+    max-width: 31.25%;
+    margin: 1.04%;
+  }
+}
+
+.slist-article-default-NOLONGERUSED {
+  display: flex;
+  flex-grow: 1;
+  height: 110px;
+  width: calc(100% * (1 / 3) - 10px - 1px);
+  max-width: 110px;
+  border-radius: 5px;
+  background: $COLOR_CATALOGITEM;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  margin: 1em;;
+  cursor: pointer;
+}
+
+.manage-catalog-item {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.manage-button a {
+  margin: 1em 1em 1em  0;
+  background: gray;
+  border-radius: 5px;
+  &:hover { background: #999 }
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.manage-article-item {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.article-item {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.manage-article-item-name {
+  width: 50%;
+  max-width: 100px;
+  vertical-align: middle;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  border-radius: 5px;
+  background: $COLOR_CATALOGITEM;
+}
+
+.manage-article-item-name-default {
+  width: 100%;
+  height: 100px;
+  border-radius: 5px;
+  background: $COLOR_CATALOGITEM;
+}
+
+.article-item-name {
+  height: 20%;
+  width: 90%;
+  overflow: hidden;
+  font-size: 85%;
+  padding-top: 5px;
+}
+
+.article-item img {
+  height: 60%
+}
+
+
+.manage-article-item-buttons {
+  width: 25%;
+  height: 100px;
+  margin: 0 1em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.sList-catalog-item {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
 }

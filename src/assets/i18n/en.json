@@ -14,7 +14,8 @@
   "CLEAR": {
     "CANCEL": "Cancel",
     "CLEAR": "Clear shopping list and remove all items?",
-    "YES": "Yes, clear it"
+    "YES": "Yes, clear it",
+    "TITLE": "Clear shopping list"
   },
   "CREATE": {
     "ADDMOREUSERS": "Add more users",

@@ -1,23 +1,25 @@
-.help-container{
-    height:100%;
-    text-align: start;
-}
-.help-alignment{
-    display: flex;
-    flex-direction: column;
-    margin: 1em;
+.help-container {
+  height: 100%;
+  text-align: start;
 }
 
-.help-alignment div{
-    font-size: 1em;
-    line-height: 1.5em;
-    margin: 1em 0;
+.help-alignment {
+  display: flex;
+  flex-direction: column;
+  margin: 1em;
 }
 
-.delete-buttons{
-    margin: 1em;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
+.help-alignment div {
+  font-size: 1em;
+  line-height: 1.5em;
+  margin: 1em 0;
+  text-align: center;
+}
+
+.delete-buttons {
+  margin: 1em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
 }

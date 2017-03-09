@@ -1,41 +1,43 @@
-    <div class="create-container create-alignment">
-        <h3>{{'CREATE.HEADER'|translate}}</h3>
-        <form>
-            <md-input-container style="width: 100%">
-                <input mdInput placeholder="{{'CREATE.TITLE'|translate}}" name="title" [(ngModel)]="model.title" >
-            </md-input-container>
-            <md-input-container style="width: 100%">
-                <input mdInput placeholder="{{'CREATE.DESCRIPTION'|translate}}"  name="description" [(ngModel)]="model.description">
-            </md-input-container>
-                <select id="language" name="{{'CREATE.LANGUAGE'|translate}}" style="width: 50%;display:flex;"
-                  required
-                  [(ngModel)]="model.language" name="language">
+<div class="create-container create-alignment">
+    <h3>{{'CREATE.HEADER'|translate}}</h3>
+    <form>
+        <md-input-container class="inp">
+            <input mdInput placeholder="{{'CREATE.TITLE'|translate}}" name="title" [(ngModel)]="model.title" required>
+        </md-input-container>
+        <md-input-container class="inp">
+            <input mdInput placeholder="{{'CREATE.DESCRIPTION'|translate}}" name="description"
+                   [(ngModel)]="model.description">
+        </md-input-container>
+        <select id="language" required [(ngModel)]="model.language" name="language">
             <option *ngFor="let lan of languages" [value]="lan">{{lan}}</option>
-          </select>
-            <md-input-container style="width: 100%;display:flex;">
-                <input mdInput placeholder="{{'CREATE.YOURNAME'|translate}}"  name="name" [(ngModel)]="model.name">
-            </md-input-container>
-            <md-input-container style="width: 100%;display: flex;">
-                <input mdInput type="email" placeholder="{{'CREATE.YOUREMAIL'|translate}}"  name="email" [(ngModel)]="model.email">
-            </md-input-container>
-            <div class="form-align-items">  
-                <md-icon>menu</md-icon>
-                <h5>{{'CREATE.INVITEUSER'|translate}}</h5>
-            </div>
-            
-            <div *ngFor="let usr of users ;let in=index" style="width: 100%;display: flex;margin-bottom: 1em;">
-                <span>{{usr}}</span>
-                <i class="material-icons" (tap)="removeFromSListUsers(usr)">clear</i>
-            </div>
+        </select>
 
-            <md-input-container style="width: 100%" *ngFor="let usr of usersEdit ;let in=index;trackBy:customTrackBy" >
-                <input mdInput placeholder="{{'CREATE.EMAIL'|translate}}" type="email" [(ngModel)]="usersEdit[in]" name="inviteduser{{in}}" >
-            </md-input-container>
-            <div class="form-align-items" >
-                <md-icon style="cursor: pointer;" (tap)="addInvitedUsers()">add</md-icon>
-                <h5>{{'CREATE.ADDMOREUSERS'|translate}}</h5>
-            </div>
-            <button md-raised-button (tap)="EditList()">{{'CREATE.SAVE'|translate}}</button>
-            <button md-raised-button (tap)="CancelList()">{{'CREATE.CANCEL'|translate}}</button>
+        <md-input-container class="inp">
+            <input mdInput placeholder="{{'CREATE.YOURNAME'|translate}}" name="name" [(ngModel)]="model.name" required>
+        </md-input-container>
+        <md-input-container class="inp">
+            <input mdInput type="email" placeholder="{{'CREATE.YOUREMAIL'|translate}}" name="email"
+                   [(ngModel)]="model.email" required>
+        </md-input-container>
+        <div class="form-align-items">
+            <md-icon>menu</md-icon>
+            <h5>{{'CREATE.INVITEUSER'|translate}}</h5>
+        </div>
+
+        <div *ngFor="let usr of users ;let in=index" class="inp" style="margin-bottom:1em;">
+            <span>{{usr}}</span>
+            <i class="material-icons" (tap)="removeFromSListUsers(usr)">clear</i>
+        </div>
+
+        <md-input-container class="inp" *ngFor="let usr of usersEdit ;let in=index;trackBy:customTrackBy">
+            <input mdInput placeholder="{{'CREATE.EMAIL'|translate}}" type="email" [(ngModel)]="usersEdit[in]"
+                   name="inviteduser{{in}}">
+        </md-input-container>
+        <div class="form-align-items">
+            <md-icon style="cursor: pointer;" (tap)="addInvitedUsers()">add</md-icon>
+            <h5>{{'CREATE.ADDMOREUSERS'|translate}}</h5>
+        </div>
+        <button md-raised-button (tap)="EditList()">{{'CREATE.SAVE'|translate}}</button>
+        <button md-raised-button (tap)="CancelList()">{{'CREATE.CANCEL'|translate}}</button>
     </form>
-    </div>
+</div>

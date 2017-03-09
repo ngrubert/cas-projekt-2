@@ -1,8 +1,8 @@
-    <div class="help-container help-alignment">
-        <h3>Clear shopping list</h3>
-        <div style="text-align: center" i18n>{{'CLEAR.CLEAR'|translate}}</div>
-        <div class="delete-buttons">
-            <button style="background: #a94442" md-button (tap)="clearArticles($event)" i18n>{{'CLEAR.YES'|translate}}</button>
-            <button style="background: gray" md-button (tap)="cancelClearArticles()" i18n>{{'CLEAR.CANCEL'|translate}}</button>
-        </div>
+<div class="help-container help-alignment">
+    <h3>{{'CLEAR.TITLE'|translate}}</h3>
+    <div>{{'CLEAR.CLEAR'|translate}}</div>
+    <div class="delete-buttons">
+        <button style="background: #a94442" md-button (tap)="clearArticles($event)">{{'CLEAR.YES'|translate}}</button>
+        <button style="background: gray" md-button (tap)="cancelClearArticles()">{{'CLEAR.CANCEL'|translate}}</button>
     </div>
+</div>
