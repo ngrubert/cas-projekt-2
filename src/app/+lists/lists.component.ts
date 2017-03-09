@@ -112,7 +112,6 @@ export class ListsComponent implements OnInit {
     // update/push sList array
     updateSLists(x) {
         let p = x;
-        console.log('a');
         this.sLists.push(p);
     }
 

@@ -61,7 +61,7 @@ export class ListService {
     // add article and add article id to list
     addArticleAndAddToList(sList, art, lang) {
         let addArticle = this.af.database.list(`articlesx/${lang}`);
-        let checkInAArticle = this.af.database.list(`articlesx/${lang}`, {
+        let checkInArticle = this.af.database.list(`articlesx/${lang}`, {
             query: {
                 orderByChild: 'name',
                 equalTo: art.name
@@ -70,13 +70,15 @@ export class ListService {
             .subscribe(x => {
                 debugger;
                 if (x && x.length > 0) {
+                    console.log("addArticleAndAddToList existing article: " + x.name);
                     let obj = { id: x[0].$key };
                     this.addArticleToList(sList, obj);
                 } else {
                     let articleAdded: any = addArticle.push(art);
+                    console.log("addArticleAndAddToList new article: " + art.name);
                     this.addArticleToList(sList, articleAdded.key);
                 }
-                checkInAArticle.unsubscribe();
+                checkInArticle.unsubscribe();
             });
     }
 
@@ -187,8 +189,8 @@ export class ListService {
         ;
     }
 
-    // make article as isInBasket true
-    addIsInBasket(key, sListId) {
+    // make article as isInBasket true/false
+    setIsInBasket(key, sListId, isInBasket) {
         let articleItems = this.af.database.list(`sList/${sListId}/articles/`);
         let article = this.af.database.list(`sList/${sListId}/articles/`, {
             query: {
@@ -200,7 +202,7 @@ export class ListService {
         ).subscribe(x => {
             debugger
             if (x && x.length > 0) {
-                articleItems.update(x[0].$key, {isInBasket: true});
+                articleItems.update(x[0].$key, {isInBasket: isInBasket});
             }
             article.unsubscribe();
         })

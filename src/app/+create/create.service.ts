@@ -191,8 +191,9 @@ export class CreateService {
     createFirebaseCatalogx(catalog: Object) {
         let langs = ["en", "de"];
         for (let iLang in langs) {
-            const addArticle = this.af.database.list(`articlesx/${langs[iLang]}`);
-            const addCatalog = this.af.database.list(`catalogx/${langs[iLang]}`);
+            let lang = langs[iLang];
+            const addArticle = this.af.database.list(`articlesx/${lang}`);
+            const addCatalog = this.af.database.list(`catalogx/${lang}`);
             for (let property in catalog) {
                 if (catalog.hasOwnProperty(property)) {
                     let insertData = {};
@@ -217,7 +218,7 @@ export class CreateService {
                         let articleAdded = addArticle.push(articleObj);
                         let key = articleAdded.key;
                         insertData[key] = true;
-                        let addToCatalog = this.af.database.list(`catalogx/${langs[iLang]}/${propertyAdded.key}/articles`)
+                        let addToCatalog = this.af.database.list(`catalogx/${langs}/${propertyAdded.key}/articles`)
                         addToCatalog.push(key);
                         myArtcileArr.push(insertData);
                         catalogObj["articles"].push(key);

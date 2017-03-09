@@ -72,11 +72,10 @@
                 <p style="display: none">a</p>
             </div>
             <div class="slist-article-detail-box-buttons">
-                <div style="height:30px;width:30px;margin:1em auto;background: #b8b8b8;cursor: pointer;"
-                     *ngIf="!selectedArticleList.isInBasket" (tap)="addToBasket(selectedArticleList)">
+                <div class="slist-article-detail-button" *ngIf="!selectedArticleList.isInBasket" (tap)="setToBasket(selectedArticleList, true)">
                     <img class="slist-article-detail-button" src="./../assets/images/button_article_not_in_basket.png">
                 </div>
-                <div class="slist-article-detail-button" *ngIf="selectedArticleList.isInBasket">
+                <div class="slist-article-detail-button" *ngIf="selectedArticleList.isInBasket" (tap)="setToBasket(selectedArticleList, false)">
                     <img class="slist-article-detail-button" src="./../assets/images/button_article_in_basket.png">
                 </div>
                 <div class="slist-article-detail-button" (tap)="removeArticleFromSList(selectedArticleList)">
