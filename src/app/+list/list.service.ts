@@ -186,7 +186,6 @@ export class ListService {
             }
         }
         return arrFinal.filter((v, i, a) => a.indexOf(v) === i);
-        ;
     }
 
     // make article as isInBasket true/false
@@ -200,7 +199,7 @@ export class ListService {
         }).map(
             x => x
         ).subscribe(x => {
-            debugger
+            //debugger
             if (x && x.length > 0) {
                 articleItems.update(x[0].$key, {isInBasket: isInBasket});
             }
@@ -241,7 +240,7 @@ export class ListService {
         }).map(
             x => x
         ).subscribe(x => {
-            debugger;
+            // debugger;
             if (x && x.length > 0) {
                 articleItem.update(x[0].$key, {
                     isInBasket: item.isInBasket ? item.isInBasket : false,

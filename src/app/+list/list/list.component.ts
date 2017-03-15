@@ -49,6 +49,8 @@ export class ListComponent implements OnInit, OnDestroy {
     private sList;
     private user;
     private search;
+    private detailBox;
+    private amountInputField;
     db: any;
     clearArticle: any;
     af: AngularFire;
@@ -101,14 +103,14 @@ export class ListComponent implements OnInit, OnDestroy {
             });
         this.user.subscribe(c => console.log(c));
 
-        // get the List title an the language
-        this.getSTitle();
-        console.log("init: name="+JSON.stringify(this.articlesList[0]));
+        this.slistLang = "de";
 
         // get all articles for shopping list
         this.getArticleBySlist();
         console.log("init: name="+JSON.stringify(this.articlesList[0]));
 
+        this.detailBox = document.getElementsByClassName('slist-article-details')[0];
+        this.amountInputField = document.getElementById('amount');
 
         // search article observable
         const search = document.getElementById("listSearch");
@@ -127,6 +129,8 @@ export class ListComponent implements OnInit, OnDestroy {
 
         /// show extra side nav menus
         this.showSideMenu();
+        // get the List title an the language
+        this.getSTitle();
     }
 
     getSTitle() {
@@ -136,7 +140,7 @@ export class ListComponent implements OnInit, OnDestroy {
             if (! this.slistLang.match(/^(de|en)$/)) {
                 this.slistLang = (x.language.toLowerCase() == 'english') ? 'en' : 'de';
             }
-            console.log("getSTitle: slist title="+this.title+", slistLang="+this.slistLang);
+            // console.log("getSTitle: slist title="+this.title+", slistLang="+this.slistLang);
             // get catalog based on the user selected shopping list language
             this.getCatalog(this.slistLang);
             this.getUsersCatalog(this.slistLang);
@@ -321,7 +325,7 @@ export class ListComponent implements OnInit, OnDestroy {
                         this._listService.addArticleAndAddToList(this.sList, art, this.slistLang);
                     }
                     // getting "article$_1.unsubscribe is undefined" here
-                    // // article$.unsubscribe();
+                    article$.unsubscribe();
                 }
             })
         }
@@ -522,10 +526,27 @@ export class ListComponent implements OnInit, OnDestroy {
     }
 
     // selected article to list display box
-    selectedArticleInList(a) {
-        this.selectedArticleList = a;
+    selectArticleInList(art) {
         let box: any = document.getElementsByClassName('slist-article-details');
-        box[0].style.display = 'block';
+        let amount: any = document.getElementById('amount');
+
+        if (this.detailBox.style.display == 'block') {
+            if (art == this.selectedArticleList) {
+                // user klicked the same product tile again to close the detail box
+                this.updateSList(art);
+            } else {
+                // user clicked on another article;
+                // keep detail box open, and save the previously selected article
+                this._listService.updateSList(this.selectedArticleList, this.sList);
+                this.selectedArticleList = art;
+                amount.focus();
+            }
+        } else {
+            // open the detail box and put the focus on the amount text fiels
+            this.detailBox.style.display = 'block';
+            this.selectedArticleList = art;
+            amount.focus();
+        }
     }
 
 
@@ -611,21 +632,24 @@ export class ListComponent implements OnInit, OnDestroy {
     // add to/remove from basket
     setToBasket(item, isInBasket) {
         this._listService.setIsInBasket(item.id, this.sList, isInBasket);
-        let box: any = document.getElementsByClassName('slist-article-details');
-        box[0].style.display = 'none';
+        this.closeDetailBox();
     }
 
     // remove article from shopping list
     removeArticleFromSList(item) {
         this._listService.removeArticleFromSList(item.id, this.sList);
-        let box: any = document.getElementsByClassName('slist-article-details');
-        box[0].style.display = 'none';
+        this.closeDetailBox();
     }
 
     // update shopping list ui
     updateSList(item) {
         this._listService.updateSList(item, this.sList);
-        let box: any = document.getElementsByClassName('slist-article-details');
-        box[0].style.display = 'none';
+        this.closeDetailBox();
     }
+
+    closeDetailBox() {
+        let box: any = document.getElementsByClassName('slist-article-details');
+        this.detailBox.style.display = 'none';
+    }
+
 }

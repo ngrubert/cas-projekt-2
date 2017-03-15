@@ -101,9 +101,15 @@ $COLOR_CATALOGITEM: #58c;
   margin: 0.3em;
 }
 
+.slist-article-detail-plusminus {
+  min-width: 0px;
+  min-height: 30px;
+  background: #aaa;
+}
+
 .slist-article-detail-box-buttons {
   width: 24%;
-  margin: 1em;
+  margin: 0;
   max-width: 100px;
 }
 

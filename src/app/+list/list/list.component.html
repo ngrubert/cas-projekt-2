@@ -34,7 +34,8 @@
         <div class="slist-article-direction">
             <div class="slist-article" *ngFor="let a of articlesList" [style.background]="a.backGroundColor">
                 <!--<div style="width: 90%;margin: 0.1em;"></div>-->
-                <div class="article-item" (tap)="selectedArticleInList(a)">
+                <div class="article-item" (click)="selectArticleInList(a)"
+                     (swiperight)="setToBasket(a, true)" (swipeleft)="setToBasket(a, false)">
                     <span class="article-item-name">{{a.name}}</span>
                     <img alt="" src="./../../../assets/articles/{{a.img}}">
                     <span class="article-item-info-icon" *ngIf="a.description"style="align-self: flex-end;margin: 5px;">i</span>
@@ -47,18 +48,17 @@
     <div class="slist-article-details">
         <div class="slist-article-detail-box">
             <div class="slist-article-detail-box-content">
-                <div style="margin:1em;">{{'LIST.AMOUNT'|translate}}</div>
                 <div>
                     <span>
-                    <md-input-container style="width: 70%;old-background: white; background:#666; border-radius: 2px;">
-                        <input mdInput placeholder="{{'LIST.AMOUNT'|translate}}" type="input" name="amount"
+                    <md-input-container style="width: 68%; background:#666; border-radius: 2px;">
+                        <input mdInput placeholder="{{'LIST.AMOUNT'|translate}}" type="input" name="amount" id="amount"
                                [(ngModel)]="selectedArticleList.amount">
                     </md-input-container>
                     </span>
                     <span style="flex:1"></span>
-                    <span><button md-raised-button style="min-width: 0px;min-height: 50px;background: #a6a1a1;"
+                    <span><button md-raised-button class="slist-article-detail-plusminus"
                                   (tap)="addArticleAmount(selectedArticleList.amount)">+</button></span>
-                    <span><button md-raised-button style="min-width: 0px;min-height: 50px;background: #a6a1a1;"
+                    <span><button md-raised-button class="slist-article-detail-plusminus"
                                   (tap)="reduceArticleAmount(selectedArticleList.amount)">-</button></span>
                 </div>
                 <div style="margin:1em 0">
@@ -68,9 +68,7 @@
                     </md-input-container>
                 </div>
             </div>
-            <div class="verticalLine">
-                <p style="display: none">a</p>
-            </div>
+            <div class="verticalLine">&nbsp;</div>
             <div class="slist-article-detail-box-buttons">
                 <div class="slist-article-detail-button" *ngIf="!selectedArticleList.isInBasket" (tap)="setToBasket(selectedArticleList, true)">
                     <img alt="put in basket" class="slist-article-detail-button" src="./../assets/images/button_article_not_in_basket.png">
