@@ -73,7 +73,8 @@
     "RECENTLISTS": "Zuletzt verwendete Einkaufslisten",
     "TITLE": "Meine Einkaufslisten",
     "NAME": "Name",
-    "EMAIL": "E-Mail-Adresse"
+    "EMAIL": "E-Mail-Adresse",
+    "SEARCH": "Suchen"
   },
   "MANAGE": {
     "ADDNEWARTICLE": "Neuer Artikel",

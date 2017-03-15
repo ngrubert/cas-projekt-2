@@ -73,7 +73,8 @@
     "RECENTLISTS": "Recently used shopping lists",
     "TITLE": "My shopping lists",
     "NAME": "Name",
-    "EMAIL": "E-mail address"
+    "EMAIL": "E-mail address",
+    "SEARCH": "Search"
   },
   "MANAGE": {
     "ADDNEWARTICLE": "Add new article",

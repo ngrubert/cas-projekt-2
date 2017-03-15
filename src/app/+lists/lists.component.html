@@ -9,7 +9,7 @@
         <md-input-container style="width: 100%">
             <input mdInput placeholder="{{'LISTS.EMAIL'|translate}}"  name="email" [(ngModel)]="email">
         </md-input-container>
-        <button md-button style="background:gray;margin: auto;display: flex;align-items: center;justify-content: center;" (tap)="searchSLists()">search</button>
+        <button md-button class="lists-button" (tap)="searchSLists()">{{'LISTS.SEARCH'|translate}}</button>
     </div>
     <div *ngIf="sLists && sLists.length>0">
         <div class="mylists-no">{{'LISTS.RECENTLISTS'|translate}}</div>
@@ -17,6 +17,6 @@
             <div class="list-details"><h4>{{a.title}}</h4></div>
             <div class="list-details">{{a.description}}</div>
         </div>
-        <button md-button style="background:gray;margin: auto;display: flex;align-items: center;justify-content: center;" (tap)="createNewList()">{{'LISTS.CREATELIST'|translate}}</button>
+        <button md-button class="lists-button" (tap)="createNewList()">{{'LISTS.CREATELIST'|translate}}</button>
     </div>
 </div>
