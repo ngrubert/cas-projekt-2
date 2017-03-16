@@ -50,7 +50,6 @@ export class ListComponent implements OnInit, OnDestroy {
     private user;
     private search;
     private detailBox;
-    private amountInputField;
     db: any;
     clearArticle: any;
     af: AngularFire;
@@ -64,6 +63,7 @@ export class ListComponent implements OnInit, OnDestroy {
     searchArticles: Array<any> = [];
     articlesList: Array<listArticle> = [];
     selectedArticleList: listArticle = {};
+    selectedArticleElement: any;
     private searchTerms = new Subject<string>();
 
     constructor(af: AngularFire,
@@ -110,7 +110,6 @@ export class ListComponent implements OnInit, OnDestroy {
         console.log("init: name="+JSON.stringify(this.articlesList[0]));
 
         this.detailBox = document.getElementsByClassName('slist-article-details')[0];
-        this.amountInputField = document.getElementById('amount');
 
         // search article observable
         const search = document.getElementById("listSearch");
@@ -136,14 +135,17 @@ export class ListComponent implements OnInit, OnDestroy {
     getSTitle() {
         this._listService.getSDetails(this.sList).map(x => x).subscribe(x => {
             this.title = x.title;
-            this.slistLang = x.language;
-            if (! this.slistLang.match(/^(de|en)$/)) {
-                this.slistLang = (x.language.toLowerCase() == 'english') ? 'en' : 'de';
+            document.getElementById("sListTitle").innerHTML = this.title ? this.title : "";
+            if (x.language) {
+                this.slistLang = x.language;
+                if (!this.slistLang.match(/^(de|en)$/)) {
+                    this.slistLang = (x.language.toLowerCase() == 'english') ? 'en' : 'de';
+                }
+                // console.log("getSTitle: slist title="+this.title+", slistLang="+this.slistLang);
+                // get catalog based on the user selected shopping list language
+                this.getCatalog(this.slistLang);
+                this.getUsersCatalog(this.slistLang);
             }
-            // console.log("getSTitle: slist title="+this.title+", slistLang="+this.slistLang);
-            // get catalog based on the user selected shopping list language
-            this.getCatalog(this.slistLang);
-            this.getUsersCatalog(this.slistLang);
         })
     }
 
@@ -527,6 +529,8 @@ export class ListComponent implements OnInit, OnDestroy {
 
     // selected article to list display box
     selectArticleInList(art) {
+        this.selectedArticleElement = document.activeElement;
+
         let box: any = document.getElementsByClassName('slist-article-details');
         let amount: any = document.getElementById('amount');
 
@@ -647,9 +651,15 @@ export class ListComponent implements OnInit, OnDestroy {
         this.closeDetailBox();
     }
 
+    // Close the detail box and unfocus (blur) the active element so the keyboard on smartphones
+    // disappears. Scroll so the just edited article comes into view
     closeDetailBox() {
-        let box: any = document.getElementsByClassName('slist-article-details');
         this.detailBox.style.display = 'none';
+        let focused: any = document.activeElement;
+        if (focused) { focused.blur(); }
+        if (this.selectedArticleElement) {
+            this.selectedArticleElement.scrollIntoView();
+        }
     }
 
 }

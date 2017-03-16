@@ -1,7 +1,9 @@
+<!--
 <h3 class="slist-title">
     <ng-container>{{'LIST.WELCOME'|translate}}</ng-container>
     {{title}}
 </h3>
+-->
 <div class="slist">
     <div class="slist-search"><!-- hits -->
         <form>
@@ -10,7 +12,7 @@
                        name="search" [(ngModel)]="search">
             </md-input-container>
         </form>
-        <div class="slist-article-direction" style="margin: 1em 0;">
+        <div class="slist-article-direction">
             <div class="slist-article" *ngFor="let a of searchArticles" [style.background]="a.backGroundColor">
                 <div class="article-item" (tap)="addToList(a)">
                     <span class="article-item-name">{{a.name}}</span>
@@ -22,8 +24,7 @@
         </div>
     </div>
 
-    <div class="slist-articles"
-         style="margin: 1em 0;display: flex;justify-content: center;align-items: center;flex-direction: column;"
+    <div class="slist-no-articles"
          *ngIf="articlesList.length==0">
         <span style="margin: 1em;"><b>{{'LIST.CLEARLIST'|translate}}</b></span>
         <span style="margin: 1em;">{{'LIST.ADDARTICLES'|translate}}</span>
@@ -91,7 +92,7 @@
     </div>
 
     <!-- Recent articles - w amount -->
-    <div class="slist-catalog" style="margin: 1em 0;">
+    <div class="slist-catalog">
         <div style="margin: 1em 0;">
         <span class="sList-catalog-item-name-default">
             <i *ngIf=" userarticleRecent.style.display=='none'" class="material-icons">keyboard_arrow_down</i>
@@ -115,7 +116,7 @@
 
     <!-- users own articles - w amount -->
 
-    <div class="slist-catalog" style="margin: 1em 0;">
+    <div class="slist-catalog">
         <div *ngFor="let p of usersCatalogs; let i=index" style="margin: 1em 0;">
         <span class="sList-catalog-item-name-default">
             <i *ngIf="userarticle.style.display == 'none'" class="material-icons">keyboard_arrow_down</i>
@@ -138,7 +139,7 @@
     </div>
 
     <!-- main catalog - w/o amount -->
-    <div class="slist-catalog" style="margin: 1em 0;">
+    <div class="slist-catalog">
         <div *ngFor="let p of catalogs; let i=index" style="margin: 1em 0;">
         <span class="sList-catalog-item-name-default">
             <i *ngIf=" articles.style.display=='none'" class="material-icons">keyboard_arrow_down</i>
