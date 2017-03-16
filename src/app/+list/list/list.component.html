@@ -34,8 +34,9 @@
         <div class="slist-article-direction">
             <div class="slist-article" *ngFor="let a of articlesList" [style.background]="a.backGroundColor">
                 <!--<div style="width: 90%;margin: 0.1em;"></div>-->
-                <div class="article-item" (click)="selectArticleInList(a)"
-                     (swiperight)="setToBasket(a, true)" (swipeleft)="setToBasket(a, false)">
+                <div class="article-item" style="touch-action:auto"
+                         (doubletap)="addArticleAmount(a.amount)" (tap)="selectArticleInList(a)"
+                        (swiperight)="setToBasket(a, true)" (swipeleft)="setToBasket(a, false)">
                     <span class="article-item-name">{{a.name}}</span>
                     <img alt="" src="./../../../assets/articles/{{a.img}}">
                     <span class="article-item-info-icon" *ngIf="a.description"style="align-self: flex-end;margin: 5px;">i</span>
@@ -50,7 +51,7 @@
             <div class="slist-article-detail-box-content">
                 <div>
                     <span>
-                    <md-input-container style="width: 68%; background:#666; border-radius: 2px;">
+                    <md-input-container style="width: 67%; background:#666; border-radius: 2px;">
                         <input mdInput placeholder="{{'LIST.AMOUNT'|translate}}" type="input" name="amount" id="amount"
                                [(ngModel)]="selectedArticleList.amount">
                     </md-input-container>
@@ -82,10 +83,10 @@
                 <div class="slist-article-detail-button">
                     <img alt="remove from catalog" class="slist-article-detail-button" src="./../assets/images/button_remove_from_catalog.png">
                 </div>
+                <div class="slist-article-detail-button" (tap)="updateSList(selectedArticleList)">
+                    <button md-button class="slist-article-detail-plusminus" style="margin:.5em 0 0 -12px">{{'LIST.OKOK'|translate}}</button>
+                </div>
             </div>
-        </div>
-        <div style="text-align: center;" (tap)="updateSList(selectedArticleList)">
-            <button md-raised-button style="margin:1em auto;">{{'LIST.OKOK'|translate}}</button>
         </div>
     </div>
 

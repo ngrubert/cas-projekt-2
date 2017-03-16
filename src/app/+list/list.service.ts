@@ -220,7 +220,7 @@ export class ListService {
         }).map(
             x => x
         ).subscribe(x => {
-            debugger
+            //debugger
             if (x && x.length > 0) {
                 self.af.database.object(`sList/${sListId}/articles/${x[0].$key}`).remove();
                 article.unsubscribe();

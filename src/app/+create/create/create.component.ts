@@ -57,7 +57,7 @@ export class CreateComponent implements OnInit,OnDestroy {
             "Fruits & Vegetables|Früchte & Gemüse": [
                 "Apples|Äpfel|apple",
                 "Apricot|Aprikosen|apricot",
-                "Artichokes|Artischoken|empty",
+                "Artichokes|Artischocken|empty",
                 "Asparagus|Spargeln|empty",
                 "Aubergine|Auberginen|empty",
                 "Avocado|Avocados|empty",

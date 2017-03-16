@@ -1,7 +1,7 @@
 <div style="height:100%">
     <md-toolbar color="primary">
         <span style="padding-left: 1em;">
-            <span *ngIf="isMobile" (tap)="hideNav()"><md-icon>menu</md-icon></span>
+            <span *ngIf="isMobile" (tap)="toggleNav()" style="position:relative;top:5px"><md-icon>menu</md-icon></span>
             Fergg!
         </span>
         <span style="flex:1 1 auto;"></span>

@@ -102,7 +102,7 @@ $COLOR_CATALOGITEM: #58c;
 }
 
 .slist-article-detail-plusminus {
-  min-width: 0px;
+  min-width: 30px;
   min-height: 30px;
   background: #aaa;
 }
@@ -126,8 +126,9 @@ $COLOR_CATALOGITEM: #58c;
   border-radius: 10px;
   height: 30px;
   width: 30px;
-  margin: 1em auto;
+  margin: .3em auto;
   background: #555;
+  text-align: center;
   cursor: pointer;
 }
 
