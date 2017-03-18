@@ -25,11 +25,9 @@ export class CreateComponent implements OnInit,OnDestroy {
     initialEmail: string;
     inviteUsers: Array<string>;
     emailedUsers: Array<any> = [];
-    lang: string;
-    languages = ['Select catalog language', 'English', 'German'];
-    exists: user[];
-    notexists: user[];
-    array: Array<any> = [];
+    // languages = ['Select catalog language', 'English', 'German'];
+    existingUsers: user[];
+    emailAddrs: Array<any> = [];
     sList: FirebaseObjectObservable<any>;
     reqSubscribe;
     sListKey: string;
@@ -41,11 +39,10 @@ export class CreateComponent implements OnInit,OnDestroy {
                 private translate: TranslateService) {
         this.router = router;
         this.snackBar = snackBar;
-        this.lang = translate.currentLang;
     }
 
     ngOnInit() {
-        this.model.language = this.languages[0];
+        // this.model.language = this.languages[0];
         // get all users
         this.getUsers();
         // add articles
@@ -398,7 +395,7 @@ export class CreateComponent implements OnInit,OnDestroy {
             ],
         };
 
-        //this._createService.createFirebaseCatalogx(catalog);
+        //this._createService.createFirebaseCatalogy(catalog);
     }
 
     ngOnDestroy() {
@@ -407,10 +404,11 @@ export class CreateComponent implements OnInit,OnDestroy {
 
     // create shoppingList
     CreateList() {
+        debugger;
         console.log(this.model);
         // this.model.users.push(this.model.email);
         // this.model.users.push(this.initialEmail);
-        this.array = [];
+        this.emailAddrs = [];
         this.inviteUsers = JSON.parse(JSON.stringify(this.users));
         if (this.initialEmail && this.initialEmail != "") {
             this.inviteUsers.push(this.initialEmail);
@@ -432,14 +430,10 @@ export class CreateComponent implements OnInit,OnDestroy {
 
     // item not exists
     ItemNotIn(obj) {
-        let exists = this.exists.filter(function (item) {
+        let exists = this.existingUsers.filter(function (item) {
             return item.email === obj.email;
         });
-        if (exists && exists.length > 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return !exists || exists.length == 0;
     }
 
     // check if users exists and edit shoppingList and save users
@@ -451,13 +445,14 @@ export class CreateComponent implements OnInit,OnDestroy {
                 let obj = {
                     email: this.inviteUsers[i]
                 }
-                self.array.push(obj);
+                self.emailAddrs.push(obj);
             }
         }
-
+        debugger;
         this.model.isFinished = false;
-        this.model.siteUrl = window.location.origin;
         let sListTemp: list = this.model;
+        sListTemp.siteUrl = window.location.origin;
+        sListTemp.language = this.translate.currentLang;
         sListTemp.users = [];
         let sListCreated$ = self._createService.createSList(sListTemp);
         sListCreated$.subscribe(x => {
@@ -466,7 +461,7 @@ export class CreateComponent implements OnInit,OnDestroy {
         });
         self._createService.resetSList();
 
-        let request$ = Observable.from(this.array)
+        let request$ = Observable.from(this.emailAddrs)
             .mergeMap(data => {
                 return this.addIfnotExists(data);
             })
@@ -529,18 +524,16 @@ export class CreateComponent implements OnInit,OnDestroy {
 
     // get users 
     getUserObjs(usr: user): Observable<user> {
-        var self = this;
+        let self = this;
         return self._createService.getItemFromFirebase(usr.email)
             .map(x => x);
     }
 
     // add if users not exists
     addIfnotExists(usr: user): Observable<user> {
-        var self = this;
+        let self = this;
         let exists = self.usersFirebase.filter((item) => item.email == usr.email);
-        if (exists && exists.length > 0) {
-        }
-        else {
+        if (!exists || exists.length == 0) {
             self._createService.addtoFirebase(usr);
         }
         let arr = [];

@@ -8,10 +8,11 @@
             <input mdInput placeholder="{{'CREATE.DESCRIPTION'|translate}}" name="description"
                    [(ngModel)]="model.description">
         </md-input-container>
+        <!--
         <select id="language" required [(ngModel)]="model.language" name="language">
             <option *ngFor="let lan of languages" [value]="lan">{{lan}}</option>
         </select>
-
+        -->
         <md-input-container class="inp">
             <input mdInput placeholder="{{'CREATE.YOURNAME'|translate}}" name="name" [(ngModel)]="model.name" required>
         </md-input-container>

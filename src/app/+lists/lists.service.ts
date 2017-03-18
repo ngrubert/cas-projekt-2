@@ -22,6 +22,5 @@ export class ListsService {
     // get shopping list details by shopping list id
     getSListUsers() {
         return this.af.database.list('sListUsers');
-        ;
     }
 }

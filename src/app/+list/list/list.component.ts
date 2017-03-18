@@ -58,7 +58,7 @@ export class ListComponent implements OnInit, OnDestroy {
     searchitems: Observable<Array<string>>;
     articles: Array<any> = [];
     recentArticles: Array<any> = [];
-    title: string;
+    //title: string;
     slistLang: string;
     searchArticles: Array<any> = [];
     articlesList: Array<listArticle> = [];
@@ -134,8 +134,11 @@ export class ListComponent implements OnInit, OnDestroy {
 
     getSTitle() {
         this._listService.getSDetails(this.sList).map(x => x).subscribe(x => {
-            this.title = x.title;
-            document.getElementById("sListTitle").innerHTML = this.title ? this.title : "";
+            let title = x.title;
+            if (title.length < 30 && x.description) {
+                title += " &ndash; " + x.description;
+            }
+            document.getElementById("sListTitle").innerHTML = title ? title : "";
             if (x.language) {
                 this.slistLang = x.language;
                 if (!this.slistLang.match(/^(de|en)$/)) {

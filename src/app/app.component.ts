@@ -13,7 +13,6 @@ declare var PouchDB: any;
 
 // App component initilization with OnInit and OnDestroy life cycle callbacks
 export class AppComponent implements OnInit,OnDestroy {
-    title = 'app works!';
     localUser: any;
     isMobile: boolean;
     db: any;
@@ -46,7 +45,7 @@ export class AppComponent implements OnInit,OnDestroy {
     ngOnInit() {
         let self = this;
 
-        // get emal or slistid on page route if exists
+        // get email or slistid on page route if exists
         this.user = this.route.params
             .switchMap((params: Params) => {
                 this.url = params['email'];
@@ -58,8 +57,6 @@ export class AppComponent implements OnInit,OnDestroy {
         this.detectDevice();
         // get user email id from local database(pouch db)
         this.syncChanges();
-
-
     }
 
     syncChanges() {
@@ -93,17 +90,15 @@ export class AppComponent implements OnInit,OnDestroy {
     }
 
     setLocalUser(obj) {
-        if (obj)
+        if (obj) {
             this.localUser = obj.user;
+        }
     }
-
 
     // device specifications for mobile
     detectDevice() {
         this.isMobile = (window.innerWidth <= 800);
     }
-
-
 }
 
 

@@ -55,7 +55,7 @@ export class DeleteComponent implements OnInit {
             return err;
             }
             if (docs && docs.rows.length>0){
-                debugger
+               // debugger
                self.sList=docs.rows[0].doc.sList;
                self.url=docs.rows[0].doc.user;
                self.localDBID=docs.rows[0].doc._id;
@@ -79,7 +79,7 @@ export class DeleteComponent implements OnInit {
         this.af.database.list(`sListUsers/${this.sList}`).remove();
         // TODO: remove sListUsers in PouchDB
         this.db.get(this.localDBID).then(function (doc) {
-                debugger
+                // debugger
                 doc.user = self.url;
                 doc.sList=null;
                 return self.db.put(doc);

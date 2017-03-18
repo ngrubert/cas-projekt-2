@@ -1,12 +1,12 @@
-import { Injectable, Inject } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
-import { AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseRef} from 'angularfire2';
+import {Injectable, Inject} from '@angular/core';
+import {Http, Response, Headers, RequestOptions} from '@angular/http';
+import {Observable} from 'rxjs/Rx';
+import {AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseRef} from 'angularfire2';
 // Import RxJs required methods
 // import 'rxjs/add/operator/map';
 // import 'rxjs/add/operator/catch';
 
-import { user,list } from './../model/user';
+import {user, list} from './../model/user';
 
 @Injectable()
 export class CreateService {
@@ -20,7 +20,8 @@ export class CreateService {
     private sListUsersKey: any;
     roorRef;
     sListUsersRef;
-    mailedUsers:Array<any>=[];
+    mailedUsers: Array<any> = [];
+
     constructor(private http: Http, af: AngularFire) {
         this.af = af;
     }
@@ -33,25 +34,29 @@ export class CreateService {
 
         return this.af.database.object(`sList/${this.sList.getKey()}`);
     }
+
     //reset invited and emailed users
-    resetSList():void{
+    resetSList(): void {
         this.resetInvitedUsers();
-        this.resetMailedUsers;
+        this.resetMailedUsers();
     }
+
     //reset invited users
     resetInvitedUsers(): void {
         this.invitedUsers.length = 0;
     }
+
     //reset emailed users
     resetMailedUsers(): void {
         this.mailedUsers.length = 0;
     }
+
     //create dhopping list
     createSListUser(usr: any): void {
         console.log(this.sList);
-        let sListKey=usr.$key;
-        let insertData={};
-        insertData[sListKey]=true;
+        let sListKey = usr.$key;
+        let insertData = {};
+        insertData[sListKey] = true;
         let testme = this.af.database.object(`sListUsers`);
         if (this.invitedUsers.indexOf(usr.$key) < 0) {
             this.invitedUsers.push(usr.$key);
@@ -60,21 +65,24 @@ export class CreateService {
             // this.sendEmailToUser(usr.$key);
         }
     }
+
     // send email to user (not used)
-    sendEmailToUser(usr:any):void{
+    sendEmailToUser(usr: any): void {
         if (this.mailedUsers.indexOf(usr.$key) < 0) {
             this.mailedUsers.push(usr.$key);
-             var result = this.http.post('/api/email',usr)
-            .map((res: Response) => res.json())
-            .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
-            result.subscribe(x=>console.log(x));
+            let result = this.http.post('/api/email', usr)
+                .map((res: Response) => res.json())
+                .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+            result.subscribe(x => console.log(x));
         }
     }
+
     // add user to users collection
     addtoFirebase(element: user): void {
         const users = this.af.database.list(`users`);
         users.push(element);
     }
+
     //get user by email
     getItemFromFirebase(email: string): Observable<user> {
         let tempUsr: user;
@@ -84,7 +92,7 @@ export class CreateService {
                 equalTo: email,
                 limitToFirst: 1
             }
-        }).map(x=> {
+        }).map(x => {
             if (x && x.length > 0) {
                 return x[0];
             } else {
@@ -93,6 +101,7 @@ export class CreateService {
         });
         return usr;
     }
+
     //add id user not exists
     addIfNotExists(email: string): Observable<user[]> {
         const usr = this.af.database.list('users', {
@@ -106,43 +115,44 @@ export class CreateService {
 
     getUsers(): Observable<user[]> {
         // ...using get request
-        var result = this.http.get(this.users)
+        let result = this.http.get(this.users)
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
         return result;
 
     }
+
     // get all users
     getUsersFirebase(): Observable<any[]> {
-        var result = this.af.database.list('/users');
+        let result = this.af.database.list('/users');
         return result;
     }
+
     // dump default cataloge english
-    createFirebaseCatalog(catalog:Object){
+    createFirebaseCatalog(catalog: Object) {
         const addArticle = this.af.database.list(`articles`);
         const addCatalog = this.af.database.list(`catalog/english`);
-        for (var property in catalog) {
+        for (let property in catalog) {
             if (catalog.hasOwnProperty(property)) {
-                let insertData={};
-                let myArtcileArr=[];
-                let myCatalogObj={};
-                let catalogObj={};
-                catalogObj["name"]=property;
-                catalogObj["isDefault"]=true;
-                catalogObj["articles"]=[];
+                let insertData = {};
+                let myArtcileArr = [];
+                let myCatalogObj = {};
+                let catalogObj = {};
+                catalogObj["name"] = property;
+                catalogObj["isDefault"] = true;
+                catalogObj["articles"] = [];
 
-                let propertyAdded=addCatalog.push(catalogObj)
-                for (var i=0;i<catalog[property].length;i++)
-                {
-                    let val=catalog[property][i];
-                    var obj={
-                        name:val,
-                        isDefault:true
+                let propertyAdded = addCatalog.push(catalogObj)
+                for (let i = 0; i < catalog[property].length; i++) {
+                    let val = catalog[property][i];
+                    let obj = {
+                        name: val,
+                        isDefault: true
                     }
-                    let articleAdded= addArticle.push(obj);
-                    var key=articleAdded.key;
-                    insertData[key]=true;
-                    let addToCatalog=this.af.database.list(`catalog/english/${propertyAdded.key}/articles`)
+                    let articleAdded = addArticle.push(obj);
+                    let key = articleAdded.key;
+                    insertData[key] = true;
+                    let addToCatalog = this.af.database.list(`catalog/english/${propertyAdded.key}/articles`)
                     addToCatalog.push(key);
                     myArtcileArr.push(insertData);
                     catalogObj["articles"].push(key);
@@ -152,41 +162,48 @@ export class CreateService {
     }
 
     // dump default catalogs with en and de names, articles with imgs
-    createFirebaseCatalogn(catalog: Object) {
-        const addArticle = this.af.database.list(`articlesn`);
-        const addCatalog = this.af.database.list(`catalogn`);
-        for (let property in catalog) {
-            if (catalog.hasOwnProperty(property)) {
-                let insertData = {};
-                let myArtcileArr = [];
-                let catalogObj = {};
-                let names = property.split("|");
-                catalogObj["name"] = { en: names[0], de: names[1] };
-                catalogObj["isDefault"] = true;
-                catalogObj["articles"] = [];
+    createFirebaseCatalogy(catalog: Object) {
+        let langs = ["en", "de"];
+        for (let iLang in langs) {
+            let lang = langs[iLang];
+            const addArticle = this.af.database.list(`/users/${user}/articlesy/${lang}`);
+            const addCatalog = this.af.database.list(`/users/${user}/catalogy/${lang}`);
+            for (let property in catalog) {
+                if (catalog.hasOwnProperty(property)) {
+                    let insertData = {};
+                    let myArtcileArr = [];
+                    let catalogObj = {};
+                    let names = property.split("|");
+                    catalogObj["name"] = names[iLang];
+                    catalogObj["isDefault"] = true;
+                    catalogObj["articles"] = [];
 
-                let propertyAdded = addCatalog.push(catalogObj)
-                for (let i = 0; i < catalog[property].length; i++) {
-                    let val = catalog[property][i];
-                    let articleItems = val.split("|");
-                    let img = articleItems[2];
-                    if (!img.match(/\.(png|svg|jpg|jpeg|gif)/i)) { img += ".png" };
-                    let articleObj = {
-                        name: { en: articleItems[0], de: articleItems[1] },
-                        img: img,
-                        isDefault: true
-                    };
-                    let articleAdded = addArticle.push(articleObj);
-                    let key = articleAdded.key;
-                    insertData[key] = true;
-                    let addToCatalog = this.af.database.list(`catalogn/${propertyAdded.key}/articles`)
-                    addToCatalog.push(key);
-                    myArtcileArr.push(insertData);
-                    catalogObj["articles"].push(key);
+                    let propertyAdded = addCatalog.push(catalogObj);
+                    for (let i = 0; i < catalog[property].length; i++) {
+                        let val = catalog[property][i];
+                        let articleItems = val.split("|");
+                        let img = articleItems[2];
+                        if (!img.match(/\.(png|svg|jpg|jpeg|gif)/i)) {
+                            img += ".png"
+                        }
+                        let articleObj = {
+                            name: articleItems[iLang],
+                            img: img,
+                            isDefault: true
+                        };
+                        let articleAdded = addArticle.push(articleObj);
+                        let key = articleAdded.key;
+                        insertData[key] = true;
+                        let addToCatalog = this.af.database.list(`catalogx/${langs}/${propertyAdded.key}/articles`)
+                        addToCatalog.push(key);
+                        myArtcileArr.push(insertData);
+                        catalogObj["articles"].push(key);
+                    }
                 }
             }
         }
     }
+
     // dump default catalogs with en and de names, articles with imgs
     createFirebaseCatalogx(catalog: Object) {
         let langs = ["en", "de"];
@@ -209,7 +226,9 @@ export class CreateService {
                         let val = catalog[property][i];
                         let articleItems = val.split("|");
                         let img = articleItems[2];
-                        if (!img.match(/\.(png|svg|jpg|jpeg|gif)/i)) { img += ".png"}
+                        if (!img.match(/\.(png|svg|jpg|jpeg|gif)/i)) {
+                            img += ".png"
+                        }
                         let articleObj = {
                             name: articleItems[iLang],
                             img: img,

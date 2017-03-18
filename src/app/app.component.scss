@@ -21,23 +21,22 @@ a.active {
   flex: 1 1 auto;
 }
 
-md-toolbar-row {
+.mat-toolbar-row {
   padding-left: 1em;
+  height: 50px;
 }
 
-md-toolbar-row.toolbar-subtext {
+.mat-toolbar-row.toolbar-subtext {
   align-items: baseline;
   font-size: initial;
+  width: calc(100% - 100px - 1em);
+  overflow: hidden;
 }
 
-md-toolbar {
+.mat-toolbar {
   /*height:10vh;*/
   height: 100px;
   padding: 0;
-}
-
-md-toolbar-row {
-  height: 50px;
 }
 
 .toolbar-img-align {

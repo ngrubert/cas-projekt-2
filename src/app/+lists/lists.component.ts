@@ -89,12 +89,13 @@ export class ListsComponent implements OnInit {
                     for (let i = 0; i < x.length; i++) {
                         for (let property in x[i]) {
                             if (x[i].hasOwnProperty(property)) {
-                                if (x[i][property].toString() == "true" || x[i][property].toString() == "false") {
+                                if (x[i][property].toString() == "true"
+                                    || x[i][property].toString() == "false") {
                                     if (property == self.url) {
                                         self.af.database.object(`sList/${x[i].$key}`).map(x => x)
                                             .subscribe(x => {
                                                 if (x && x.title !== undefined) {
-                                                    self.updateSLists(x);
+                                                    this.sLists.push(x);
                                                 }
                                             })
                                     }
@@ -107,12 +108,6 @@ export class ListsComponent implements OnInit {
                 }
                 sListUsers.unsubscribe();
             })
-    }
-
-    // update/push sList array
-    updateSLists(x) {
-        let p = x;
-        this.sLists.push(p);
     }
 
     // go to shopping list page on click
