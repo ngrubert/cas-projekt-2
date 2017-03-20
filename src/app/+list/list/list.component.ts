@@ -316,9 +316,11 @@ export class ListComponent implements OnInit, OnDestroy {
         this.searchArticles = [];
         this.search = '';
         if (item.$key) {
+            console.log("Adding known article: "+item.name+" = "+item.$key);
             this.addArticleToList(item.$key);
         } else {
             // add a new article with the name the user has just given as a search string
+            console.log("Adding UNknown article: "+item.name);
             let art = item;
             let article$ = this._listService.getArticleByName(art.name, this.slistLang).map(x => x);
             article$.subscribe(x => {
@@ -326,11 +328,10 @@ export class ListComponent implements OnInit, OnDestroy {
                     if (x && x.length > 0) {
                         item.$key = x[0].$key;
                         this.addArticleToList(x[0].$key);
+                        article$.unsubscribe();
                     } else {
                         this._listService.addArticleAndAddToList(this.sList, art, this.slistLang);
                     }
-                    // getting "article$_1.unsubscribe is undefined" here
-                    article$.unsubscribe();
                 }
             })
         }
