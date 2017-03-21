@@ -14,7 +14,7 @@ import {AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseR
 declare var PouchDB: any;
 const MAX_HITS_DISPLAYED = 30;
 const COLOR_CATALOGITEM = '#58c';
-const COLOR_INSLIST = '#f44';
+const COLOR_INSLIST = '#e33'; //'#f44';
 const COLOR_INBASKET = '#792';
 
 
