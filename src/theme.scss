@@ -3,36 +3,36 @@
 @include mat-core();
 
 $my-blue: (
-  50: #e3f2fd,
-  100: #bbdefb,
-  200: #90caf9,
-  300: #64b5f6,
-  400: #42a5f5,
-  500: #2196f3,
-  600: #1e88e5,
-  700: #1976d2,
-  800: #1565c0,
-  900: #002fa7,
-  A100: #82b1ff,
-  A200: #448aff,
-  A400: #2979ff,
-  A700: #2962ff,
-  contrast: (
-    50: $black-87-opacity,
-    100: $black-87-opacity,
-    200: $black-87-opacity,
-    300: $black-87-opacity,
-    400: $black-87-opacity,
-    500: white,
-    600: white,
-    700: white,
-    800: $white-87-opacity,
-    900: $white-87-opacity,
-    A100: $black-87-opacity,
-    A200: white,
-    A400: white,
-    A700: white,
-  )
+        50: #8aa8f5,
+        100: #4a76e6,
+        200: #2558d8,
+        300: #063dc7,
+        400: #0033b5,
+        500: #002fa7,
+        600: #002b98,
+        700: #002480,
+        800: #001a5d,
+        900: #000c29,
+        A100: #82b1ff,
+        A200: #448aff,
+        A400: #2979ff,
+        A700: #2962ff,
+        contrast: (
+                50: $white-87-opacity,
+                100: $white-87-opacity,
+                200: $white-87-opacity,
+                300: $white-87-opacity,
+                400: $white-87-opacity,
+                500: white,
+                600: white,
+                700: white,
+                800: $white-87-opacity,
+                900: $white-87-opacity,
+                A100: $white-87-opacity,
+                A200: white,
+                A400: white,
+                A700: white,
+        )
 );
 
 $primary: mat-palette($my-blue);
@@ -44,10 +44,26 @@ $theme: mat-light-theme($primary, $accent);
 @include angular-material-theme($theme);
 
 .dark-theme {
-  $dark-p: mat-palette($my-blue, 900);
-  $dark-a: mat-palette($mat-blue-grey);
+  $dark-primary: mat-palette($my-blue);
+//  $dark-accent: mat-palette($mat-blue-grey);
+  $dark-accent: mat-palette($mat-amber);
 
-  $dark-t: mat-dark-theme($dark-p, $dark-a);
+  $dark-theme: mat-dark-theme($dark-primary, $dark-accent);
 
-  @include angular-material-theme($dark-t);
+  @include angular-material-theme($dark-theme);
+
+  // configure text input fields
+  & .mat-input-placeholder {
+    color: #888;
+  }
+  & .mat-input-placeholder.mat-empty {
+    color: #aaa;
+  }
+  & .mat-input-placeholder.mat-focused {
+    color: #999;
+  }
+  & .mat-input-underline .mat-input-ripple {
+    background-color: #aaa;
+  }
+
 }
