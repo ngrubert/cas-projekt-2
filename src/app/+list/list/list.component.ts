@@ -1,5 +1,7 @@
 import {Component, OnInit, Inject, OnDestroy} from '@angular/core';
 import {Router, ActivatedRoute, Params} from '@angular/router';
+import {AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseRef} from 'angularfire2';
+import {TranslateService} from "@ngx-translate/core";
 
 import {SharedComponent} from './../../shared/shared.component';
 import {ListService} from './../list.service';
@@ -9,7 +11,6 @@ import {Observable} from 'rxjs/Observable';
 
 import {list} from './../../model/user';
 import {Subject} from 'rxjs/Subject';
-import {AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseRef} from 'angularfire2';
 
 declare var PouchDB: any;
 const MAX_HITS_DISPLAYED = 30;
@@ -69,7 +70,8 @@ export class ListComponent implements OnInit, OnDestroy {
     constructor(af: AngularFire,
                 public _listService: ListService,
                 private route: ActivatedRoute,
-                private router: Router) {
+                private router: Router,
+                private translate: TranslateService) {
         this.af = af;
         this.db = new PouchDB("sList");
     }
@@ -107,7 +109,7 @@ export class ListComponent implements OnInit, OnDestroy {
 
         // get all articles for shopping list
         this.getArticleBySlist();
-        console.log("init: name="+JSON.stringify(this.articlesList[0]));
+        console.log("init: name=" + JSON.stringify(this.articlesList[0]));
 
         this.detailBox = document.getElementsByClassName('slist-article-details')[0];
 
@@ -134,20 +136,27 @@ export class ListComponent implements OnInit, OnDestroy {
 
     getSTitle() {
         this._listService.getSDetails(this.sList).map(x => x).subscribe(x => {
-            let title = x.title;
-            if (title.length < 30 && x.description) {
-                title += " &ndash; " + x.description;
-            }
-            document.getElementById("sListTitle").innerHTML = title ? title : "";
-            if (x.language) {
-                this.slistLang = x.language;
-                if (!this.slistLang.match(/^(de|en)$/)) {
-                    this.slistLang = (x.language.toLowerCase() == 'english') ? 'en' : 'de';
+            if (x) {
+                let title = x.title;
+                if (title && title.length < 30 && x.description) {
+                    title += " &ndash; " + x.description;
                 }
-                // console.log("getSTitle: slist title="+this.title+", slistLang="+this.slistLang);
-                // get catalog based on the user selected shopping list language
-                this.getCatalog(this.slistLang);
-                this.getUsersCatalog(this.slistLang);
+                if (!title) {
+                    this.translate.get('APP.SUBTITLE').subscribe((res: string) => {
+                        title = res
+                    });
+                }
+                document.getElementById("sListTitle").innerHTML = title;
+                if (x.language) {
+                    this.slistLang = x.language;
+                    if (!this.slistLang.match(/^(de|en)$/)) {
+                        this.slistLang = (x.language.toLowerCase() == 'english') ? 'en' : 'de';
+                    }
+                    // console.log("getSTitle: slist title="+this.title+", slistLang="+this.slistLang);
+                    // get catalog based on the user selected shopping list language
+                    this.getCatalog(this.slistLang);
+                    this.getUsersCatalog(this.slistLang);
+                }
             }
         })
     }
@@ -201,45 +210,49 @@ export class ListComponent implements OnInit, OnDestroy {
     // remove accents so we can search for "apfel" and find "äpfel"
     private unaccentedLC(s: string): string {
         if (s) {
-            return s.toLowerCase().replace(/[àáâãäå]/g,"a").replace(/ç/g,"c").replace(/[èéêë]/g,"e")
-                .replace(/[ìíîï]/g,"i").replace(/ñ/g,"n").replace(/[òóôõö]/g,"o").replace(/[ùúûü]/g,"u")
-                .replace(/ß/g,"ss");
+            return s.toLowerCase().replace(/[àáâãäå]/g, "a").replace(/ç/g, "c").replace(/[èéêë]/g, "e")
+                .replace(/[ìíîï]/g, "i").replace(/ñ/g, "n").replace(/[òóôõö]/g, "o").replace(/[ùúûü]/g, "u")
+                .replace(/ß/g, "ss");
         }
         return s;
     }
+
     // find article from the list of all articles
     performSearch(inp): Array<any> {
         if (!inp || inp.trim() == '') {
             return [];
         }
         inp = inp.trim();
-        if (inp.length == 1) { inp = inp.toUpperCase() };
+        if (inp.length == 1) {
+            inp = inp.toUpperCase()
+        }
+        ;
         let foundArticles = [];
         let foundNames = new Set();
         // first find articles that start with the search string...
         let startsWith = new RegExp("^" + this.unaccentedLC(inp), "i");
         for (let i = 0; i < this.articles.length && foundArticles.length < MAX_HITS_DISPLAYED; i++) {
             let lcName = this.unaccentedLC(this.articles[i].name);
-            if (lcName.match(startsWith) && ! foundNames.has(lcName)) {
+            if (lcName.match(startsWith) && !foundNames.has(lcName)) {
                 foundNames.add(lcName);
                 let item = this.articles[i];
                 item.backGroundColor = (this.findInListArticles(item.$key)) ? COLOR_INSLIST : COLOR_CATALOGITEM;
                 foundArticles.push(this.articles[i]);
             }
         }
-        console.log(foundArticles.length+" hits that start with "+inp);
+        console.log(foundArticles.length + " hits that start with " + inp);
         // if we still don't have enough, also show articles that contain the search string somewhere in the middle
         let contains = new RegExp(this.unaccentedLC(inp), "i"); // \\B is "non-word boundary"
         for (let i = 0; i < this.articles.length && foundArticles.length < MAX_HITS_DISPLAYED; i++) {
             let lcName = this.unaccentedLC(this.articles[i].name);
-            if (lcName.match(contains) && ! foundNames.has(lcName)) {
+            if (lcName.match(contains) && !foundNames.has(lcName)) {
                 foundNames.add(lcName);
                 let item = this.articles[i];
                 item.backGroundColor = (this.findInListArticles(item.$key)) ? COLOR_INSLIST : COLOR_CATALOGITEM;
                 foundArticles.push(this.articles[i]);
             }
         }
-        console.log(foundArticles.length+" hits that start with or contain "+inp);
+        console.log(foundArticles.length + " hits that start with or contain " + inp);
         if (foundArticles.length == 0) {
             let art = {
                 name: inp.charAt(0).toUpperCase() + inp.slice(1),
@@ -316,11 +329,11 @@ export class ListComponent implements OnInit, OnDestroy {
         this.searchArticles = [];
         this.search = '';
         if (item.$key) {
-            console.log("Adding known article: "+item.name+" = "+item.$key);
+            console.log("Adding known article: " + item.name + " = " + item.$key);
             this.addArticleToList(item.$key);
         } else {
             // add a new article with the name the user has just given as a search string
-            console.log("Adding UNknown article: "+item.name);
+            console.log("Adding UNknown article: " + item.name);
             let art = item;
             let article$ = this._listService.getArticleByName(art.name, this.slistLang).map(x => x);
             article$.subscribe(x => {
@@ -429,7 +442,7 @@ export class ListComponent implements OnInit, OnDestroy {
         let updated: boolean = false;
         for (let i = 0; i < this.catalogs.length; i++) {
             if (this.catalogs[i].id == item.id) {
-                console.log("pushToCatalog item.name="+item.name);
+                console.log("pushToCatalog item.name=" + item.name);
                 this.catalogs[i].name = item.name;
                 updated = true;
             }
@@ -444,7 +457,7 @@ export class ListComponent implements OnInit, OnDestroy {
         for (let i = 0; i <= this.catalogs.length; i++) {
             if (this.catalogs[i] && this.catalogs[i].id == id) {
                 let obj: listCatalog = {};
-                console.log("changeInCatalog item.name="+item.name);
+                console.log("changeInCatalog item.name=" + item.name);
                 obj.name = item.name;
                 obj.id = item.$key;
                 this.pushToArticles(obj, this.catalogs[i].id);
@@ -458,7 +471,7 @@ export class ListComponent implements OnInit, OnDestroy {
         let updated: boolean = false;
         for (let i = 0; i < this.usersCatalogs.length; i++) {
             if (this.usersCatalogs[i].id == item.id) {
-                console.log("pushToUsersCatalog item.name="+item.name);
+                console.log("pushToUsersCatalog item.name=" + item.name);
                 this.usersCatalogs[i].name = item.name;
                 updated = true;
             }
@@ -474,7 +487,7 @@ export class ListComponent implements OnInit, OnDestroy {
         for (let i = 0; i <= this.catalogs.length; i++) {
             if (this.usersCatalogs[i] && this.usersCatalogs[i].id == id) {
                 let obj: listCatalog = {};
-                console.log("changeInUsersCatalogs item.name="+item.name);
+                console.log("changeInUsersCatalogs item.name=" + item.name);
                 obj.name = item.name;
                 obj.id = item.$key;
                 this.pushToUserArticles(obj, this.usersCatalogs[i].id);
@@ -490,7 +503,7 @@ export class ListComponent implements OnInit, OnDestroy {
             if (this.usersCatalogs[i].id == id) {
                 for (let j = 0; j < this.usersCatalogs[i].articles.length; j++) {
                     if (this.usersCatalogs[i].articles[j].id == item.id) {
-                        console.log("pushToUserArticles item.name="+item.name);
+                        console.log("pushToUserArticles item.name=" + item.name);
                         this.usersCatalogs[i].articles[j].name = item.name;
                         updated = true;
                     }
@@ -509,7 +522,7 @@ export class ListComponent implements OnInit, OnDestroy {
             if (this.catalogs[i].id == id) {
                 for (let j = 0; j < this.catalogs[i].articles.length; j++) {
                     if (this.catalogs[i].articles[j].id == item.id) {
-                        console.log("pushToArticles item.name="+item.name);
+                        console.log("pushToArticles item.name=" + item.name);
                         this.catalogs[i].articles[j].name = item.name;
                         updated = true;
                     }
@@ -660,7 +673,9 @@ export class ListComponent implements OnInit, OnDestroy {
     closeDetailBox() {
         this.detailBox.style.display = 'none';
         let focused: any = document.activeElement;
-        if (focused) { focused.blur(); }
+        if (focused) {
+            focused.blur();
+        }
         if (this.selectedArticleElement) {
             this.selectedArticleElement.scrollIntoView();
         }

@@ -78,13 +78,13 @@ export class CreateService {
     }
 
     // add user to users collection
-    addtoFirebase(element: user): void {
+    addUserToFirebase(element: user): void {
         const users = this.af.database.list(`users`);
         users.push(element);
     }
 
     //get user by email
-    getItemFromFirebase(email: string): Observable<user> {
+    getUserFromFirebase(email: string): Observable<user> {
         let tempUsr: user;
         const usr = this.af.database.list('users', {
             query: {
@@ -103,7 +103,7 @@ export class CreateService {
     }
 
     //add id user not exists
-    addIfNotExists(email: string): Observable<user[]> {
+    addUserIfNotExists(email: string): Observable<user[]> {
         const usr = this.af.database.list('users', {
             query: {
                 orderByChild: 'email',
@@ -162,7 +162,7 @@ export class CreateService {
     }
 
     // dump default catalogs with en and de names, articles with imgs
-    createFirebaseCatalogy(catalog: Object) {
+    createFirebaseCatalogycreateFirebaseCatalogy(catalog: Object) {
         let langs = ["en", "de"];
         for (let iLang in langs) {
             let lang = langs[iLang];

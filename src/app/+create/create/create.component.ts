@@ -428,13 +428,6 @@ export class CreateComponent implements OnInit,OnDestroy {
         return index;
     }
 
-    // item not exists
-    ItemNotIn(obj) {
-        let exists = this.existingUsers.filter(function (item) {
-            return item.email === obj.email;
-        });
-        return !exists || exists.length == 0;
-    }
 
     // check if users exists and edit shoppingList and save users
     CheckUsers() {
@@ -463,7 +456,7 @@ export class CreateComponent implements OnInit,OnDestroy {
 
         let request$ = Observable.from(this.emailAddrs)
             .mergeMap(data => {
-                return this.addIfnotExists(data);
+                return this.addUserIfNotExists(data);
             })
             .mergeMap(data => {
                 return this.getUserObjs(data);
@@ -525,16 +518,16 @@ export class CreateComponent implements OnInit,OnDestroy {
     // get users 
     getUserObjs(usr: user): Observable<user> {
         let self = this;
-        return self._createService.getItemFromFirebase(usr.email)
+        return self._createService.getUserFromFirebase(usr.email)
             .map(x => x);
     }
 
     // add if users not exists
-    addIfnotExists(usr: user): Observable<user> {
+    addUserIfNotExists(usr: user): Observable<user> {
         let self = this;
         let exists = self.usersFirebase.filter((item) => item.email == usr.email);
         if (!exists || exists.length == 0) {
-            self._createService.addtoFirebase(usr);
+            self._createService.addUserToFirebase(usr);
         }
         let arr = [];
         arr.push(usr);
