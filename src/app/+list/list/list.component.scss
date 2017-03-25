@@ -205,8 +205,9 @@ $COLOR_CATALOGITEM: #58c;
 .article-item .singleLetter {
   height: 60%;
   color: white;
-  font-family: 'Rock Salt', cursive;
-  font-size:2em;
+  font-family: 'han-segli'; //''Rock Salt', cursive;
+  font-size: 3em;
+  padding-top:12px;
 }
 
 .article-item-amount {
