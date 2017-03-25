@@ -112,10 +112,11 @@ export class ListsComponent implements OnInit {
 
     // go to shopping list page on click
     goToSlist(item) {
+
         this.router.navigate(['list', item.$key, {email: this.url}]);
     }
 
-    // create new shopping list go to create page
+    // create new shopping list -- go to create page
     createNewList() {
         this.router.navigate(['create']);
     }

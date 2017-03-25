@@ -116,7 +116,7 @@ export class EditComponent implements OnInit,OnDestroy {
     }
 
     // edit shoppingList
-    EditList() {
+    editList() {
         console.log(this.model);
         // this.model.users.push(this.model.email);
         // this.model.users.push(this.initialEmail);
@@ -274,6 +274,11 @@ export class EditComponent implements OnInit,OnDestroy {
                 let removeId = this._editService.removeUserFromsListUsers(x[0].$key);
             }
         })
+    }
+
+    // cancel redirect to lists selection
+    cancelList() {
+        this.router.navigate(['lists']);
     }
 
 }

@@ -49,6 +49,165 @@ export class CreateComponent implements OnInit,OnDestroy {
         this.addArticles();
     }
 
+    ngOnDestroy() {
+        // this.reqSubscribe.unsubscribe();
+    }
+
+    // Create shoppingList. This is called by the "create shopping list" button
+    createList() {
+        debugger;
+        console.log(this.model);
+        // this.model.users.push(this.model.email);  // the 1st, requured, email address
+        // this.model.users.push(this.initialEmail); // the initial email address of the invited users
+        this.emailAddrs = [];
+        this.inviteUsers = JSON.parse(JSON.stringify(this.users));
+        if (this.initialEmail && this.initialEmail != "") {
+            this.inviteUsers.push(this.initialEmail);
+        }
+        this.inviteUsers.forEach(function(item,i) { this.inviteUsers[i] = this.inviteUsers[i].trim()})
+        this.inviteUsers.push(this.model.email);
+        console.log(this.inviteUsers); // a simple list of email addr strings, email, initialEmail and moreEmails
+        this.CheckUsers();
+    }
+
+    // This is called by the "add more users" button
+    // add inviteUsers text fields, initially blank
+    addInvitedUsers() {
+        this.users.push('');
+    }
+
+    // angular2 pipe for filtering in ui
+    customTrackBy(index: number, obj: any): any {
+        return index;
+    }
+
+
+    // check if users exists and edit shoppingList and save users
+    CheckUsers() {
+        let self = this;
+        self.emailedUsers = [];
+        for (let i = 0; i < this.inviteUsers.length; i++) {
+            if (this.inviteUsers && this.inviteUsers[i] != "") {
+                let obj = {
+                    email: this.inviteUsers[i].trim()
+                }
+                self.emailAddrs.push(obj);
+            }
+        }
+        debugger;
+        this.model.isFinished = false;
+        let sListTemp: list = this.model;
+        sListTemp.siteUrl = window.location.origin;
+        sListTemp.language = this.translate.currentLang;
+        sListTemp.users = [];
+        let sListCreated$ = self._createService.createSList(sListTemp);
+        sListCreated$.subscribe(x => {
+            this.sList = x;
+            this.sListKey = x.$key;
+        });
+        self._createService.resetSList();
+
+        // foreach email addr
+        // - check if the firebase /users/key exists, if not, create it
+        // - get the user object
+        // - create the firebase /sListUsers/ object
+        let request$ = Observable.from(this.emailAddrs)
+            .mergeMap(data => {
+                return this.addUserIfNotExists(data);
+            })
+            .mergeMap(data => {
+                return this.getUserObjs(data);
+            })
+            .map(data => {
+                this.createSListUser(data);
+                return this.sendKeys(data);
+            });
+        // .map(data=>{
+        //     this.sendEmail(data);
+        //     return this.sendKeys(data);
+        // });
+
+        // we have an all new sList and a local user, store in local db
+
+        // route to the list, params=sllist-key, email-key
+        this.reqSubscribe = request$.subscribe(
+            val => {
+                if (val) {
+                    self.emailedUsers.push(val);
+                    if (self.emailedUsers.length == self.inviteUsers.length) {
+                        if (self.sList) {
+                            let userEmailKey = self.emailedUsers.find(self.findUserEmailKey, self);
+                            self.router.navigate([`list/${self.sListKey}`, {email: userEmailKey.$key}])
+                        }
+                    }
+                }
+                console.log(val);
+            }
+        );
+        // if (!window.navigator.onLine)
+        // {
+        //     self.snackBar.open('Shopping List will be Created and email will be sent, once device comes online, Don\'t close the Browser', 'Okay');
+        // }
+
+    }
+
+    // find user email by key
+    findUserEmailKey(item: any): boolean {
+        return item.email == this.model.email;
+    }
+
+    // send email by keys
+    sendKeys(data: any): Observable<any> {
+        return data;
+    }
+
+    sendEmail(usr: any): void {
+        if (usr) {
+            this._createService.sendEmailToUser(usr);
+        }
+    }
+
+    // create shopping list user
+    createSListUser(usr): void {
+        if (usr) {
+            this._createService.createSListUser(usr);
+            console.log(usr);
+        }
+    }
+
+    // get users 
+    getUserObjs(usr: user): Observable<user> {
+        let self = this;
+        return self._createService.getUserFromFirebase(usr.email)
+            .map(x => x);
+    }
+
+    // add if users not exists
+    addUserIfNotExists(usr: user): Observable<user> {
+        let self = this;
+        let exists = self.usersFirebase.filter((item) => item.email == usr.email);
+        if (!exists || exists.length == 0) {
+            self._createService.addUserToFirebase(usr);
+        }
+        let arr = [];
+        arr.push(usr);
+        return Observable.from(arr);
+    }
+
+    // get users
+    getUsers() {
+        this._createService.getUsersFirebase()
+            .subscribe(
+                users => {
+                    this.usersFirebase = users;
+                }, //Bind to view
+                err => {
+                    // Log errors if any
+                    console.log(err);
+                });
+    }
+
+
     addArticles() {
         let catalog = {
             "Fruits & Vegetables|Früchte & Gemüse": [
@@ -395,156 +554,6 @@ export class CreateComponent implements OnInit,OnDestroy {
             ],
         };
 
-        //this._createService.createFirebaseCatalogy(catalog);
+        this._createService.createFirebaseCatalogx(catalog);
     }
-
-    ngOnDestroy() {
-        // this.reqSubscribe.unsubscribe();
-    }
-
-    // create shoppingList
-    CreateList() {
-        debugger;
-        console.log(this.model);
-        // this.model.users.push(this.model.email);
-        // this.model.users.push(this.initialEmail);
-        this.emailAddrs = [];
-        this.inviteUsers = JSON.parse(JSON.stringify(this.users));
-        if (this.initialEmail && this.initialEmail != "") {
-            this.inviteUsers.push(this.initialEmail);
-        }
-        this.inviteUsers.push(this.model.email);
-        console.log(this.inviteUsers);
-        this.CheckUsers();
-    }
-
-    // add inviteUsers
-    addInvitedUsers() {
-        this.users.push('');
-    }
-
-    // angular2 pipe for filtering in ui
-    customTrackBy(index: number, obj: any): any {
-        return index;
-    }
-
-
-    // check if users exists and edit shoppingList and save users
-    CheckUsers() {
-        let self = this;
-        self.emailedUsers = [];
-        for (let i = 0; i < this.inviteUsers.length; i++) {
-            if (this.inviteUsers && this.inviteUsers[i] != "") {
-                let obj = {
-                    email: this.inviteUsers[i]
-                }
-                self.emailAddrs.push(obj);
-            }
-        }
-        debugger;
-        this.model.isFinished = false;
-        let sListTemp: list = this.model;
-        sListTemp.siteUrl = window.location.origin;
-        sListTemp.language = this.translate.currentLang;
-        sListTemp.users = [];
-        let sListCreated$ = self._createService.createSList(sListTemp);
-        sListCreated$.subscribe(x => {
-            this.sList = x;
-            this.sListKey = x.$key;
-        });
-        self._createService.resetSList();
-
-        let request$ = Observable.from(this.emailAddrs)
-            .mergeMap(data => {
-                return this.addUserIfNotExists(data);
-            })
-            .mergeMap(data => {
-                return this.getUserObjs(data);
-            })
-            .map(data => {
-                this.createSListUser(data);
-                return this.sendKeys(data);
-            });
-        // .map(data=>{
-        //     this.sendEmail(data);
-        //     return this.sendKeys(data);
-        // });
-
-        this.reqSubscribe = request$.subscribe(
-            val => {
-                if (val) {
-                    self.emailedUsers.push(val);
-                    if (self.emailedUsers.length == self.inviteUsers.length) {
-                        if (self.sList) {
-                            let userEmailKey = self.emailedUsers.find(self.findUserEmailKey, self);
-                            self.router.navigate([`list/${self.sListKey}`, {email: userEmailKey.$key}])
-                        }
-                    }
-                }
-                console.log(val);
-            }
-        );
-        // if (!window.navigator.onLine)
-        // {
-        //     self.snackBar.open('Shopping List will be Created and email will be sent, once device comes online, Don\'t close the Browser', 'Okay');
-        // }
-
-    }
-
-    // find user email by key
-    findUserEmailKey(item: any): boolean {
-        return item.email == this.model.email;
-    }
-
-    // send email by keys
-    sendKeys(data: any): Observable<any> {
-        return data;
-    }
-
-    sendEmail(usr: any): void {
-        if (usr) {
-            this._createService.sendEmailToUser(usr);
-        }
-    }
-
-    // create shopping list user
-    createSListUser(usr): void {
-        if (usr) {
-            this._createService.createSListUser(usr);
-            console.log(usr);
-        }
-    }
-
-    // get users 
-    getUserObjs(usr: user): Observable<user> {
-        let self = this;
-        return self._createService.getUserFromFirebase(usr.email)
-            .map(x => x);
-    }
-
-    // add if users not exists
-    addUserIfNotExists(usr: user): Observable<user> {
-        let self = this;
-        let exists = self.usersFirebase.filter((item) => item.email == usr.email);
-        if (!exists || exists.length == 0) {
-            self._createService.addUserToFirebase(usr);
-        }
-        let arr = [];
-        arr.push(usr);
-        return Observable.from(arr);
-    }
-
-    // get users
-    getUsers() {
-        this._createService.getUsersFirebase()
-            .subscribe(
-                users => {
-                    this.usersFirebase = users;
-                }, //Bind to view
-                err => {
-                    // Log errors if any
-                    console.log(err);
-                });
-    }
-
 }

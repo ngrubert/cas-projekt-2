@@ -33,9 +33,26 @@ export class DeleteComponent implements OnInit {
 
     ngOnInit() {
         // this.getUsers();
-
         this.syncChanges();
         this.showSideMenu();
+    }
+
+    //get or set email id from localDB
+    syncChanges() {
+        let self=this;
+        this.db.allDocs({include_docs: true, descending: true}, function(err, docs) {
+            if (err){
+                console.log(err);
+                return err;
+            }
+            if (docs && docs.rows.length>0){
+                // debugger
+                self.sList=docs.rows[0].doc.sList;
+                self.url=docs.rows[0].doc.user;
+                self.localDBID=docs.rows[0].doc._id;
+                self.getSListDetail();
+            }
+        });
     }
 
     // show side nav extras
@@ -46,24 +63,6 @@ export class DeleteComponent implements OnInit {
         document.getElementById('delete').style.display='block';
     }
 
-    //get or set email id from localDB
-     syncChanges() {
-        let self=this;
-        this.db.allDocs({include_docs: true, descending: true}, function(err, docs) {
-            if (err){
-            console.log(err);
-            return err;
-            }
-            if (docs && docs.rows.length>0){
-               // debugger
-               self.sList=docs.rows[0].doc.sList;
-               self.url=docs.rows[0].doc.user;
-               self.localDBID=docs.rows[0].doc._id;
-               self.getSListDetail();
-            }
-        });
-    }
-
     // get shopping list details by id
     getSListDetail() {
         this.af.database.object(`sList/${this.sList}`).map(x=>x).subscribe(x=>{
@@ -72,7 +71,6 @@ export class DeleteComponent implements OnInit {
     }
 
     // delete shopping list and also the sListUsers by id
-
     deleteSList() {
         let self = this;
         this.af.database.list(`sList/${this.sList}`).remove();
@@ -87,9 +85,9 @@ export class DeleteComponent implements OnInit {
         this.router.navigate([`lists`,{email:this.url}]);
     }
 
-// cancel redirect ti lists
+    // cancel redirect to the list
     cancel() {
-        this.router.navigate([`lists`,{email:this.url}]);
+        this.router.navigate([`list/${this.sList}`,{email:this.url}]);
     }
 
 }

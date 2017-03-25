@@ -147,8 +147,8 @@
     <div class="slist-catalog">
         <div *ngFor="let p of catalogs; let i=index" style="margin: 1em 0;">
         <span class="sList-catalog-item-name-default">
-            <i *ngIf=" articles.style.display=='none'" class="material-icons">keyboard_arrow_down</i>
-            <i *ngIf=" articles.style.display!='none'" class="material-icons">keyboard_arrow_up</i>
+            <i *ngIf="articles.style.display=='none'" class="material-icons">keyboard_arrow_down</i>
+            <i *ngIf="articles.style.display!='none'" class="material-icons">keyboard_arrow_up</i>
             <span (tap)="toggleCatalog(articles)" style="cursor: pointer;">{{ p.name }}</span>
         </span>
             <div style="display:none;" class="slist-articles" #articles>

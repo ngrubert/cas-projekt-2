@@ -44,7 +44,7 @@ export class ClearComponent implements OnInit {
             return err;
             }
             if (docs && docs.rows.length>0){
-                debugger
+               // debugger
                self.sList=docs.rows[0].doc.sList;
                self.url=docs.rows[0].doc.user;
             }
@@ -53,7 +53,6 @@ export class ClearComponent implements OnInit {
 
     // show side nav (extras)
     showSideMenu() {
-        
         document.getElementById('edit').style.display='block';
         document.getElementById('clear').style.display='block';
         document.getElementById('finished').style.display='block';
@@ -69,7 +68,6 @@ export class ClearComponent implements OnInit {
     }
 
     // on cancel click redirect to list
-
     cancelClearArticles() {
         this.router.navigate([`list/${this.sList}`,{email:this.url}]);
     }

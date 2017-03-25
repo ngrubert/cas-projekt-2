@@ -135,7 +135,7 @@ export class CreateService {
         for (let property in catalog) {
             if (catalog.hasOwnProperty(property)) {
                 let insertData = {};
-                let myArtcileArr = [];
+                let myArticleArr = [];
                 let myCatalogObj = {};
                 let catalogObj = {};
                 catalogObj["name"] = property;
@@ -154,7 +154,7 @@ export class CreateService {
                     insertData[key] = true;
                     let addToCatalog = this.af.database.list(`catalog/english/${propertyAdded.key}/articles`)
                     addToCatalog.push(key);
-                    myArtcileArr.push(insertData);
+                    myArticleArr.push(insertData);
                     catalogObj["articles"].push(key);
                 }
             }
@@ -162,50 +162,8 @@ export class CreateService {
     }
 
     // dump default catalogs with en and de names, articles with imgs
-    createFirebaseCatalogycreateFirebaseCatalogy(catalog: Object) {
-        let langs = ["en", "de"];
-        for (let iLang in langs) {
-            let lang = langs[iLang];
-            const addArticle = this.af.database.list(`/users/${user}/articlesy/${lang}`);
-            const addCatalog = this.af.database.list(`/users/${user}/catalogy/${lang}`);
-            for (let property in catalog) {
-                if (catalog.hasOwnProperty(property)) {
-                    let insertData = {};
-                    let myArtcileArr = [];
-                    let catalogObj = {};
-                    let names = property.split("|");
-                    catalogObj["name"] = names[iLang];
-                    catalogObj["isDefault"] = true;
-                    catalogObj["articles"] = [];
-
-                    let propertyAdded = addCatalog.push(catalogObj);
-                    for (let i = 0; i < catalog[property].length; i++) {
-                        let val = catalog[property][i];
-                        let articleItems = val.split("|");
-                        let img = articleItems[2];
-                        if (!img.match(/\.(png|svg|jpg|jpeg|gif)/i)) {
-                            img += ".png"
-                        }
-                        let articleObj = {
-                            name: articleItems[iLang],
-                            img: img,
-                            isDefault: true
-                        };
-                        let articleAdded = addArticle.push(articleObj);
-                        let key = articleAdded.key;
-                        insertData[key] = true;
-                        let addToCatalog = this.af.database.list(`catalogx/${langs}/${propertyAdded.key}/articles`)
-                        addToCatalog.push(key);
-                        myArtcileArr.push(insertData);
-                        catalogObj["articles"].push(key);
-                    }
-                }
-            }
-        }
-    }
-
-    // dump default catalogs with en and de names, articles with imgs
     createFirebaseCatalogx(catalog: Object) {
+        if (1==1) { return }
         let langs = ["en", "de"];
         for (let iLang in langs) {
             let lang = langs[iLang];
@@ -214,7 +172,7 @@ export class CreateService {
             for (let property in catalog) {
                 if (catalog.hasOwnProperty(property)) {
                     let insertData = {};
-                    let myArtcileArr = [];
+                    let myArticleArr = [];
                     let catalogObj = {};
                     let names = property.split("|");
                     catalogObj["name"] = names[iLang];
@@ -222,24 +180,32 @@ export class CreateService {
                     catalogObj["articles"] = [];
 
                     let propertyAdded = addCatalog.push(catalogObj);
+
+                    // first sort articles alphabetically, depends on language
+                    let arts: string[] = [];
                     for (let i = 0; i < catalog[property].length; i++) {
                         let val = catalog[property][i];
                         let articleItems = val.split("|");
-                        let img = articleItems[2];
+                        arts.push(articleItems[iLang] + "|" + articleItems[2]);
+                    }
+                    arts = arts.sort();
+                    for (let i = 0; i < arts.length; i++) {
+                        let articleItems = arts[i].split("|");
+                        let img = articleItems[1];
                         if (!img.match(/\.(png|svg|jpg|jpeg|gif)/i)) {
                             img += ".png"
                         }
                         let articleObj = {
-                            name: articleItems[iLang],
+                            name: articleItems[0],
                             img: img,
                             isDefault: true
                         };
                         let articleAdded = addArticle.push(articleObj);
                         let key = articleAdded.key;
                         insertData[key] = true;
-                        let addToCatalog = this.af.database.list(`catalogx/${langs}/${propertyAdded.key}/articles`)
+                        let addToCatalog = this.af.database.list(`catalogx/${lang}/${propertyAdded.key}/articles`)
                         addToCatalog.push(key);
-                        myArtcileArr.push(insertData);
+                        myArticleArr.push(insertData);
                         catalogObj["articles"].push(key);
                     }
                 }

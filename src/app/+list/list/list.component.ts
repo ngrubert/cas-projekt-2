@@ -46,7 +46,7 @@ export class listArticle {
 })
 
 export class ListComponent implements OnInit, OnDestroy {
-    private url;
+    private email;
     private sList;
     private user;
     private search;
@@ -79,7 +79,6 @@ export class ListComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         // document.removeEventListener('tap', this.enter, false);
         console.log("Removed event listener");
-
     }
 
     // load initial required data
@@ -87,15 +86,14 @@ export class ListComponent implements OnInit, OnDestroy {
         this.user = this.route.params
             .switchMap((params: Params) => {
                 // stored in browse db(PouchDB)
-                this.url = params['email'];
+                this.email = params['email'];
                 this.sList = params['id'];
                 // clear articles from Shopping list when true
                 this.clearArticle = params['clearArticle'];
                 if (params['again'] == "true") {
                     this.af.database.list(`sList/${this.sList}/articles`).remove();
-                }
-                else if (this.clearArticle == "true") {
-                    this.router.navigate([`list/${this.sList}`, {email: this.url, clearArticle: true, again: true}]);
+                } else if (this.clearArticle == "true") {
+                    this.router.navigate([`list/${this.sList}`, {email: this.email, clearArticle: true, again: true}]);
                     window.location.reload();
                 }
 
@@ -103,6 +101,7 @@ export class ListComponent implements OnInit, OnDestroy {
                 this.getOrAddUsernameToLocalDB();
                 return Observable.from([1, 2, 3]).map(x => x);
             });
+
         this.user.subscribe(c => console.log(c));
 
         this.slistLang = "de";
@@ -130,8 +129,13 @@ export class ListComponent implements OnInit, OnDestroy {
 
         /// show extra side nav menus
         this.showSideMenu();
+
         // get the List title an the language
         this.getSTitle();
+
+        // get catalog based on the user selected shopping list language
+        this.getCatalog(this.slistLang);
+        this.getUsersCatalog(this.slistLang);
     }
 
     getSTitle() {
@@ -152,10 +156,7 @@ export class ListComponent implements OnInit, OnDestroy {
                     if (!this.slistLang.match(/^(de|en)$/)) {
                         this.slistLang = (x.language.toLowerCase() == 'english') ? 'en' : 'de';
                     }
-                    // console.log("getSTitle: slist title="+this.title+", slistLang="+this.slistLang);
-                    // get catalog based on the user selected shopping list language
-                    this.getCatalog(this.slistLang);
-                    this.getUsersCatalog(this.slistLang);
+                    console.log("getSTitle: slist title="+title+", slistLang="+this.slistLang);
                 }
             }
         })
@@ -168,7 +169,7 @@ export class ListComponent implements OnInit, OnDestroy {
         document.getElementById('delete').style.display = 'block';
     }
 
-    /// get user email from local databas(pouch db)
+    /// get user email from local database(pouch db)
     getOrAddUsernameToLocalDB() {
         let self = this;
         self.db.allDocs({include_docs: true, descending: true}, function (err, doc) {
@@ -188,15 +189,15 @@ export class ListComponent implements OnInit, OnDestroy {
 
     setLocalUser(obj) {
         let self = this;
-        if (this.url == obj.user) {
+        if (this.email == obj.user) {
             this.db.get(obj._id).then(function (doc) {
                 doc.sList = self.sList;
-                doc.user = self.url;
+                doc.user = self.email;
                 return self.db.put(doc);
             });
         } else {
             this.db.get(obj._id).then(function (doc) {
-                doc.user = self.url;
+                doc.user = self.email;
                 doc.sList = self.sList;
                 return self.db.put(doc);
             });
@@ -204,7 +205,7 @@ export class ListComponent implements OnInit, OnDestroy {
     }
 
     addUserToLocalDB() {
-        this.db.post({user: this.url});
+        this.db.post({user: this.email});
     }
 
     // remove accents so we can search for "apfel" and find "äpfel"
@@ -226,7 +227,7 @@ export class ListComponent implements OnInit, OnDestroy {
         if (inp.length == 1) {
             inp = inp.toUpperCase()
         }
-        ;
+
         let foundArticles = [];
         let foundNames = new Set();
         // first find articles that start with the search string...
@@ -414,6 +415,7 @@ export class ListComponent implements OnInit, OnDestroy {
         }).subscribe(x => {
             let self = this;
             this.catalogs = [];
+            debugger;
             if (x != undefined) {
                 for (let i = 0; i < x.length; i++) {
                     let item = {
