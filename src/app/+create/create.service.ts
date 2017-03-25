@@ -188,7 +188,8 @@ export class CreateService {
                         let articleItems = val.split("|");
                         arts.push(articleItems[iLang] + "|" + articleItems[2]);
                     }
-                    arts = arts.sort();
+                    // use localeCompare to make sure Äpfel and Öl are sorted correctly
+                    arts = arts.sort(function(a, b) { return a.localeCompare(b, lang) });
                     for (let i = 0; i < arts.length; i++) {
                         let articleItems = arts[i].split("|");
                         let img = articleItems[1];
