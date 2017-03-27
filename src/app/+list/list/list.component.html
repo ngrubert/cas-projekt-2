@@ -16,9 +16,9 @@
             <div class="slist-article" *ngFor="let a of searchArticles" [style.background]="a.backGroundColor">
                 <div class="article-item" (tap)="addToList(a)">
                     <span class="article-item-name">{{a.name}}</span>
-                    <img alt="" *ngIf="a.img!='empty.png'" src="./../../../assets/articles/{{a.img}}">
-                    <div alt="" *ngIf="a.img=='empty.png'" class="singleLetter">{{a.name.charAt(0).toUpperCase()}}</div>
-                    <img alt="" *ngIf="!a.img" src="./../../../assets/articles/empty.png">
+                    <img *ngIf="a.img!='empty.png'" alt="" src="./../../../assets/articles/{{a.img}}">
+                    <div *ngIf="a.img=='empty.png'" class="singleLetter">{{a.name.charAt(0).toUpperCase()}}</div>
+                    <img *ngIf="!a.img" alt="" src="./../../../assets/articles/empty.png">
                     <span class="article-item-amount">{{a.amount}}</span>
                 </div>
             </div>
@@ -41,15 +41,16 @@
                          (doubletap)="addArticleAmount(a.amount)" (tap)="selectArticleInList(a)"
                         (swiperight)="setToBasket(a, true)" (swipeleft)="setToBasket(a, false)">
                     <span class="article-item-name">{{a.name}}</span>
-                    <img alt="" *ngIf="a.img!='empty.png'" src="./../../../assets/articles/{{a.img}}">
-                    <div alt="" *ngIf="a.img=='empty.png'" class="singleLetter">{{a.name.charAt(0).toUpperCase()}}</div>
+                    <img *ngIf="a.img!='empty.png'" alt="" src="./../../../assets/articles/{{a.img}}">
+                    <div *ngIf="a.img=='empty.png'" class="singleLetter">{{a.name.charAt(0).toUpperCase()}}</div>
                     <span class="article-item-amount">{{a.amount}}</span>
                     <span class="article-item-info-icon" *ngIf="a.description">i</span>
                 </div>
             </div>
         </div>
     </div>
-    <!--<div class="triangle-down"></div>-->
+
+    <!-- article detail box -->
     <div class="slist-article-details">
         <div class="slist-article-detail-box">
             <div class="slist-article-detail-box-content">
@@ -94,7 +95,7 @@
         </div>
     </div>
 
-    <!-- Recent articles - w amount -->
+    <!-- Recent articles - with amount/info -->
     <div class="slist-catalog">
         <div style="margin: 1em 0;">
         <span class="sList-catalog-item-name-default">
@@ -107,8 +108,8 @@
                     <div class="slist-article" *ngFor="let a of recentArticles" style="background: #F24646">
                         <div class="article-item">
                             <span class="article-item-name">{{a.name}}</span>
-                            <img alt="" *ngIf="a.img!='empty.png'" src="./../../../assets/articles/{{a.img}}">
-                            <div alt="" *ngIf="a.img=='empty.png'" class="singleLetter">{{a.name.charAt(0).toUpperCase()}}</div>
+                            <img *ngIf="a.img!='empty.png'" alt="" src="./../../../assets/articles/{{a.img}}">
+                            <div *ngIf="a.img=='empty.png'" class="singleLetter">{{a.name.charAt(0).toUpperCase()}}</div>
                             <span class="article-item-info-icon" *ngIf="a.description" style="align-self: flex-end;margin: 5px;">i</span>
                             <span class="article-item-amount">{{a.amount}}</span>
                         </div>
@@ -119,7 +120,6 @@
     </div>
 
     <!-- users own articles - w amount -->
-
     <div class="slist-catalog">
         <div *ngFor="let p of usersCatalogs; let i=index" style="margin: 1em 0;">
         <span class="sList-catalog-item-name-default">
@@ -132,8 +132,8 @@
                     <div class="slist-article" *ngFor="let a of p.articles" (tap)="addToList(a)">
                         <div class="article-item">
                             <span class="article-item-name">{{a.name}}</span>
-                            <img alt="" *ngIf="a.img!='empty.png'" src="./../../../assets/articles/{{a.img}}">
-                            <div alt="" *ngIf="a.img=='empty.png'" class="singleLetter">{{a.name.charAt(0).toUpperCase()}}</div>
+                            <img *ngIf="a.img!='empty.png'" alt="" src="./../../../assets/articles/{{a.img}}">
+                            <div *ngIf="a.img=='empty.png'" class="singleLetter">{{a.name.charAt(0).toUpperCase()}}</div>
                             <span class="article-item-info-icon" *ngIf="a.description" style="align-self: flex-end;margin: 5px;">i</span>
                             <span class="article-item-amount">{{a.amount}}</span>
                         </div>
@@ -149,15 +149,15 @@
         <span class="sList-catalog-item-name-default">
             <i *ngIf="articles.style.display=='none'" class="material-icons">keyboard_arrow_down</i>
             <i *ngIf="articles.style.display!='none'" class="material-icons">keyboard_arrow_up</i>
-            <span (tap)="toggleCatalog(articles)" style="cursor: pointer;">{{ p.name }}</span>
+            <span (tap)="toggleCatalog(articles)" style="cursor: pointer;">{{p.name}}</span>
         </span>
             <div style="display:none;" class="slist-articles" #articles>
                 <div class="slist-article-direction">
                     <div class="slist-article" *ngFor="let a of p.articles" (tap)="addToList(a)">
                         <div class="article-item">
                             <span class="article-item-name">{{a.name}}</span>
-                            <img alt="" *ngIf="a.img!='empty.png'" src="./../../../assets/articles/{{a.img}}">
-                            <div alt="" *ngIf="a.img=='empty.png'" class="singleLetter">{{a.name.charAt(0).toUpperCase()}}</div>
+                            <img *ngIf="a.img!='empty.png'" alt="" src="./../../../assets/articles/{{a.img}}">
+                            <div *ngIf="a.img=='empty.png'" class="singleLetter">{{a.name.charAt(0).toUpperCase()}}</div>
                             <span class="article-item-info-icon" *ngIf="a.description">i</span>
                             <span class="article-item-amount">{{a.amount}}</span>
                         </div>

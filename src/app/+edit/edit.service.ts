@@ -15,12 +15,10 @@ export class EditService {
     af: AngularFire;
 
     items: FirebaseListObservable<any[]>;
-    testArry: Observable<Array<user>>;
     invitedUsers: Array<any> = [];
     private sList: any;
     private sListKey: any;
     private sListUsersKey: any;
-    roorRef;
     mailedUsers: Array<any> = [];
 
     constructor(private http: Http, af: AngularFire) {

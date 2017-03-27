@@ -78,7 +78,7 @@ export class DeleteCategoryComponent implements OnInit {
 
     // get category
     getCategory() {
-        let getCategory$ = this._manageService.getCategoryById(this.catId, this.language);
+        let getCategory$ = this._manageService.getCategoryById(this.catId);
         getCategory$.subscribe(x => {
             this.category = x;
             this.modelValue = x.name;
@@ -92,7 +92,7 @@ export class DeleteCategoryComponent implements OnInit {
 
     // delete category by id and language
     deleteCategory(id) {
-        this._manageService.deleteCategory(id, this.language);
+        this._manageService.deleteCategory(id);
         this.router.navigate(['manage', {lan: this.language}]);
     }
 }

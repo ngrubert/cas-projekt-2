@@ -76,8 +76,8 @@ export class EditComponent implements OnInit,OnDestroy {
     }
 
     // get shoppingList by shoppingList id
-    setSid(obj) {
-        let sListData = this._editService.getSListData(obj);
+    setSid(sListKey) {
+        let sListData = this._editService.getSListData(sListKey);
         sListData.subscribe(x => {
             if (x) {
                 this.model = x;

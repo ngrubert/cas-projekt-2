@@ -101,7 +101,7 @@ export class AddCategoryComponent implements OnInit {
             order: obj.order
         };
         item.isDefault = false;
-        this._manageService.addCategory(item, obj.language);
+        this._manageService.addCategory(item);
         this.router.navigate(['manage']);
     }
 

@@ -43,7 +43,7 @@
                             <div #delete style="display:none;">
                                 <span style="color: #a94442">{{'MANAGE.DELETEARTICLE'|translate}}</span>
                                 <div>
-                                    <button md-button (tap)="deleteArticle(a.$key,p.id,p.language)"
+                                    <button md-button (tap)="deleteArticle(a.$key,p.id)"
                                             style="background: #a94442">{{'MANAGE.OKOK'|translate}}
                                     </button>
                                     <button md-button (tap)="hideDelete(deleteButton,delete)" style="background: grey">
@@ -58,18 +58,20 @@
         </div>
     </div>
     <div class="slist-catalog">
-        <div *ngFor="let p of catalogs; let i=index">
+        <div *ngFor="let p of catalogs; let i=index" style="margin: 1em 0;">
         <span class="sList-catalog-item-name-default">
             <i *ngIf=" article.style.display=='none'" class="material-icons">keyboard_arrow_down</i>
             <i *ngIf=" article.style.display!='none'" class="material-icons">keyboard_arrow_up</i>
-            <span (tap)="toggleCatalog(article)">{{ p.name }}</span>
+            <span (tap)="toggleCatalog(article)">{{p.name}}</span>
         </span>
             <div style="display:none;" class="slist-articles" #article>
                 <div class="slist-article-direction">
                     <div class="slist-article manage-article-item-name-default" *ngFor="let a of p.articles">
                         <div class="article-item">
-                            <span class="article-item-name">{{a.name}}</span>
-                            <img src="./../../../assets/articles/{{a.img}}">
+                            <span class="article-item-name">. {{a.name}}</span>
+                            <img *ngIf="a.img!='empty.png'" alt="" src="./../../../assets/articles/{{a.img}}">
+                            <div *ngIf="a.img=='empty.png'" class="singleLetter">{{a.name.charAt(0).toUpperCase()}}</div>
+                            <span class="article-item-amount">{{a.amount}}</span>
                         </div>
                     </div>
                 </div>

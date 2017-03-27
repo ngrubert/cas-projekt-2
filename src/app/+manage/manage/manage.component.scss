@@ -12,9 +12,8 @@ $COLOR_CATALOGITEM: #58c;
   min-height: 20vh;
 }
 
-.slist-catalog div span {
+.slist-catalog {
   margin: 1em 0;
-  cursor: pointer;
   padding: 5px 0;
 }
 
@@ -43,6 +42,7 @@ $COLOR_CATALOGITEM: #58c;
 }
 
 .slist-article {
+  // box-shadow: 5px 5px 2px 0px #9E9E9E;
   display: inline-block;
   flex-grow: 1;
   height: 110px;
@@ -123,7 +123,7 @@ $COLOR_CATALOGITEM: #58c;
   text-decoration: none;
 }
 
-.manage-article-item {
+.XXXmanage-article-item {
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -138,7 +138,7 @@ $COLOR_CATALOGITEM: #58c;
   color: white;
 }
 
-.manage-article-item-name {
+.XXXmanage-article-item-name {
   width: 50%;
   max-width: 100px;
   vertical-align: middle;
@@ -150,7 +150,7 @@ $COLOR_CATALOGITEM: #58c;
   background: $COLOR_CATALOGITEM;
 }
 
-.manage-article-item-name-default {
+.XXXmanage-article-item-name-default {
   width: 100%;
   height: 100px;
   border-radius: 5px;
@@ -169,8 +169,28 @@ $COLOR_CATALOGITEM: #58c;
   height: 60%
 }
 
+.article-item .singleLetter {
+  height: 60%;
+  color: white;
+  font-family: 'han-segli';
+  font-size: 3em;
+  padding-top:12px;
+}
 
-.manage-article-item-buttons {
+.article-item-amount {
+  height: 18%;
+  font-size: 70%;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.article-item:focus, .article-item:hover {
+  border: 1px solid rgba(81, 203, 238, 1);
+}
+
+.XXXmanage-article-item-buttons {
   width: 25%;
   height: 100px;
   margin: 0 1em;

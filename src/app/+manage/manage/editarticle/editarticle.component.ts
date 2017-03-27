@@ -147,16 +147,16 @@ export class EditArticleComponent implements OnInit,OnDestroy {
 		this.checkArticle$=this._manageService.checkArticleExists(obj.name);
 			this.checkArticle$.subscribe(x=>{
 				if (x && x.length>0){
-					self._manageService.addArticleToCategory(x[0].$key,obj.order,languageObj.language)
+					self._manageService.addArticleToCategory(x[0].$key,obj.order);
 				} else {
 					let item={
 						name:obj.name,
 						isDefault:false
 					};
-					self._manageService.addArticleAndAddToCategory(item,obj.order,languageObj.language)
+					self._manageService.addArticleAndAddToCategory(item,obj.order);
 				}
 				if (obj.order != this.catId && x && x.length >0){
-					self._manageService.removeArticleFromCategory(x[0].$key,this.catId,languageObj.language)
+					self._manageService.removeArticleFromCategory(x[0].$key,this.catId);
 				}
 			});
 	}

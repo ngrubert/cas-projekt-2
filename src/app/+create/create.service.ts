@@ -14,16 +14,18 @@ export class CreateService {
     private users = '/users';
     af: AngularFire;
     items: FirebaseListObservable<any[]>;
-    testArry: Observable<Array<user>>;
     invitedUsers: Array<any> = [];
     private sList: any;
     private sListUsersKey: any;
-    roorRef;
-    sListUsersRef;
     mailedUsers: Array<any> = [];
 
     constructor(private http: Http, af: AngularFire) {
         this.af = af;
+    }
+
+    // get data from an existing shopping list by id
+    getSListData(key) {
+        return this.af.database.object(`sList/${key}`).map(x => x);
     }
 
     // create shopping list by id

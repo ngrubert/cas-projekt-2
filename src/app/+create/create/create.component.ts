@@ -7,7 +7,7 @@ import {TranslateService} from '@ngx-translate/core';
 
 import {SharedComponent} from './../../shared/shared.component';
 import {CreateService} from './../create.service';
-import {LocalStateService, FerggState} from './../../services/localstate.service';
+import {LocalStateService} from './../../services/localstate.service';
 import {user} from './../../model/user';
 import {list} from './../../model/user';
 
@@ -43,6 +43,17 @@ export class CreateComponent implements OnInit,OnDestroy {
     }
 
     ngOnInit() {
+        // pre-fill Name and email fields from existing sList if there is one
+        let key = LocalStateService.getSListKey();
+        if (key) {
+            let currentSList = this._createService.getSListData(key);
+            currentSList.subscribe(x => {
+                if (x) {
+                    this.model.email = x.email;
+                    this.model.name = x.name;
+                }
+            })
+        }
         // this.model.language = this.languages[0];
         // get all users
         this.getUsers();
@@ -57,7 +68,7 @@ export class CreateComponent implements OnInit,OnDestroy {
     // Create shoppingList. This is called by the "create shopping list" button
     createList() {
         console.log(this.model);
-        // this.model.users.push(this.model.email);  // the 1st, requured, email address
+        // this.model.users.push(this.model.email);  // the 1st, required, email address
         // this.model.users.push(this.initialEmail); // the initial email address of the invited users
         this.emailAddrs = [];
         this.inviteUsers = JSON.parse(JSON.stringify(this.users));

@@ -113,13 +113,13 @@ export class AddArticleComponent implements OnInit {
         this._manageService.checkArticleExists(obj.name)
             .subscribe(x => {
                 if (x && x.length > 0) {
-                    self._manageService.addArticleToCategory(x[0].$key, obj.order, languageObj.language)
+                    self._manageService.addArticleToCategory(x[0].$key, obj.order);
                 } else {
                     let item = {
                         name: obj.name,
                         isDefault: false
                     };
-                    self._manageService.addArticleAndAddToCategory(item, obj.order, languageObj.language)
+                    self._manageService.addArticleAndAddToCategory(item, obj.order);
                 }
             });
     }
