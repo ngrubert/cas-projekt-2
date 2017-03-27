@@ -1,9 +1,8 @@
 /* tslint:disable:no-unused-variable */
 
 import { TestBed, async } from '@angular/core/testing';
-import { AppComponent } from './app.component';
-//import { AppService } from './app.service';
-
+import {ClearComponent } from './clear.component';
+import { FormsModule } from '@angular/forms';
 import {
   AngularFire,
   FirebaseObjectObservable,
@@ -17,14 +16,13 @@ import {
   AngularFireModule
 } from 'angularfire2';
 
-import { firebaseConfig } from './config/firebase-config';
 import { Subscription } from 'rxjs/Subscription';
-import { FormsModule } from '@angular/forms';
-import { MaterialModule } from '@angular/material';
 
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs/Rx';
+import { firebaseConfig } from './../config/firebase-config';
+import {ClearService} from './clear.service';
  import 'rxjs/Rx';
 
 const APP_NAME = 'Fergg';
@@ -34,7 +32,7 @@ class DummyComponent {
 class RouterStub {
 }
 
-describe('AppComponent', () => {
+describe('ClearComponent', () => {
 
 let subscription:Subscription;
   let app: firebase.app.App;
@@ -43,31 +41,32 @@ let subscription:Subscription;
   let listOfQuestionsRef: firebase.database.Reference;
   let angularFire2: AngularFire;
   let PouchDB: any;
+  let document:any;
   let AppServiceStub = {
     PouchInstance:function(){
         return new PouchDB("sList");
     }
   };
   beforeEach((done) => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 3000000;
     setTimeout(function () {
             console.log('inside timeout');
             done();
-        }, 50);
+        }, 100);
     TestBed.configureTestingModule({
       declarations: [
-        AppComponent
+      ClearComponent
       ],
-      imports: [AngularFireModule.initializeApp(firebaseConfig),MaterialModule.forRoot(),
-      RouterTestingModule 
+      imports: [
+      RouterTestingModule ,FormsModule,AngularFireModule.initializeApp(firebaseConfig)
       ],
-       providers:    []
+      providers:[{provide: ClearService, useValue: AppServiceStub }]
     });
     TestBed.compileComponents();
   });
 
-  it('should create the app', async(() => {
-    let fixture = TestBed.createComponent(AppComponent);
+  it('should create the app home', async(() => {
+    let fixture = TestBed.createComponent(ClearComponent);
     let app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   }));

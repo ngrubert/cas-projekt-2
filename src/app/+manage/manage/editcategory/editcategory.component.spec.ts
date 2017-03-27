@@ -1,9 +1,10 @@
 /* tslint:disable:no-unused-variable */
 
 import { TestBed, async } from '@angular/core/testing';
-import { AppComponent } from './app.component';
-//import { AppService } from './app.service';
-
+import {EditCategoryComponent } from './editcategory.component';
+import { FormsModule } from '@angular/forms';
+import { ManageService } from './../../manage.service';
+import { SharedAddOrEditComponent } from './../sharedaddoredit/sharedaddoredit.component';
 import {
   AngularFire,
   FirebaseObjectObservable,
@@ -17,9 +18,8 @@ import {
   AngularFireModule
 } from 'angularfire2';
 
-import { firebaseConfig } from './config/firebase-config';
 import { Subscription } from 'rxjs/Subscription';
-import { FormsModule } from '@angular/forms';
+import { firebaseConfig } from './../../../config/firebase-config';
 import { MaterialModule } from '@angular/material';
 
 import { Router } from '@angular/router';
@@ -34,7 +34,7 @@ class DummyComponent {
 class RouterStub {
 }
 
-describe('AppComponent', () => {
+describe('EditCategoryComponent', () => {
 
 let subscription:Subscription;
   let app: firebase.app.App;
@@ -43,31 +43,32 @@ let subscription:Subscription;
   let listOfQuestionsRef: firebase.database.Reference;
   let angularFire2: AngularFire;
   let PouchDB: any;
+  let allDocs:any;
   let AppServiceStub = {
-    PouchInstance:function(){
+    PouchDBRef(){
         return new PouchDB("sList");
     }
   };
   beforeEach((done) => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 3000000;
     setTimeout(function () {
             console.log('inside timeout');
             done();
-        }, 50);
+        }, 100);
     TestBed.configureTestingModule({
       declarations: [
-        AppComponent
+      EditCategoryComponent,SharedAddOrEditComponent
       ],
-      imports: [AngularFireModule.initializeApp(firebaseConfig),MaterialModule.forRoot(),
-      RouterTestingModule 
+      imports: [MaterialModule.forRoot(),
+      RouterTestingModule ,FormsModule,AngularFireModule.initializeApp(firebaseConfig)
       ],
-       providers:    []
+      providers:[{provide: ManageService, useValue: AppServiceStub }]
     });
     TestBed.compileComponents();
   });
 
-  it('should create the app', async(() => {
-    let fixture = TestBed.createComponent(AppComponent);
+  it('should create the app home', async(() => {
+    let fixture = TestBed.createComponent(EditCategoryComponent);
     let app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   }));

@@ -1,8 +1,7 @@
 /* tslint:disable:no-unused-variable */
 
 import { TestBed, async } from '@angular/core/testing';
-import { AppComponent } from './app.component';
-//import { AppService } from './app.service';
+import { HomeComponent } from './home.component';
 
 import {
   AngularFire,
@@ -17,7 +16,6 @@ import {
   AngularFireModule
 } from 'angularfire2';
 
-import { firebaseConfig } from './config/firebase-config';
 import { Subscription } from 'rxjs/Subscription';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '@angular/material';
@@ -34,7 +32,7 @@ class DummyComponent {
 class RouterStub {
 }
 
-describe('AppComponent', () => {
+describe('HomeComponent', () => {
 
 let subscription:Subscription;
   let app: firebase.app.App;
@@ -56,18 +54,17 @@ let subscription:Subscription;
         }, 50);
     TestBed.configureTestingModule({
       declarations: [
-        AppComponent
+      HomeComponent
       ],
-      imports: [AngularFireModule.initializeApp(firebaseConfig),MaterialModule.forRoot(),
+      imports: [MaterialModule.forRoot(),
       RouterTestingModule 
       ],
-       providers:    []
     });
     TestBed.compileComponents();
   });
 
-  it('should create the app', async(() => {
-    let fixture = TestBed.createComponent(AppComponent);
+  it('should create the app home', async(() => {
+    let fixture = TestBed.createComponent(HomeComponent);
     let app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   }));
