@@ -32,7 +32,7 @@ export class EditArticleComponent implements OnInit,OnDestroy {
     af: AngularFire;
 	private catId;
 	private sId;
-	private modelValue;
+	public /*private*/ modelValue;
 	private aId;
 	private article;
 	private checkArticle$;

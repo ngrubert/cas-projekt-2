@@ -36,7 +36,7 @@ export class EditCategoryComponent implements OnInit {
     catalogs:catalog[]=[];
     title:string='Edit Category';
     list:Array<any>=[];
-    category:Object={};
+    category: any; // was: Object={};
     db:any;
     constructor(  af: AngularFire,
         public _manageService: ManageService,
