@@ -7,6 +7,7 @@ import {TranslateService} from '@ngx-translate/core';
 
 import {SharedComponent} from './../../shared/shared.component';
 import {CreateService} from './../create.service';
+import {LocalStateService, FerggState} from './../../services/localstate.service';
 import {user} from './../../model/user';
 import {list} from './../../model/user';
 
@@ -29,8 +30,8 @@ export class CreateComponent implements OnInit,OnDestroy {
     existingUsers: user[];
     emailAddrs: Array<any> = [];
     sList: FirebaseObjectObservable<any>;
-    reqSubscribe;
     sListKey: string;
+    reqSubscribe;
     snackBar;
 
     constructor(public _createService: CreateService,
@@ -55,7 +56,6 @@ export class CreateComponent implements OnInit,OnDestroy {
 
     // Create shoppingList. This is called by the "create shopping list" button
     createList() {
-        debugger;
         console.log(this.model);
         // this.model.users.push(this.model.email);  // the 1st, requured, email address
         // this.model.users.push(this.initialEmail); // the initial email address of the invited users
@@ -94,7 +94,6 @@ export class CreateComponent implements OnInit,OnDestroy {
                 self.emailAddrs.push(obj);
             }
         }
-        debugger;
         this.model.isFinished = false;
         let sListTemp: list = this.model;
         sListTemp.siteUrl = window.location.origin;
@@ -137,6 +136,7 @@ export class CreateComponent implements OnInit,OnDestroy {
                     if (self.emailedUsers.length == self.inviteUsers.length) {
                         if (self.sList) {
                             let userEmailKey = self.emailedUsers.find(self.findUserEmailKey, self);
+                            LocalStateService.put(userEmailKey.$key, self.sListKey);
                             self.router.navigate([`list/${self.sListKey}`, {email: userEmailKey.$key}])
                         }
                     }

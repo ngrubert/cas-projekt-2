@@ -7,9 +7,9 @@ import {Router, ActivatedRoute, Params} from '@angular/router';
 // import 'rxjs/add/operator/catch';
 
 import {UsersService} from './../services/users.service';
+import {LocalStateService} from './../services/localstate.service';
 import {user} from './../model/user';
 import {ListsService} from './lists.service';
-declare var PouchDB: any;
 
 @Component({
     selector: 'lists',
@@ -21,45 +21,28 @@ export class ListsComponent implements OnInit {
     private abtusers: user[];
     private name;
     private email;
-    private sLists = [];
+    public /*private*/ sLists = [];
     private url;
     sListsEmpty: Boolean;
     af: any;
-    db: any;
 
     constructor(public _listservice: ListsService,
                 af: AngularFire,
                 private route: ActivatedRoute,
                 private router: Router) {
-        this.db = new PouchDB("sList");
         this.af = af;
-        this.sListsEmpty = false;
+        this.url = LocalStateService.getUserKey();
+        // if we don't have a user, we cannot get a list of his shopping lists
+        this.sListsEmpty = (this.url == null);
     }
 
     ngOnInit() {
-        this.syncChanges();
+        console.log("lists: sListEmpty:"+this.sListsEmpty);
         this.sLists = [];
         this.getAllLists();
-        // this.getUsers();
     }
 
-    // get user email from local databas(pouch db)
-    syncChanges() {
-        let self = this;
-        this.db.allDocs({include_docs: true, descending: true}, function (err, docs) {
-            if (err) {
-                console.log(err);
-                return err;
-            }
-            if (docs && docs.rows.length > 0) {
-                // this.getSLists(docs.rows[0].doc.user);
-                self.url = docs.rows[0].doc.user;
-
-            }
-        });
-    }
-
-    // search sLists based on name and email id
+    // button: search sLists based on name and email id
     searchSLists() {
         let self = this;
         this.af.database.list(`users`, {
@@ -83,8 +66,7 @@ export class ListsComponent implements OnInit {
                 self.sLists = [];
                 if (!self.url) {
                     this.sListsEmpty = true;
-                }
-                else if (x && x.length > 0) {
+                } else if (x && x.length > 0) {
                     this.sListsEmpty = false;
                     for (let i = 0; i < x.length; i++) {
                         for (let property in x[i]) {
@@ -96,6 +78,7 @@ export class ListsComponent implements OnInit {
                                             .subscribe(x => {
                                                 if (x && x.title !== undefined) {
                                                     this.sLists.push(x);
+                                                    //console.log("sLists:"+JSON.stringify(this.sLists));
                                                 }
                                             })
                                     }
@@ -110,13 +93,14 @@ export class ListsComponent implements OnInit {
             })
     }
 
-    // go to shopping list page on click
+    // user is known, store the selected list in local DB and go to shopping list page on click
     goToSlist(item) {
-
+        console.log("lists.compo: goToList: u="+this.url+", sl="+item.$key);
+        LocalStateService.put(this.url, item.$key);
         this.router.navigate(['list', item.$key, {email: this.url}]);
     }
 
-    // create new shopping list -- go to create page
+    // Button: create new shopping list -- go to create page
     createNewList() {
         this.router.navigate(['create']);
     }

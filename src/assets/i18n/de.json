@@ -14,6 +14,7 @@
   "CLEAR": {
     "CANCEL": "Abbrechen",
     "CLEAR": "Alle Artikel von der Einkaufsliste entfernen?",
+    "COOKIE": "Cookie löschen",
     "YES": "Ja, zurücksetzen",
     "TITLE": "Einkaufsliste zurücksetzen"
   },
@@ -21,6 +22,7 @@
     "ADDMOREUSERS": "Weitere Adressen",
     "CANCEL": "Abbrechen",
     "CREATE": "Einkaufsliste anlegen",
+    "EDITHEADER": "Einkaufsliste bearbeiten",
     "INVITEUSER": "Andere einladen",
     "SAVE": "Speichern",
     "HEADER": "Neue Einkaufsliste",

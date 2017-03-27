@@ -6,11 +6,12 @@ import {Observable} from 'rxjs/Observable';
 import {TranslateService} from '@ngx-translate/core';
 
 import {SharedComponent} from './../../shared/shared.component';
+import {LocalStateService} from './../../services/localstate.service';
 import {EditService} from './../edit.service';
 import {user} from './../../model/user';
 import {list} from './../../model/user';
 
-declare var PouchDB: any;
+//declare var PouchDB: any;
 
 @Component({
     selector: 'edit',
@@ -32,6 +33,8 @@ export class EditComponent implements OnInit,OnDestroy {
     existingUsers: user[];
     emailAddrs: Array<any> = [];
     sList: FirebaseObjectObservable<any>;
+    sListKey: string;
+    userKey: string;
     reqSubscribe;
     snackBar;
     db: any;
@@ -43,14 +46,13 @@ export class EditComponent implements OnInit,OnDestroy {
                 private translate: TranslateService) {
         this.router = router;
         this.snackBar = snackBar;
-        this.db = new PouchDB("sList");
         this.af = af;
     }
 
     ngOnInit() {
-        // get all users
+        // get all firebase users
         this.getUsers();
-        // get shoppingList by id
+        // get shoppingList details by key
         this.getSId();
         // show menu
         this.showSideMenu();
@@ -65,34 +67,29 @@ export class EditComponent implements OnInit,OnDestroy {
     }
 
     getSId() {
-        let self = this;
-        this.db.allDocs({include_docs: true, descending: true}, function (err, docs) {
-            if (err) {
-                console.log(err);
-                return err;
-            }
-            if (docs && docs.rows.length > 0) {
-                self.sList = docs.rows[0].doc.sList;
-                self.setSid(docs.rows[0].doc);
-                self.getSIdUsers(docs.rows[0].doc);
-            }
-        });
+        this.userKey = LocalStateService.getUserKey();
+        this.sListKey = LocalStateService.getSListKey();
+        if (this.sListKey) {
+            this.setSid(this.sListKey);
+            this.getSIdUsers(this.sListKey);
+        }
     }
 
     // get shoppingList by shoppingList id
     setSid(obj) {
-        let sListData = this._editService.getSListData(obj.sList);
+        let sListData = this._editService.getSListData(obj);
         sListData.subscribe(x => {
             if (x) {
                 this.model = x;
             }
         })
+        console.log("edit: model="+JSON.stringify(this.model));
     }
 
     // get shoppingList users by id
     getSIdUsers(obj) {
         let self = this;
-        let sListData = this._editService.getSListUsersData(obj.sList);
+        let sListData = this._editService.getSListUsersData(obj);
         sListData.subscribe(x => {
             if (x) {
                 this.users = [];
@@ -100,7 +97,7 @@ export class EditComponent implements OnInit,OnDestroy {
                     if (x.hasOwnProperty(property)) {
                         if (x[property] == false || x[property] == true) {
                             self.af.database.object(`/users/${property}`).subscribe(p => {
-                                debugger
+                                //debugger
                                 if (p.email != self.model.email)
                                     this.users.push(p.email);
                             });
@@ -109,6 +106,7 @@ export class EditComponent implements OnInit,OnDestroy {
                 }
             }
         })
+        console.log("edit: users="+JSON.stringify(this.users));
     }
 
     ngOnDestroy() {
@@ -117,7 +115,7 @@ export class EditComponent implements OnInit,OnDestroy {
 
     // edit shoppingList
     editList() {
-        console.log(this.model);
+        console.log("Saving edit list: model="+JSON.stringify(this.model));
         // this.model.users.push(this.model.email);
         // this.model.users.push(this.initialEmail);
         this.emailAddrs = [];
@@ -126,7 +124,7 @@ export class EditComponent implements OnInit,OnDestroy {
             this.inviteUsers.push(this.usersEdit[i]);
         }
         this.inviteUsers.push(this.model.email);
-        console.log(this.inviteUsers);
+        console.log("inviteUsers="+this.inviteUsers);// a simple list of email addr strings, email, initialEmail and moreEmails
         this.CheckUsers();
     }
 
@@ -164,11 +162,11 @@ export class EditComponent implements OnInit,OnDestroy {
             name: this.model.name,
             siteUrl: window.location.origin
         };
+        console.log("Saving edit list 2: model="+JSON.stringify(sListTemp));
 
-        let sListCreated$ = self._editService.editSList(this.sList, sListTemp);
+        self._editService.editSList(self.sListKey, sListTemp);
 
         self._editService.resetSList();
-
         let request$ = Observable.from(this.emailAddrs)
             .mergeMap(data => {
                 return this.addUserIfNotExists(data);
@@ -180,26 +178,25 @@ export class EditComponent implements OnInit,OnDestroy {
                 this.createSListUser(data);
                 return this.sendKeys(data);
             });
-        // .map(data=>{
-        //     this.sendEmail(data);
-        //     return this.sendKeys(data);
-        // });
+        self.router.navigate([`list/${self.sListKey}`, {email: this.userKey}]);
 
-        this.reqSubscribe = request$.subscribe(
-            val => {
-                if (val) {
-                    self.emailedUsers.push(val);
-                    if (self.emailedUsers.length == self.inviteUsers.length) {
-                        if (self.sList) {
-                            debugger
-                            let userEmailKey = self.emailedUsers.find(self.findUserEmailKey, self);
-                            self.router.navigate([`list/${self.sList}`, {email: userEmailKey.$key}])
-                        }
-                    }
-                }
-                console.log(val);
-            }
-        );
+        // TODO: don't understand what's going on here - aka
+        // this.reqSubscribe = request$.subscribe(
+        //     val => {
+        //         if (val) {
+        //             self.emailedUsers.push(val);
+        //             if (self.emailedUsers.length == self.inviteUsers.length) {
+        //                 if (self.sList) {
+        //                     debugger
+        //                     let userEmailKey = self.emailedUsers.find(self.findUserEmailKey, self);
+        //                     self.router.navigate([`list/${self.sListKey}`, {email: userEmailKey.$key}])
+        //                 }
+        //             }
+        //         }
+        //         console.log(val);
+        //     }
+        // );
+
         // if (!window.navigator.onLine)
         // {
         //     self.snackBar.open('Shopping List will be Created and email will be sent, once device comes online, Don\'t close the Browser', 'Okay');
@@ -276,7 +273,7 @@ export class EditComponent implements OnInit,OnDestroy {
         })
     }
 
-    // cancel redirect to lists selection
+    // cancel redirect to lists selection (should maybe go to 'list')
     cancelList() {
         this.router.navigate(['lists']);
     }

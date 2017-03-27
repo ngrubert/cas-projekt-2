@@ -7,10 +7,9 @@ import { AngularFire, FirebaseListObservable, FirebaseObjectObservable, Firebase
 // import 'rxjs/add/operator/catch';
 
 import { SharedComponent } from './../shared/shared.component';
+import {LocalStateService} from './../services/localstate.service';
 import { UsersService } from './../services/users.service';
 import { user } from './../model/user';
-
-declare var PouchDB: any;
 
 @Component({
   selector: 'clear',
@@ -19,36 +18,18 @@ declare var PouchDB: any;
 })
 export class ClearComponent implements OnInit {
     private abtusers:user[];
-    db:any;
     af: AngularFire;
     sList:any;
     url:any;
     constructor(public _userService: UsersService,private route: ActivatedRoute,
         private router: Router,af: AngularFire) {
-        this.db = new PouchDB("sList");
         this.af = af;
     }
 
     ngOnInit() {
-        // this.getUsers();
-        this.syncChanges();
-        this.showSideMenu()
-    }
-
-    // get or set email and shopping list from local db (PouchDB)
-     syncChanges() {
-        let self=this;
-        this.db.allDocs({include_docs: true, descending: true}, function(err, docs) {
-            if (err){
-            console.log(err);
-            return err;
-            }
-            if (docs && docs.rows.length>0){
-               // debugger
-               self.sList=docs.rows[0].doc.sList;
-               self.url=docs.rows[0].doc.user;
-            }
-        });
+        this.url = LocalStateService.getUserKey();
+        this.sList = LocalStateService.getSListKey();
+        this.showSideMenu();
     }
 
     // show side nav (extras)
@@ -59,7 +40,6 @@ export class ClearComponent implements OnInit {
         document.getElementById('delete').style.display='block';
     }
 
-
     // remove all articles from shopping list
     clearArticles(evt){
         evt.preventDefault();
@@ -67,9 +47,13 @@ export class ClearComponent implements OnInit {
         this.router.navigate([`list/${this.sList}`,{email:this.url}]);
     }
 
-    // on cancel click redirect to list
-    cancelClearArticles() {
+    // cancel button: redirect to the list
+    cancel() {
         this.router.navigate([`list/${this.sList}`,{email:this.url}]);
     }
 
+    cancelCookie() {
+        LocalStateService.delete();
+        this.router.navigate(['lists']);
+    }
 }

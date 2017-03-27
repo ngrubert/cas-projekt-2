@@ -33,22 +33,11 @@ export class EditService {
         const sListRef = this.af.database.object(`sList/${key}`);
         this.sListKey = key;
         sListRef.update(list);
-
     }
 
-    //reset inivied and emailed users
+    // reset invited and emailed users
     resetSList(): void {
-        this.resetInvitedUsers();
-        this.resetMailedUsers;
-    }
-
-    //reset inivied users
-    resetInvitedUsers(): void {
         this.invitedUsers.length = 0;
-    }
-
-    //reset emailed users
-    resetMailedUsers(): void {
         this.mailedUsers.length = 0;
     }
 
@@ -86,7 +75,7 @@ export class EditService {
     sendEmailToUser(usr: any): void {
         if (this.mailedUsers.indexOf(usr.$key) < 0) {
             this.mailedUsers.push(usr.$key);
-            var result = this.http.post('/api/email', usr)
+            let result = this.http.post('/api/email', usr)
                 .map((res: Response) => res.json())
                 .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
             result.subscribe(x => console.log(x));
@@ -143,39 +132,6 @@ export class EditService {
     getUsersFirebase(): Observable<any[]> {
         var result = this.af.database.list('/users');
         return result;
-    }
-
-    // dump default cataloge english
-    createFirebaseCatalog(catalog: Object) {
-        const addArticle = this.af.database.list(`articles`);
-        const addCatalog = this.af.database.list(`catalog/english`);
-        for (var property in catalog) {
-            if (catalog.hasOwnProperty(property)) {
-                let insertData = {};
-                let myArtcileArr = [];
-                let myCatalogObj = {};
-                let catalogObj = {};
-                catalogObj["name"] = property;
-                catalogObj["isDefault"] = true;
-                catalogObj["articles"] = [];
-
-                let propertyAdded = addCatalog.push(catalogObj)
-                for (var i = 0; i < catalog[property].length; i++) {
-                    let val = catalog[property][i];
-                    var obj = {
-                        name: val,
-                        isDefault: true
-                    }
-                    let articleAdded = addArticle.push(obj);
-                    var key = articleAdded.key;
-                    insertData[key] = true;
-                    let addToCatalog = this.af.database.list(`catalog/english/${propertyAdded.key}/articles`)
-                    addToCatalog.push(key);
-                    myArtcileArr.push(insertData);
-                    catalogObj["articles"].push(key);
-                }
-            }
-        }
     }
 
     // get shopping list by id

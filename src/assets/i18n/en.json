@@ -14,6 +14,7 @@
   "CLEAR": {
     "CANCEL": "Cancel",
     "CLEAR": "Clear shopping list and remove all items?",
+    "COOKIE": "Clear Cookie",
     "YES": "Yes, clear it",
     "TITLE": "Clear shopping list"
   },
@@ -21,6 +22,7 @@
     "ADDMOREUSERS": "Add more users",
     "CANCEL": "Cancel",
     "CREATE": "Create",
+    "EDITHEADER": "Edit Shopping List",
     "INVITEUSER": "Invite user",
     "SAVE": "Save",
     "HEADER": "Create new shopping list",

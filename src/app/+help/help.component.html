@@ -1,15 +1,36 @@
-    <div class="help-container help-alignment">
+    <div *ngIf="currentLang == 'en'" class="help-container help-alignment">
         <h3>Help page</h3>
         <div>
-        <h4>What is Fergg! ?</h4>
-        <span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, </span>
+        <h4>What does "Fergg" mean?</h4>
+        <span>"ferggen" is a verb from the Walser dialect in the swiss canton Grisons. It means both "to bring" and "to fetch".</span>
         </div>
         <div>
         <h4>What do i need to use Fergg! ?</h4>
-        <span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, </span>
+        <span>A smartphone.</span>
         </div>
         <div>
         <h4>Where is my shopping list?</h4>
         <span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, </span>
         </div>
+    </div>
+    <div *ngIf="currentLang == 'de'" class="help-container help-alignment">
+            <h3>Hilfe</h3>
+            <div>
+                    <h4>Was bedeutet "Fergg"?</h4>
+                    <span>"ferggen" ist ein Wort aus einigen walserdeutschen Dialekten, wie sie
+                            in Graubünden gesprochen werden. Das Verb bedeutet sowohl "bringen"
+                            als auch "holen".<br>
+                            Früher war das Wort auch im Zürichdeutschen gebräuchlich; "Fergger"
+                            waren Leute, die den Heimspinnern und -webern im Tösstal die Wolle
+                            oder das Garn brachten und die gesponnene oder gewobene Ware abholten. </span>
+            </div>
+            <div>
+                    <h4>Was brauche ich, um Fergg! zu benutzen?</h4>
+                    <span>Einen Browser und Netzzugeng. Um die Einkaufsliste im Laden zu benutzen,
+                            ein Smartphone oder ein Tablet. Heute haben viele Supermärkte Wi-Fi.</span>
+            </div>
+            <div>
+                    <h4>Wo ist meine Einkaufsliste?</h4>
+                    <span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, </span>
+            </div>
     </div>

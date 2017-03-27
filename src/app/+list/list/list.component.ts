@@ -2,17 +2,15 @@ import {Component, OnInit, Inject, OnDestroy} from '@angular/core';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 import {AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseRef} from 'angularfire2';
 import {TranslateService} from "@ngx-translate/core";
-
-import {SharedComponent} from './../../shared/shared.component';
-import {ListService} from './../list.service';
-import {user} from './../../model/user';
-
+import {Subject} from 'rxjs/Subject';
 import {Observable} from 'rxjs/Observable';
 
+import {SharedComponent} from './../../shared/shared.component';
+import {LocalStateService} from './../../services/localstate.service';
+import {ListService} from './../list.service';
+import {user} from './../../model/user';
 import {list} from './../../model/user';
-import {Subject} from 'rxjs/Subject';
 
-declare var PouchDB: any;
 const MAX_HITS_DISPLAYED = 30;
 const COLOR_CATALOGITEM = '#58c';
 const COLOR_INSLIST = '#e33'; //'#f44';
@@ -49,9 +47,8 @@ export class ListComponent implements OnInit, OnDestroy {
     private email;
     private sList;
     private user;
-    private search;
+    public /*private*/ search;
     private detailBox;
-    db: any;
     clearArticle: any;
     af: AngularFire;
     catalogs: listCatalog[] = [];
@@ -73,7 +70,6 @@ export class ListComponent implements OnInit, OnDestroy {
                 private router: Router,
                 private translate: TranslateService) {
         this.af = af;
-        this.db = new PouchDB("sList");
     }
 
     ngOnDestroy() {
@@ -98,7 +94,8 @@ export class ListComponent implements OnInit, OnDestroy {
                 }
 
                 // get or add user from/to local database Pouchdb
-                this.getOrAddUsernameToLocalDB();
+                console.log("list: LocalState: setting both from params");
+                LocalStateService.put(this.email, this.sList);
                 return Observable.from([1, 2, 3]).map(x => x);
             });
 
@@ -167,45 +164,6 @@ export class ListComponent implements OnInit, OnDestroy {
         document.getElementById('clear').style.display = 'block';
         document.getElementById('finished').style.display = 'block';
         document.getElementById('delete').style.display = 'block';
-    }
-
-    /// get user email from local database(pouch db)
-    getOrAddUsernameToLocalDB() {
-        let self = this;
-        self.db.allDocs({include_docs: true, descending: true}, function (err, doc) {
-            if (err) {
-                console.log(err)
-                return;
-            }
-            if (doc.rows.length > 0) {
-                //get user from localdb
-                self.setLocalUser(doc.rows[0].doc);
-            } else {
-                //set to local db
-                self.addUserToLocalDB();
-            }
-        });
-    }
-
-    setLocalUser(obj) {
-        let self = this;
-        if (this.email == obj.user) {
-            this.db.get(obj._id).then(function (doc) {
-                doc.sList = self.sList;
-                doc.user = self.email;
-                return self.db.put(doc);
-            });
-        } else {
-            this.db.get(obj._id).then(function (doc) {
-                doc.user = self.email;
-                doc.sList = self.sList;
-                return self.db.put(doc);
-            });
-        }
-    }
-
-    addUserToLocalDB() {
-        this.db.post({user: this.email});
     }
 
     // remove accents so we can search for "apfel" and find "äpfel"
@@ -415,7 +373,7 @@ export class ListComponent implements OnInit, OnDestroy {
         }).subscribe(x => {
             let self = this;
             this.catalogs = [];
-            debugger;
+            //debugger;
             if (x != undefined) {
                 for (let i = 0; i < x.length; i++) {
                     let item = {

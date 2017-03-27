@@ -3,7 +3,9 @@ import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 
-declare var PouchDB: any;
+import {LocalStateService} from './services/localstate.service';
+
+//declare var PouchDB: any;
 
 @Component({
     selector: 'app-root',
@@ -29,7 +31,7 @@ export class AppComponent implements OnInit,OnDestroy {
     constructor(private route: ActivatedRoute,
                 private router: Router,
                 private translate: TranslateService) {
-        this.db = new PouchDB("sList");
+        //this.db = new PouchDB("sList");
 
         // this language will be used as a fallback when a translation isn't found in the current language
         translate.addLangs(["en", "de"]);
@@ -44,6 +46,8 @@ export class AppComponent implements OnInit,OnDestroy {
     // called on component creation
     ngOnInit() {
         let self = this;
+        this.localUser = LocalStateService.getUserKey();
+        this.sList = LocalStateService.getSListKey();
 
         // get email or slistid on page route if exists
         this.user = this.route.params
@@ -56,7 +60,7 @@ export class AppComponent implements OnInit,OnDestroy {
 
         this.detectDevice();
         // get user email id from local database(pouch db)
-        this.syncChanges();
+        //this.syncChanges();
     }
 
     syncChanges() {
@@ -74,8 +78,12 @@ export class AppComponent implements OnInit,OnDestroy {
     }
 
     goToShoppingList() {
-        if (this.sList && this.localUser) {
-            this.router.navigate(['list', this.sList, {email: this.localUser}]);
+        if (this.localUser) {
+            if (this.sList) {
+                this.router.navigate(['list', this.sList, {email: this.localUser}]);
+            } else {
+                this.router.navigate(['lists', {email: this.localUser}]);
+            }
         } else {
             this.router.navigate(['home']);
         }

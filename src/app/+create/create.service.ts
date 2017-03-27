@@ -35,23 +35,13 @@ export class CreateService {
         return this.af.database.object(`sList/${this.sList.getKey()}`);
     }
 
-    //reset invited and emailed users
+    // reset invited and emailed users
     resetSList(): void {
-        this.resetInvitedUsers();
-        this.resetMailedUsers();
-    }
-
-    //reset invited users
-    resetInvitedUsers(): void {
         this.invitedUsers.length = 0;
-    }
-
-    //reset emailed users
-    resetMailedUsers(): void {
         this.mailedUsers.length = 0;
     }
 
-    //create dhopping list
+    //create Shopping list
     createSListUser(usr: any): void {
         console.log(this.sList);
         let sListKey = usr.$key;
@@ -126,39 +116,6 @@ export class CreateService {
     getUsersFirebase(): Observable<any[]> {
         let result = this.af.database.list('/users');
         return result;
-    }
-
-    // dump default cataloge english
-    createFirebaseCatalog(catalog: Object) {
-        const addArticle = this.af.database.list(`articles`);
-        const addCatalog = this.af.database.list(`catalog/english`);
-        for (let property in catalog) {
-            if (catalog.hasOwnProperty(property)) {
-                let insertData = {};
-                let myArticleArr = [];
-                let myCatalogObj = {};
-                let catalogObj = {};
-                catalogObj["name"] = property;
-                catalogObj["isDefault"] = true;
-                catalogObj["articles"] = [];
-
-                let propertyAdded = addCatalog.push(catalogObj)
-                for (let i = 0; i < catalog[property].length; i++) {
-                    let val = catalog[property][i];
-                    let obj = {
-                        name: val,
-                        isDefault: true
-                    }
-                    let articleAdded = addArticle.push(obj);
-                    let key = articleAdded.key;
-                    insertData[key] = true;
-                    let addToCatalog = this.af.database.list(`catalog/english/${propertyAdded.key}/articles`)
-                    addToCatalog.push(key);
-                    myArticleArr.push(insertData);
-                    catalogObj["articles"].push(key);
-                }
-            }
-        }
     }
 
     // dump default catalogs with en and de names, articles with imgs
