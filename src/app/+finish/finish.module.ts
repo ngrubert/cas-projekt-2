@@ -6,7 +6,6 @@ import { MaterialModule } from '@angular/material';
 import { FinishRoutingModule } from './finish.routing';
 import { SharedModule } from './../shared/shared.module';
 import { FinishComponent }   from './finish.component';
-import { UsersService } from './../services/users.service';
 
 // finish module bootstrap
 @NgModule({
@@ -15,6 +14,5 @@ import { UsersService } from './../services/users.service';
   ],
   exports: [],
   declarations: [FinishComponent],
-  providers: [UsersService],
 })
 export class FinishModule { }

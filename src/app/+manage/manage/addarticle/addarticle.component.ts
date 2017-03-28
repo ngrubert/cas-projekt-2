@@ -8,7 +8,7 @@ import { ManageService } from './../../manage.service';
 import { user } from './../../../model/user';
 import { list } from './../../../model/user';
 
-declare var PouchDB: any;
+
 
 export class catalog{
     constructor(
@@ -42,10 +42,11 @@ export class AddArticleComponent implements OnInit {
         private router: Router
     ) {
         this.af = af;
-        this.db = new PouchDB("sList");
+        
     }
 
     ngOnInit() {
+        this.db = this._manageService.PouchDBRef();
         this.user=this.route.params
             .switchMap((params: Params) => {
 				this.sId = params['id'];

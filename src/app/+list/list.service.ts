@@ -27,6 +27,11 @@ export class ListService {
         this.user.subscribe(c=>console.log(c));
 
     }
+
+    PouchDBRef(){
+        return new PouchDB("sList");
+    }
+
     // get shopping list details by shopping list id
     getSDetails(sListId){
         return this.af.database.object(`sList/${sListId}`);
@@ -52,8 +57,15 @@ export class ListService {
         
     }
 
+    addToOwnArticles(article,user){
+        let addArticle=this.af.database.list('ownarticles');
+        addArticle.push({articleId:article,user:user});
+    }
+
+    
+
 // add article and add article id to list
-    addArticleAndAddToList(sList,obj){
+    addArticleAndAddToList(sList,obj,user){
         let addArticle=this.af.database.list('articles');
         let checkInAArticle=this.af.database.list('articles',{
             query:{
@@ -70,7 +82,9 @@ export class ListService {
                 this.addArticleToList(sList,obj);        
             } else {
                 let articleAdded:any = addArticle.push(obj);
+                debugger
                 this.addArticleToList(sList,articleAdded.key); 
+                this.addToOwnArticles(articleAdded.key,user);
             }
             checkInAArticle.unsubscribe();
         });
@@ -198,6 +212,33 @@ export class ListService {
         })
     }
 
+    // remove article from shopping list
+    removeArticleFromCategory(key,catId,language,sListId){
+        let self=this;
+        let articleItem=this.af.database.list(`catalog/${language}/${catId}/articles/`);
+        let article=this.af.database.object(`catalog/${language}/${catId}`).map(
+            x=>x
+        ).subscribe(x=>{
+            debugger
+            if (x){
+                if(x.articles){
+                    for (var property in x.articles) {
+                        if (x.articles.hasOwnProperty(property)) {
+                            if(x.articles[property]==key){
+                                debugger
+                                self.af.database.object(`catalog/${language}/${catId}/articles/${property}`).remove();
+                                self.removeArticleFromSList(x.articles[property],sListId);
+                                if(article)
+                                article.unsubscribe();
+                            }
+                        }
+                    }
+                }
+            }
+            if(article)
+            article.unsubscribe();
+        })
+    }
 
     // remove article from shopping list
     removeArticleFromSList(key,sListId){
@@ -214,8 +255,10 @@ export class ListService {
             debugger
             if (x && x.length>0){
                 self.af.database.object(`sList/${sListId}/articles/${x[0].$key}`).remove();
+                if(article)
                 article.unsubscribe();
             }
+            if(article)
             article.unsubscribe();
         })
     }

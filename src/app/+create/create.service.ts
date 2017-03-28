@@ -55,8 +55,10 @@ export class CreateService {
         let testme = this.af.database.object(`sListUsers`);
         if (this.invitedUsers.indexOf(usr.$key) < 0) {
             this.invitedUsers.push(usr.$key);
+            this.af.database.object(`sList/${this.sList.getKey()}/users`).update(this.invitedUsers);
             // this.sListUsersKey.update(this.invitedUsers);
             this.af.database.object(`sListUsers/${this.sList.getKey()}`).update(insertData);
+
             // this.sendEmailToUser(usr.$key);
         }
     }
@@ -117,10 +119,10 @@ export class CreateService {
         var result = this.af.database.list('/users');
         return result;
     }
-    // dump default cataloge english
-    createFirebaseCatalog(catalog:Object){
+    // dump default cataloge by language
+    createFirebaseCatalog(catalog:Object,language){
          const addArticle = this.af.database.list(`articles`);
-         const addCatalog = this.af.database.list(`catalog/english`);
+         const addCatalog = this.af.database.list(`catalog/${language}`);
          for (var property in catalog) {
             if (catalog.hasOwnProperty(property)) {
                 let insertData={};
@@ -142,7 +144,7 @@ export class CreateService {
                       let articleAdded= addArticle.push(obj);
                       var key=articleAdded.key;
                       insertData[key]=true;
-                      let addToCatalog=this.af.database.list(`catalog/english/${propertyAdded.key}/articles`)
+                      let addToCatalog=this.af.database.list(`catalog/${language}/${propertyAdded.key}/articles`)
                       addToCatalog.push(key);
                       myArtcileArr.push(insertData);
                       catalogObj["articles"].push(key);

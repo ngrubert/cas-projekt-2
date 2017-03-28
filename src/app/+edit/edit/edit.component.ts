@@ -9,7 +9,6 @@ import { EditService } from './../edit.service';
 import { user } from './../../model/user';
 import { list } from './../../model/user';
 
-declare var PouchDB: any;
 
 @Component({
     selector: 'edit',
@@ -42,11 +41,12 @@ export class EditComponent implements OnInit,OnDestroy {
         private router: Router,snackBar: MdSnackBar,af: AngularFire,) {
             this.router=router;
             this.snackBar=snackBar;
-            this.db = new PouchDB("sList");
+            
             this.af=af;
     }
 
     ngOnInit() {
+        this.db = this._editService.PouchDBRef();
         // get all users
         this.getUsers();
         // get shoppingList by id
@@ -87,6 +87,12 @@ export class EditComponent implements OnInit,OnDestroy {
                 this.model=x;
             }
         })
+    }
+
+    // cancel go to shopping list
+    CancelList(){
+        let userEmailKey=this.emailedUsers.find(this.findUserEmailKey,this);
+        this.router.navigate([`list/${this.sList}`,{email:userEmailKey.$key}])
     }
     
     // get shoppingList users by id

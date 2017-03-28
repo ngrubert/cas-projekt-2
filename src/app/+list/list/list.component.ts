@@ -17,6 +17,8 @@ export class catalog{
     constructor(
         public id?: string,
         public name?: string,
+        public language?:string ,
+        public isUserCatalog?:boolean ,
         public articles?:Array<any>    
         ){}   
 }
@@ -57,6 +59,7 @@ export class ListComponent implements OnInit,OnDestroy  {
     title:any;
     searchArticles:Array<any>=[];
     articlesList:Array<listArticle>=[];
+    
     selectedArticleList:listArticle={};
     private searchTerms = new Subject<string>();
     constructor(  af: AngularFire,
@@ -65,7 +68,7 @@ export class ListComponent implements OnInit,OnDestroy  {
         private router: Router
     ) {
         this.af = af;
-        this.db = new PouchDB("sList");
+        
     }
 
      ngOnDestroy(){
@@ -75,6 +78,7 @@ export class ListComponent implements OnInit,OnDestroy  {
     }
     /// load initial required data
     ngOnInit() {
+        this.db = this._listService.PouchDBRef();
         this.user=this.route.params
             .switchMap((params: Params) => {
                 /// stored in browse db(PouchDB)
@@ -99,6 +103,7 @@ export class ListComponent implements OnInit,OnDestroy  {
         // get all articles for shopping list
         this.getArticleBySlist();
         
+        
         /// search article observable
         const search=document.getElementById("listSearch");
         let search$=Observable.fromEvent(search,"keyup")
@@ -109,7 +114,7 @@ export class ListComponent implements OnInit,OnDestroy  {
        
         search$.subscribe(x=>{
             this.searchArticles=x;
-        });   
+        }); 
 
         /// get all articles for search purpose
         this.getAllArticles();     
@@ -121,13 +126,18 @@ export class ListComponent implements OnInit,OnDestroy  {
         this.getSTitle();
     }
 
+    
+
     getSTitle(){
         this._listService.getSDetails(this.sList).map(x=>x).subscribe(x=>{
+            
+            if(x){
             this.title=x.title;
             
             // get catalog based on the user selected shopping list language
             this.getCatalog(x.language.toLowerCase());
             this.getUsersCatalog(x.language.toLowerCase());
+            }
         })
     }
     showSideMenu(){
@@ -264,7 +274,12 @@ export class ListComponent implements OnInit,OnDestroy  {
     // add articles to shopping
 
     addToLIst(item:any){
-        this.recentArticles.push(item.name);
+
+        var index = this.recentArticles.findIndex(function(o){
+            return o.$key === item.$key;
+        })
+        this.recentArticles.splice(index, 1);
+
         this.searchArticles=[];
         this.search='';
         if(item.$key){
@@ -282,16 +297,18 @@ export class ListComponent implements OnInit,OnDestroy  {
                             item.$key=x[0].$key;
                             this.addArticleToLIst(x[0].$key);    
                         }else{
-                            this._listService.addArticleAndAddToList(this.sList,obj);
+                            this._listService.addArticleAndAddToList(this.sList,obj,this.url);
                         }
 
-                        article$.unsubscribe();
+                        // article$.unsubscribe();
                     }
                     
                 })
             
         }
     }
+
+    
 
     // add article to shopping list
 
@@ -314,13 +331,17 @@ export class ListComponent implements OnInit,OnDestroy  {
                     }).map(x=>{
                         return x;
                     }).subscribe(x=>{
+                        debugger
                         let self=this;
                         this.usersCatalogs=[];
+                        this.usersCatalogs.length=0;
                         if(x!=undefined){
                         for(let i=0;i<x.length;i++){
                             let item={
                                 name:x[i].name,
                                 id:x[i].$key,
+                                language:language,
+                                isUserCatalog:true,
                                 articles:[]
                             };
                             this.usersCatalogs.push(item);
@@ -583,9 +604,45 @@ export class ListComponent implements OnInit,OnDestroy  {
 
     // remove article from shopping list
     removeArticleFromSList(item){
+        this.recentArticles.push(item);
         this._listService.removeArticleFromSList(item.id,this.sList);
         let box:any=document.getElementsByClassName('slist-article-details');
         box[0].style.display='none';   
+    }
+
+    // remove article from catalog
+    removeArticleFromCategory(item){
+        debugger
+        // this._findArticleInCategoryAndDelete(item.id);
+        let box:any=document.getElementsByClassName('slist-article-details');
+        box[0].style.display='none';  
+        let deleteA:any=document.getElementsByClassName('article-category-delete');
+        deleteA[0].style.display='block';  
+    }
+
+    // hide delete and show box
+    hideDelete(){
+        let box:any=document.getElementsByClassName('slist-article-details');
+        box[0].style.display='block';  
+        let deleteA:any=document.getElementsByClassName('article-category-delete');
+        deleteA[0].style.display='none';  
+    }
+
+    //find article in catalog and delete
+    _findArticleInCategoryAndDelete(item){
+        this.recentArticles.push(item);
+        let id=item.id;
+        for(let i=0;i<this.usersCatalogs.length;i++){
+            for(let j=0;j<this.usersCatalogs[i].articles.length;j++){
+                if(this.usersCatalogs[i].articles[j].$key==id && this.usersCatalogs[i].isUserCatalog){
+                    this._listService.removeArticleFromCategory(id,this.usersCatalogs[i].id,this.usersCatalogs[i].language,this.sList);
+                    let box:any=document.getElementsByClassName('slist-article-details');
+                    box[0].style.display='none';  
+                }
+            }
+        }
+        let deleteA:any=document.getElementsByClassName('article-category-delete');
+        deleteA[0].style.display='none';
     }
 
 // update shopping list ui

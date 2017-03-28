@@ -27,6 +27,10 @@ export class EditService {
         
     }
 
+    PouchDBRef(){
+        return new PouchDB("sList");
+    }
+
     // edit shopping list by id
     editSList(key,list: list) {
         const sListRef = this.af.database.object(`sList/${key}`);

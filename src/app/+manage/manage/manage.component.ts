@@ -10,7 +10,6 @@ import { Observable } from 'rxjs/Observable';
 import { list } from './../../model/user';
 import { Subject } from 'rxjs/Subject';
 import {AngularFire,FirebaseListObservable,FirebaseObjectObservable,FirebaseRef} from 'angularfire2';
-declare var PouchDB: any;
 export class catalog{
     constructor(
         public id?: string,
@@ -36,6 +35,7 @@ export class ManageComponent implements OnInit {
     searchitems: Observable<Array<string>>;
     articles:Array<any>=[];
     searchArticles:Array<any>=[];
+    ownArticles:Array<any>=[];
     private searchTerms = new Subject<string>();
     constructor(  af: AngularFire,
         public _manageService: ManageService,
@@ -43,10 +43,11 @@ export class ManageComponent implements OnInit {
         private router: Router
     ) {
         this.af = af;
-        this.db = new PouchDB("sList");
+        
     }
 
     ngOnInit() {
+        this.db = this._manageService.PouchDBRef();
         this.user=this.route.params
             .switchMap((params: Params) => {
                 // this.url = '-K_PcS3U-bzP0Jgye_Xo';
@@ -69,7 +70,8 @@ export class ManageComponent implements OnInit {
             self.url=docs.rows[0].doc.user;
                 self.getCatalog();
                 self.getUsersCatalog();
-                self.getAllArticles(); 
+                self.getOwnArticles();
+                // self.getAllArticles(); 
             }
         });
     }
@@ -79,6 +81,29 @@ export class ManageComponent implements OnInit {
         articles$.subscribe(x=>{
             this.articles=x;
         });
+    }
+
+    // filter users catalog
+    getMyCatalog(data,language){
+        let self=this;
+        if(data && data.length>0){
+            let arr=[];
+            for(let i=0;i<data.length;i++){
+                if(data[i].users){
+                    for (var property in data[i].users) {
+                        if (data[i].users.hasOwnProperty(property)) {
+                            if(property == self.url){
+                                data[i].language=language;
+                                arr.push(data[i]);
+                            }
+                        }
+                    }
+                }
+            }
+            return arr;
+        }else{
+            return data;
+        }
     }
 
    
@@ -91,10 +116,9 @@ export class ManageComponent implements OnInit {
                         equalTo:false
                         }
                     }).map(x=>{
-                        for(let i=0;i<x.length;i++){
-                            x[i].language='english';
-                        }
-                        return x;
+                        debugger
+                        return self.getMyCatalog(x,'english');
+                        
                     });
         let germanitems = this.af.database.list('/catalog/german',{
             query:{
@@ -102,10 +126,7 @@ export class ManageComponent implements OnInit {
             equalTo:false
             }
         }).map(x=>{
-            for(let i=0;i<x.length;i++){
-                    x[i].language='german';
-                }
-            return x;
+            return self.getMyCatalog(x,'german');
         });
                     
             englishitems.concat(germanitems).subscribe(x=>{
@@ -289,6 +310,29 @@ export class ManageComponent implements OnInit {
         }
     }
 
+    //get own articles
+    getOwnArticles(){
+        let ownAritcles=this._manageService.getOwnArticles(this.url);
+        ownAritcles.subscribe(x=>{
+            if(x && x.length>0){
+                for(let i=0;i<x.length;i++){
+                    this.af.database.object(`/articles/${x[i].articleId}`).subscribe(p=>{
+                        let exists=false;
+                        for(let k=0;k<this.ownArticles.length;k++){
+                            if(this.ownArticles[k].$key==p.$key){
+                                exists=true;
+                            }
+                        }
+                        if(!exists)
+                        this.ownArticles.push(p);
+                    });
+                }
+            }else{
+                this.ownArticles=[];
+            }
+        })
+    }
+
 // toggle catalog on ui based on user interaction (tap/click events)
     toggleCatalog(evt){
         // let parentNode=evt.target.parentElement;
@@ -316,4 +360,10 @@ export class ManageComponent implements OnInit {
         deleteButton.style.display='flex';
         deleteArticle.style.display='none';
     }
+
+    deleteArticleFromMyarticles(art){
+        alert(1)
+        this._manageService.removeIfExistsMyOwnArticles(art.$key,this.url);
+    }
+
 }

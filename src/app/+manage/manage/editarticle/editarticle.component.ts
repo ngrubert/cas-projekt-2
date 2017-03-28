@@ -47,10 +47,11 @@ export class EditArticleComponent implements OnInit,OnDestroy {
         private router: Router
     ) {
         this.af = af;
-		this.db = new PouchDB("sList");
+		
     }
 
     ngOnInit() {
+		this.db = this._manageService.PouchDBRef();
         this.user=this.route.params
             .switchMap((params: Params) => {
                 // this.url = '-K_PcS3U-bzP0Jgye_Xo';
@@ -95,6 +96,7 @@ export class EditArticleComponent implements OnInit,OnDestroy {
         categoryObs.subscribe(x=>{
 			this.list=[];
             this.listDup=x;
+			if(x && x.length>0){
 			for (let i=0;i<x.length;i++){
 				let val:any=x[i];
 				let item={
@@ -103,6 +105,7 @@ export class EditArticleComponent implements OnInit,OnDestroy {
 					language:val.language
 				}
 				this.list.push(item);
+			}
 			}
 			
         });
@@ -158,6 +161,7 @@ export class EditArticleComponent implements OnInit,OnDestroy {
 				if (obj.order != this.catId && x && x.length >0){
 					self._manageService.removeArticleFromCategory(x[0].$key,this.catId,languageObj.language)
 				}
+				self._manageService.removeIfExistsMyOwnArticles(self.article.$key,this.url);
 			});
 	}
 }

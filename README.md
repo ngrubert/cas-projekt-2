@@ -1,32 +1,53 @@
-# Shoppinglist
+# Fergg
 
-This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.22-1.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.0-rc.2.
 
-## Development server
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+# Development server
 
-## Code scaffolding
+If you have already installed Angular CLI, update it first:
+ 
+Update the angular cli 
+======================
+% sudo npm uninstall -g angular-cli
+% sudo npm cache clean
+% sudo npm install -g angular-cli@latest
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive/pipe/service/class`.
 
-## Build
+Install project dependencies
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+cd to your project and run:
+% sudo npm install
 
-## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Build local project
 
-## Running end-to-end tests
+ng build --prod --aot
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
 
-## Deploying to Github Pages
+Run Locally
 
-Run `ng github-pages:deploy` to deploy to Github Pages.
+node server.js
 
-## Further help
 
-To get more help on the `angular-cli` use `ng --help` or go check out the [Angular-CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+# Run tests
 
+ng test
+
+
+# Email Functionality
+Go to : https://www.google.com/settings/security/lesssecureapps set the Access for less secure apps setting to Enable
+
+Update username and password in server.js
+
+
+Firebase config
+
+generate firebase config from https://console.firebase.google.com/
+
+// firebase frontend configuration 
+
+// See https://console.firebase.google.com/project/fergg-c183c/database/data to live view the data
+
+ export const firebaseConfig = { apiKey: "xxxx","xxxx", authDomain: "xxxx", databaseURL: "https://shoppinglist-12407.firebaseio.com", storageBucket: "shoppinglist-12407.appspot.com", messagingSenderId: "xxxx", };
+
+create firebase-secret.js in project directory and paste the firebase secret.

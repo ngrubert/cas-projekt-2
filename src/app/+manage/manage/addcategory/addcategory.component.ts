@@ -41,10 +41,11 @@ export class AddCategoryComponent implements OnInit {
         private router: Router
     ) {
         this.af = af;
-        this.db = new PouchDB("sList");
+        
     }
 
     ngOnInit() {
+        this.db = this._manageService.PouchDBRef();
         this.user=this.route.params
             .switchMap((params: Params) => {
                 // this.url = '-K_PcS3U-bzP0Jgye_Xo';
@@ -96,7 +97,7 @@ export class AddCategoryComponent implements OnInit {
 		    order:obj.order
         };
 		item.isDefault=false;
-        this._manageService.addCategory(item,obj.language);
+        this._manageService.addCategory(item,obj.language.toLowerCase(),this.url);
 		this.router.navigate(['manage']);
 	}
     
