@@ -67,22 +67,19 @@ export class CreateComponent implements OnInit,OnDestroy {
 
     // Create shoppingList. This is called by the "create shopping list" button
     createList() {
-        console.log(this.model);
-        // this.model.users.push(this.model.email);  // the 1st, required, email address
-        // this.model.users.push(this.initialEmail); // the initial email address of the invited users
         this.emailAddrs = [];
         this.inviteUsers = JSON.parse(JSON.stringify(this.users));
-        if (this.initialEmail && this.initialEmail != "") {
+        if (this.initialEmail && this.initialEmail.trim() != "") {
             this.inviteUsers.push(this.initialEmail);
         }
-        this.inviteUsers.forEach(function(item,i) { this.inviteUsers[i] = this.inviteUsers[i].trim()})
+        for (let i=0; i < this.inviteUsers.length; i++) {
+            this.inviteUsers[i] = this.inviteUsers[i].trim();
+        }
         this.inviteUsers.push(this.model.email);
-        console.log(this.inviteUsers); // a simple list of email addr strings, email, initialEmail and moreEmails
         this.CheckUsers();
     }
 
-    // This is called by the "add more users" button
-    // add inviteUsers text fields, initially blank
+    // This is called by the "add more users" button. Adds an invitedusers text field, initially blank
     addInvitedUsers() {
         this.users.push('');
     }

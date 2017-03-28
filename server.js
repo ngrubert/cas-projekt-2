@@ -3,7 +3,7 @@ var path = require('path');
 var util = require('util');
 var app = express();
 var router = express.Router();
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
 var nodemailer = require('nodemailer');
 var firebaseAdmin = require('firebase-admin');
 var serviceAccount = require("./firebase-secret.js");
@@ -14,12 +14,12 @@ var fromUser = smtpUser;
 var smtpPass = 'Urc0u5-0';
 
 var MAIL = {
-    'English': {
+    'en': {
         'subj': 'Fergg! New Shopping list "%s"',
         'text': 'A new shopping list "%s" has been created by %s: %s',
         'html': '<p>A new shopping list "%s" has been created by %s</p><a href="%s">Click here to see it.</a>'
     },
-    'German': {
+    'de': {
         'subj': 'Fergg! Neue Einkaufsliste "%s"',
         'text': 'Neue Einkaufsliste "%s" von %s: %s',
         'html': '<p>Neue Einkaufsliste "%s" von %s</p><a href="%s">Ansehen!</a>'
@@ -28,8 +28,8 @@ var MAIL = {
 
 // add middleware
 app.use(express.static(path.join(__dirname, './dist')));
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 
 //email code
@@ -97,7 +97,10 @@ var queryEmail = function(key,property){
 // send email
 var sendEmail = function(key, property, mailId) {
     var sendUrl = sList.siteUrl + "/#/list/" + key + ";email=" + property;
-    var FMT = MAIL[sList.language];
+    var lang = sList.language;
+    if (lang == "English") { lang = "en" }
+    if (lang == "German" ) { lang = "de" }
+    var FMT = MAIL[lang];
     var mailOptions = {
         from: fromUser,                                                // sender address
         to: mailId,                                                    // list of receivers
