@@ -1,3 +1,5 @@
+"use strict";
+
 var express = require('express');
 var path = require('path');
 var util = require('util');
@@ -7,11 +9,7 @@ var bodyParser = require('body-parser');
 var nodemailer = require('nodemailer');
 var firebaseAdmin = require('firebase-admin');
 var serviceAccount = require("./firebase-secret.js");
-
-var smtpHost = 'saphir.metanet.ch';
-var smtpUser = 'fergg@karrer.net';
-var fromUser = smtpUser;
-var smtpPass = 'Urc0u5-0';
+var mailAccount = require("./mail-secret.js");
 
 var MAIL = {
     'en': {
@@ -24,7 +22,7 @@ var MAIL = {
         'text': 'Neue Einkaufsliste "%s" von %s: %s',
         'html': '<p>Neue Einkaufsliste "%s" von %s</p><a href="%s">Ansehen!</a>'
     }
-}
+};
 
 // add middleware
 app.use(express.static(path.join(__dirname, './dist')));
@@ -33,13 +31,11 @@ app.use(bodyParser.json());
 
 
 //email code
-//var transporter = nodemailer.createTransport('smtps://nicogrubert%40gmail.com:Test@smtp.gmail.com');
-// @ Andi: if you have a gmail account, you can use the commented code to enable email sending; otherwise you will get an auth error "response: '535-5.7.8 Username and Password not accepted"
 var transporter = nodemailer.createTransport({
-    host: smtpHost,
+    host: mailAccount.smtpHost,
     port: 587,
     secure: false,
-    auth: { user: smtpUser, pass: smtpPass }
+    auth: { user: mailAccount.smtpUser, pass: mailAccount.smtpPass }
 });
 
 var sList;
@@ -74,7 +70,7 @@ listRef.child('sListUsers').on('child_changed', function(dataSnapshot) {
             }
         }
     }
-    for (var property in msg) {
+    for (property in msg) {
         if (msg.hasOwnProperty(property)) {
             msg[property] = false;
             // queryEmail(property);
@@ -91,7 +87,7 @@ var queryEmail = function(key,property){
             sendEmail(key, property, obj[property].email)
         }
     });
-}
+};
 
 
 // send email
@@ -102,7 +98,7 @@ var sendEmail = function(key, property, mailId) {
     if (lang == "German" ) { lang = "de" }
     var FMT = MAIL[lang];
     var mailOptions = {
-        from: fromUser,                                                // sender address
+        from: mailAccount.fromUser,                                    // sender address
         to: mailId,                                                    // list of receivers
         subject: util.format(FMT.subj, sList.title),                   // Subject line
         text: util.format(FMT.text, sList.title, sList.name, sendUrl), // plaintext body
@@ -115,16 +111,15 @@ var sendEmail = function(key, property, mailId) {
         }
         console.log('Mail sent to ' + mailId + ': ' + info.response);
     });
-}
+};
 
 
 // verify connection configuration
 transporter.verify(function(error, success) {
     if (error) {
-        console.log('Testing SMTP: user ' + smtpUser + ' at ' + smtpHost + ': ' + error);
-        return;
+        console.log('SMTP: user ' + mailAccount.smtpUser + ' at ' + mailAccount.smtpHost + ': ' + error);
     } else {
-        console.log('Smtp user ' + smtpUser + ' at ' + smtpHost + ' seems ok');
+        console.log('Smtp user ' + mailAccount.smtpUser + ' at ' + mailAccount.smtpHost + ' seems ok');
     }
 });
 
@@ -133,4 +128,4 @@ transporter.verify(function(error, success) {
 const port = 3000;
 app.listen(process.env.PORT || port, function() {
     console.log('Server running at http://localhost:' + port);
-})
+});
