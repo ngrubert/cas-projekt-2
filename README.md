@@ -1,115 +1,70 @@
-# Shoppinglist
+# Fergg
 
 This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.22-1.
 
-# UPGRADE
+### Development server
 
- - install nodejs 6.10.0
- - install angular-cli 1.0.0-rc.0
+If you have already installed Angular CLI, update it first:
  
-  Global package:
+### Update the angular cli
 
-    $ npm uninstall -g angular-cli @angular/cli
-    $ npm cache clean
-    $ npm install -g @angular/cli@latest`
-      
-  Local project package:
+    % sudo npm uninstall -g angular-cli
+    % sudo npm cache clean
+    % sudo npm install -g angular-cli@latest
 
-    $ rm -rf node_modules dist # use rmdir on Windows
-    $ npm install --save-dev @angular/cli@latest
-    $ npm install
 
-## Development server
+#### Install project dependencies
 
-Run `node server` to run the email server that listens to events from the firebase database.
+    % cd <your project directory>
+    % sudo npm install
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## Code scaffolding
+#### Build local project
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive/pipe/service/class`.
+    ng build --prod --aot
 
-## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+#### Run Locally
 
-## Running unit tests
+This runs the app on localhost:4200
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+    ng serve
 
-## Running end-to-end tests
+#### Email Functionality
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
+server.js is a small program that listens to changes in the firebase db that
+require an email notification. To mail mail invitations work,
+update smtp host, username and password in mail-secret.js, an then run:
 
-## Deploying to Github Pages
-
-Run `ng github-pages:deploy` to deploy to Github Pages.
-
-## Further help
-
-To get more help on the `angular-cli` use `ng --help` or go check out the [Angular-CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
-
-## Firebase database
-
-https://console.firebase.google.com/project/fergg-c183c/database/data?pli=1
-
-Important files:
-- src/firebase-secret.js
-- src/app/config/firebase-config.ts
-
-## Firebase hosting
-
-Install firebase tools, login and initialize the firebase project:
- 
-    $ npm i -g firebase-tools
-    $ firebase login
-    $ firebase init
-     - we're outside of our home dir
-       proceed: Y
+    node server.js
     
-      (*) Database
-     >(*) Hosting
-    
-    default project
-    > Fergg! (fergg-c183c)
-    
-    ? What do you want to use as your public directoru (public) dist
-    
-    ? configure as a SPA (rewrite all urls to index.html)? N
-    
-    ? index.,html exists. Overwrite? N
-    
-     - skipping write of index.html
-     - writing config info tofirebase.json
-     - writing projetc infot to .firebaserc
-    
-     - initialization complete
-    
-## Firebase deploy
 
-Make a build locally in ./dist:
+#### Run tests
 
-    $ cd <top directory of project>
-    $ ng build --prod
-    chunk    {0} 0.0c98c5bc0a9d5b9c313b.chunk.js 333 kB {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} [rendered]
-    chunk    {1} 1.48105112e5b10e770836.chunk.js 205 kB {0} {2} {3} {4} {5} {6} {7} {8} {9} {10} [rendered]
-    [...]
-    chunk   {12} vendor.f81d7c654f3b1a97cadf.bundle.js (vendor) 3.49 MB [initial] [rendered]
-    chunk   {13} inline.f3f65f8f74d285f485ac.bundle.js (inline) 0 bytes [entry] [rendered]
-    
-Deploy the dist folder to firebase hosting:
-    
+    ng test
+
+
+
+#### Firebase config
+
+generate firebase config from https://console.firebase.google.com/
+
+// firebase frontend configuration
+
+// See https://console.firebase.google.com/project/fergg-c183c/database/data to live view the data
+
+ export const firebaseConfig = { apiKey: "xxxx","xxxx", authDomain: "xxxx", databaseURL: "https://shoppinglist-12407.firebaseio.com", storageBucket: "shoppinglist-12407.appspot.com", messagingSenderId: "xxxx", };
+
+#### Firebase hosting
+
+Initalize firebase as described in firebase.notes.md. Then deploy:
+
+    $ firebase login             (needed only once)
+    $ ng build --prod --aot
     $ firebase deploy
-    === Deploying to 'fergg-c183c'...
-    i  deploying database, hosting
-    +  database: rules ready to deploy.
-    i  hosting: preparing dist directory for upload...
-    Uploading: [======================================= ] 97%+  hosting: dist folder uploaded successfully
-    +  hosting: 37 files uploaded successfully
-    i  starting release process (may take several minutes)...
-    +  Deploy complete!
-    Project Console: https://console.firebase.google.com/project/fergg-c183c/overview
-    Hosting URL: https://fergg-c183c.firebaseapp.com
     
-    
+The URL of the deployed app is https://fergg-c183c.firebaseapp.com
+
+#### fergg.karrer.net
+
+There is now a dns entry https://fergg.karrer.net that points to the above.
