@@ -14,7 +14,7 @@ html {
 body{
     position: relative;
     margin: 0;
-    /*padding-bottom: 6rem;*/
+    background-color: #333;
     min-height: 100%;
     font-family: "Helvetica Neue", Arial, sans-serif;
 }

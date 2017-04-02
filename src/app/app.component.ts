@@ -31,15 +31,21 @@ export class AppComponent implements OnInit,OnDestroy {
     constructor(private route: ActivatedRoute,
                 private router: Router,
                 private translate: TranslateService) {
-        //this.db = new PouchDB("sList");
 
         // this language will be used as a fallback when a translation isn't found in the current language
-        translate.addLangs(["en", "de"]);
-        translate.setDefaultLang('en');
-
-        let browserLang = translate.getBrowserLang();
-        //translate.use(browserLang.match(/en|de/) ? browserLang : 'en');
-        console.log("Browser language: " + browserLang.toString());
+        translate.addLangs(["de", "en"]);
+        translate.setDefaultLang('de');
+        let lang = LocalStateService.getLanguage();
+        if (lang) {
+            console.log("Using lang from cookie: " + lang);
+        } else {
+            let browserLang = translate.getBrowserLang();
+            lang = browserLang.match(/en|de/) ? browserLang.toString() : 'en';
+            console.log("Using lang from Browser: " + lang);
+        }
+        //LocalStateService.setLanguage(lang);
+        //translate.use(lang);
+        LocalStateService.setLanguage("de");
         translate.use("de");
     }
 
@@ -90,6 +96,7 @@ export class AppComponent implements OnInit,OnDestroy {
     }
 
     ngOnDestroy() {
+        this.user.unsubscribe();
     }
 
     // hide/show side nav

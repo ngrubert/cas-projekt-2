@@ -95,7 +95,8 @@ export class ListComponent implements OnInit, OnDestroy {
 
                 // get or add user from/to local database Pouchdb
                 console.log("list: LocalState: setting both from params");
-                LocalStateService.put(this.email, this.sList);
+                LocalStateService.setUserKey(this.email);
+                LocalStateService.setSListKey(this.sList);
                 return Observable.from([1, 2, 3]).map(x => x);
             });
 
@@ -127,8 +128,20 @@ export class ListComponent implements OnInit, OnDestroy {
         /// show extra side nav menus
         this.showSideMenu();
 
-        // get the List title an the language
+        // get the List title and the list language
         this.getSTitle();
+
+        // let lang = LocalStateService.getLanguage();
+        // console.log("local="+lang+", slist="+this.slistLang);
+        // if (this.slistLang) {
+        //     if (lang && lang != this.slistLang) {
+        //         this.translate.use(this.slistLang);
+        //         LocalStateService.setLanguage(this.slistLang);
+        //         window.location.reload();
+        //     }
+        // } else {
+        //     this.slistLang = lang;
+        // }
 
         // get catalog based on the user selected shopping list language
         this.getCatalog(this.slistLang);

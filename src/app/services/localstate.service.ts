@@ -1,9 +1,9 @@
-// stores the state of the app (user, shopping list) in local storage
+// stores the state of the app (user, shopping list, language) in local storage
 
 export class FerggState {
     constructor(public userKey?: string,
-                public slistKey?: string) {
-
+                public slistKey?: string,
+                public language?: string) {
     }
 }
 
@@ -70,68 +70,60 @@ export class LocalStateService {
                 return state;
             }
         }
-        console.log("LocalStore: get=nil, null, nada");
+        console.log("LocalStore:returning empty object");
+        return new FerggState();
+    }
+
+    private static putKV(key: string, val: string) {
+        console.log("LocalStore: " + key + "=" + val);
+        let state: FerggState = this.getObject();
+        if (val) {
+            state[key] = val;
+        } else {
+            delete state[key];
+        }
+        this.putObject(state);
+    }
+
+    private static getK(key: string) : string {
+        let state: FerggState = this.getObject();
+        if (state && state[key]) {
+            console.log("LocalStore: get " + key + "=" + state[key]);
+            return state[key];
+        }
+        console.log("LocalStore: get " + key + "= null, nil, nada");
         return null;
     }
 
-    static put(userKey: string, sListKey: string) {
-        console.log("LocalStore: u=" + userKey + ", SL=" + sListKey);
-        this.putObject(new FerggState(userKey, sListKey));
-    }
-
-    static deleteSListKey() {
+    private static deleteK(key: string) {
         let state: FerggState = this.getObject();
-        delete state.slistKey;
+        delete state[key];
         this.putObject(state);
     }
 
-    static deleteUserKey() {
-        let state: FerggState = this.getObject();
-        delete state.userKey;
-        this.putObject(state);
+    // -----------
+    static setSListKey(sListKey: string) {
+        this.putKV('slistKey', sListKey);
     }
-
-    static delete() {
-        this.deleteItem();
-    }
-
-    static getUserKey(): string {
-        let state: FerggState = this.getObject();
-        if (state && state.userKey) {
-            console.log("LocalStore: get U=" + state.userKey);
-            return state.userKey;
-        }
-        console.log("LocalStore getUserKey: get=nil, null, nada");
-        return null;
-    }
-
-    static putUserKey(userKey: string) {
-        console.log("LocalStore: u=" + userKey);
-        let state: FerggState = this.getObject();
-        if (!state) {
-            state = new FerggState();
-        }
-        state.userKey = userKey;
-        this.putObject(state);
-    }
-
     static getSListKey(): string {
-        let state: FerggState = this.getObject();
-        if (state && state.slistKey) {
-            console.log("LocalStore: get SL=" + state.slistKey);
-            return state.slistKey;
-        }
-        console.log("LocalStore getSlistKey: get=nil, null, nada");
-        return null;
+        return this.getK('slistKey')
     }
 
-    static putSListKey(sListKey: string) {
-        let state: FerggState = this.getObject();
-        console.log("LocalStore: SL=" + sListKey);
-        if (!state) {
-            state = new FerggState();
-        }
-        state.slistKey = sListKey;
-        this.putObject(state);
+    static setUserKey(userKey: string) {
+        this.putKV('userKey', userKey);
+    }
+    static getUserKey(): string {
+        return this.getK('userKey')
+    }
+
+    static setLanguage(language: string) {
+        this.putKV('language', language);
+    }
+    static getLanguage(): string {
+        return this.getK('language')
+    }
+
+    static zap() {
+        this.deleteItem();
     }
 }

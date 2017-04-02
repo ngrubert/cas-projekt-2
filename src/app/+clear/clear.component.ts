@@ -53,7 +53,7 @@ export class ClearComponent implements OnInit {
     }
 
     cancelCookie() {
-        LocalStateService.delete();
-        this.router.navigate(['lists']);
+        LocalStateService.zap();
+        this.router.navigate(['home']);
     }
 }

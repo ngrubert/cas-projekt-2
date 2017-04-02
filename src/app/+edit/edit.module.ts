@@ -16,7 +16,7 @@ import { firebaseConfig } from './../config/firebase-config';
     EditRoutingModule,SharedModule,
     FormsModule,
     AngularFireModule.initializeApp(firebaseConfig),
-    MaterialModule.forRoot(),
+    MaterialModule,
     CommonModule
   ],
   exports: [],

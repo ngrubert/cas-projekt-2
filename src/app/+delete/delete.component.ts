@@ -55,7 +55,7 @@ export class DeleteComponent implements OnInit {
         let self = this;
         this.af.database.list(`sList/${this.sList}`).remove();
         this.af.database.list(`sListUsers/${this.sList}`).remove();
-        LocalStateService.deleteSListKey();
+        LocalStateService.setSListKey(null); // deletes the key
         this.router.navigate([`lists`, {email: this.url}]);
     }
 

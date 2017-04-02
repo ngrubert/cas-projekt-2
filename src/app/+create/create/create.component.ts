@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Router} from '@angular/router';
+import {Router, ActivatedRoute, Params} from '@angular/router';
 import {MdSnackBar} from '@angular/material';
 import {FirebaseObjectObservable} from 'angularfire2';
 import {Observable} from 'rxjs/Observable';
@@ -18,7 +18,7 @@ import {list} from './../../model/user';
     providers: [CreateService, MdSnackBar]
 })
 export class CreateComponent implements OnInit,OnDestroy {
-    // shoppingList :list; 
+    private user;
     model = new list(false);
     title: string;
     users = [];
@@ -26,15 +26,15 @@ export class CreateComponent implements OnInit,OnDestroy {
     initialEmail: string;
     inviteUsers: Array<string>;
     emailedUsers: Array<any> = [];
-    // languages = ['Select catalog language', 'English', 'German'];
-    existingUsers: user[];
     emailAddrs: Array<any> = [];
     sList: FirebaseObjectObservable<any>;
     sListKey: string;
-    reqSubscribe;
+    private reqSubscribe;
+    private paramObs;
     snackBar;
 
     constructor(public _createService: CreateService,
+                private route: ActivatedRoute,
                 private router: Router,
                 snackBar: MdSnackBar,
                 private translate: TranslateService) {
@@ -43,6 +43,16 @@ export class CreateComponent implements OnInit,OnDestroy {
     }
 
     ngOnInit() {
+        // let newLang: string;
+        // this.paramObs = this.route.params.subscribe(params => {
+        //     newLang = params['lang'];
+        // });
+        // console.log("cur="+this.translate.currentLang+", param:"+newLang);
+        // if (newLang != this.translate.currentLang) {
+        //     this.translate.use(newLang);
+        //     LocalStateService.setLanguage(newLang);
+        //     window.location.reload();
+        // }
         // pre-fill Name and email fields from existing sList if there is one
         let key = LocalStateService.getSListKey();
         if (key) {
@@ -63,6 +73,7 @@ export class CreateComponent implements OnInit,OnDestroy {
 
     ngOnDestroy() {
         // this.reqSubscribe.unsubscribe();
+        // this.paramObs.unsubscribe();
     }
 
     // Create shoppingList. This is called by the "create shopping list" button
@@ -144,7 +155,8 @@ export class CreateComponent implements OnInit,OnDestroy {
                     if (self.emailedUsers.length == self.inviteUsers.length) {
                         if (self.sList) {
                             let userEmailKey = self.emailedUsers.find(self.findUserEmailKey, self);
-                            LocalStateService.put(userEmailKey.$key, self.sListKey);
+                            LocalStateService.setUserKey(userEmailKey.$key);
+                            LocalStateService.setSListKey(self.sListKey);
                             self.router.navigate([`list/${self.sListKey}`, {email: userEmailKey.$key}])
                         }
                     }
