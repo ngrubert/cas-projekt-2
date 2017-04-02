@@ -62,7 +62,7 @@ let subscription:Subscription;
       declarations: [
       AddArticleComponent,SharedAddOrEditComponent
       ],
-      imports: [MaterialModule.forRoot(),
+      imports: [MaterialModule,
       RouterTestingModule ,FormsModule,AngularFireModule.initializeApp(firebaseConfig)
       ],
       providers:[{provide: ManageService, useValue: AppServiceStub }]

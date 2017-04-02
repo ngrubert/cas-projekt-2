@@ -58,7 +58,7 @@ let subscription:Subscription;
       declarations: [
       DeleteComponent
       ],
-      imports: [MaterialModule.forRoot(),
+      imports: [MaterialModule,
       RouterTestingModule ,FormsModule,AngularFireModule.initializeApp(firebaseConfig)
       ],
       providers:[{provide: DeleteService, useValue: AppServiceStub }]

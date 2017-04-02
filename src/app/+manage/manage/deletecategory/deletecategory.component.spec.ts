@@ -59,7 +59,7 @@ describe('DeleteCategoryComponent', () => {
             declarations: [
                 DeleteCategoryComponent, SharedAddOrEditComponent
             ],
-            imports: [MaterialModule.forRoot(),
+            imports: [MaterialModule,
                 RouterTestingModule, FormsModule, AngularFireModule.initializeApp(firebaseConfig)
             ],
             providers: [{provide: ManageService, useValue: AppServiceStub}]

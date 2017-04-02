@@ -57,7 +57,7 @@ let subscription:Subscription;
       declarations: [
       CreateComponent
       ],
-      imports: [MaterialModule.forRoot(),
+      imports: [MaterialModule,
       RouterTestingModule ,FormsModule,AngularFireModule.initializeApp(firebaseConfig)
       ],
       providers:[{provide: CreateService, useValue: AppServiceStub }]

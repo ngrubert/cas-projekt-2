@@ -13,7 +13,7 @@ import { UsersService } from './../services/users.service';
 @NgModule({
   imports: [
     HomeRoutingModule,SharedModule,
-    MaterialModule.forRoot(),
+    MaterialModule,
     CommonModule,
     TranslateModule.forChild()
   ],

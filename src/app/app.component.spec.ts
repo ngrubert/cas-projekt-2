@@ -2,6 +2,7 @@
 
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import {} from 'jasmine';
 //import { AppService } from './app.service';
 
 import {
@@ -58,7 +59,7 @@ let subscription:Subscription;
       declarations: [
         AppComponent
       ],
-      imports: [AngularFireModule.initializeApp(firebaseConfig),MaterialModule.forRoot(),
+      imports: [AngularFireModule.initializeApp(firebaseConfig),MaterialModule,
       RouterTestingModule 
       ],
        providers:    []

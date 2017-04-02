@@ -23,7 +23,7 @@ import { firebaseConfig } from './../config/firebase-config';
     ManageRoutingModule,SharedModule,
     FormsModule,
     AngularFireModule.initializeApp(firebaseConfig),
-    MaterialModule.forRoot(),
+    MaterialModule,
     CommonModule
   ],
   exports: [],

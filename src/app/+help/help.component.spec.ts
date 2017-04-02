@@ -55,7 +55,7 @@ let subscription:Subscription;
       declarations: [
       HelpComponent
       ],
-      imports: [MaterialModule.forRoot(),
+      imports: [MaterialModule,
       RouterTestingModule ,FormsModule
       ],
     });

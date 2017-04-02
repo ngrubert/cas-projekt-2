@@ -56,7 +56,7 @@ let subscription:Subscription;
       declarations: [
       HomeComponent
       ],
-      imports: [MaterialModule.forRoot(),
+      imports: [MaterialModule,
       RouterTestingModule 
       ],
     });

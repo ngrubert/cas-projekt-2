@@ -57,7 +57,7 @@ let subscription:Subscription;
       declarations: [
       ListsComponent
       ],
-      imports: [MaterialModule.forRoot(),
+      imports: [MaterialModule,
       RouterTestingModule ,FormsModule,AngularFireModule.initializeApp(firebaseConfig)
       ],
       providers:[{provide: ListsService, useValue: AppServiceStub }]

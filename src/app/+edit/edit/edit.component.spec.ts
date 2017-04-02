@@ -57,7 +57,7 @@ let subscription:Subscription;
       declarations: [
       EditComponent
       ],
-      imports: [MaterialModule.forRoot(),
+      imports: [MaterialModule,
       RouterTestingModule ,FormsModule,AngularFireModule.initializeApp(firebaseConfig)
       ],
       providers:[{provide: EditService, useValue: AppServiceStub }]
