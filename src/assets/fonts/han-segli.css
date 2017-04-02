@@ -1,6 +1,7 @@
 @font-face {
   font-family: 'han-segli';
-  src: url('/assets/fonts/han-segli.woff') format('woff'),
-  url('/assets/fonts/han-segli.ttf') format('truetype');
+  src: url('/assets/fonts/han-segli.woff2') format('woff2'),
+       url('/assets/fonts/han-segli.woff') format('woff'),
+       url('/assets/fonts/han-segli.ttf') format('truetype');
   font-weight: normal; font-style: normal;
 }
