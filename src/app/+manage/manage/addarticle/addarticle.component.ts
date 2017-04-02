@@ -44,7 +44,9 @@ export class AddArticleComponent implements OnInit {
                 private translate: TranslateService) {
         this.af = af;
         this.db = new PouchDB("sList");
-        translate.get('MANAGE.ADDARTICLE').subscribe((title: string) => { this.title = title; });
+        translate.get('MANAGE.ADDARTICLE').subscribe((title: string) => {
+            this.title = title;
+        });
     }
 
     ngOnInit() {

@@ -166,7 +166,7 @@ export class ListComponent implements OnInit, OnDestroy {
                     if (!this.slistLang.match(/^(de|en)$/)) {
                         this.slistLang = (x.language.toLowerCase() == 'english') ? 'en' : 'de';
                     }
-                    console.log("getSTitle: slist title="+title+", slistLang="+this.slistLang);
+                    console.log("getSTitle: slist title=" + title + ", slistLang=" + this.slistLang);
                 }
             }
         })

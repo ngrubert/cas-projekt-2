@@ -43,7 +43,9 @@ export class AddCategoryComponent implements OnInit {
                 private translate: TranslateService) {
         this.af = af;
         this.db = new PouchDB("sList");
-        translate.get('MANAGE.ADDCATEGORY').subscribe((title: string) => { this.title = title; });
+        translate.get('MANAGE.ADDCATEGORY').subscribe((title: string) => {
+            this.title = title;
+        });
     }
 
     ngOnInit() {

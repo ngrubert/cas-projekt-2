@@ -1,14 +1,14 @@
-import { ShoppinglistPage } from './app.po';
+import {ShoppinglistPage} from './app.po';
 
-describe('shoppinglist App', function() {
-  let page: ShoppinglistPage;
+describe('shoppinglist App', function () {
+    let page: ShoppinglistPage;
 
-  beforeEach(() => {
-    page = new ShoppinglistPage();
-  });
+    beforeEach(() => {
+        page = new ShoppinglistPage();
+    });
 
-  it('should display message saying app works', () => {
-    page.navigateTo();
-    expect(page.getParagraphText()).toEqual('app works!');
-  });
+    it('should display message saying app works', () => {
+        page.navigateTo();
+        expect(page.getParagraphText()).toEqual('app works!');
+    });
 });

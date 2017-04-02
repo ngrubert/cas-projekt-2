@@ -1,23 +1,23 @@
-import { Component, OnInit, OnDestroy  } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
 
-import { SharedComponent } from './../../shared/shared.component';
-import { UsersService } from './../../services/users.service';
-import { user } from './../../model/user';
+import {SharedComponent} from './../../shared/shared.component';
+import {UsersService} from './../../services/users.service';
+import {user} from './../../model/user';
 
 @Component({
     selector: 'home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
-    providers:[UsersService]
+    providers: [UsersService]
 })
 
-export class HomeComponent implements OnInit,OnDestroy  {
+export class HomeComponent implements OnInit,OnDestroy {
 
-    constructor(
-        public _userService: UsersService) {
+    constructor(public _userService: UsersService) {
     }
-    ngOnDestroy () {
+
+    ngOnDestroy() {
     }
 
     ngOnInit() {
