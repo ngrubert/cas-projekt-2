@@ -68,14 +68,12 @@ export class ListService {
             }
         }).map(x => x)
             .subscribe(x => {
-                debugger;
+                // debugger;
                 if (x && x.length > 0) {
-                    console.log("addArticleAndAddToList existing article: " + x.name);
                     let obj = {id: x[0].$key};
                     this.addArticleToList(sList, obj);
                 } else {
                     let articleAdded: any = addArticle.push(art);
-                    console.log("addArticleAndAddToList new article: " + art.name);
                     this.addArticleToList(sList, articleAdded.key);
                 }
                 checkInArticle.unsubscribe();
@@ -255,7 +253,7 @@ export class ListService {
     // get recent articles (to be used later)
     getRecentSListArticles(sList) {
         return this.af.database.list(`sList/${sList}/articles`).map(arr => {
-            debugger;
+            // debugger;
             return arr;
         });
     }

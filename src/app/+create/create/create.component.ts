@@ -161,14 +161,8 @@ export class CreateComponent implements OnInit,OnDestroy {
                         }
                     }
                 }
-                console.log(val);
             }
         );
-        // if (!window.navigator.onLine)
-        // {
-        //     self.snackBar.open('Shopping List will be Created and email will be sent, once device comes online, Don\'t close the Browser', 'Okay');
-        // }
-
     }
 
     // find user email by key
@@ -191,7 +185,6 @@ export class CreateComponent implements OnInit,OnDestroy {
     createSListUser(usr): void {
         if (usr) {
             this._createService.createSListUser(usr);
-            console.log(usr);
         }
     }
 

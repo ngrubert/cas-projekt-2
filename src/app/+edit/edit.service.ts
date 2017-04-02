@@ -41,7 +41,6 @@ export class EditService {
 
     //create Shopping list
     createSListUser(usr: any): void {
-        console.log(this.sList);
         let userKey = usr.$key;
         let insertData = {};
         insertData[userKey] = true;
@@ -51,7 +50,7 @@ export class EditService {
             // this.sListUsersKey.update(this.invitedUsers);
             let dataExists = this.af.database.list(`sListUsers/${this.sListKey}`).map(x => x)
                 .subscribe(x => {
-                    debugger
+                    // debugger
                     if (x && x.length > 0) {
                         let exists = false;
                         for (let i = 0; i < x.length; i++) {

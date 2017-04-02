@@ -32,7 +32,6 @@ export class LocalStateService {
         d.setTime(d.getTime() + (100 * 24 * 60 * 60 * 1000)); // 100 days
 
         let cookie = localStorageKey + "=" + encodeURIComponent(item) + ";expires=" + d.toUTCString() + ";path=/";
-        console.log("setting cookie:" + cookie);
         document.cookie = cookie;
     }
 
@@ -66,16 +65,13 @@ export class LocalStateService {
         if (stateStr) {
             let state: FerggState = JSON.parse(stateStr);
             if (state) {
-                console.log("LocalStore: get=" + stateStr);
                 return state;
             }
         }
-        console.log("LocalStore:returning empty object");
         return new FerggState();
     }
 
     private static putKV(key: string, val: string) {
-        console.log("LocalStore: " + key + "=" + val);
         let state: FerggState = this.getObject();
         if (val) {
             state[key] = val;
@@ -88,10 +84,8 @@ export class LocalStateService {
     private static getK(key: string): string {
         let state: FerggState = this.getObject();
         if (state && state[key]) {
-            console.log("LocalStore: get " + key + "=" + state[key]);
             return state[key];
         }
-        console.log("LocalStore: get " + key + "= null, nil, nada");
         return null;
     }
 

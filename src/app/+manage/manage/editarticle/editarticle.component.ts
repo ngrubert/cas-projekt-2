@@ -56,7 +56,7 @@ export class EditArticleComponent implements OnInit,OnDestroy {
                 this.sId = params['id'];
                 this.catId = params['catId'];
                 this.modelValue = params['catId'];
-                debugger
+                // debugger
                 this.aId = params['artId'];
                 return Observable.from([1, 2, 3]).map(x => x);
             });

@@ -107,7 +107,7 @@ export class AddArticleComponent implements OnInit {
     }
 
     checkArticleExists(obj) {
-        debugger
+        // debugger
         let languageObj = this.list.find(function (item) {
             return item.value == obj.order;
         })

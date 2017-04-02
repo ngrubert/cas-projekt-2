@@ -83,7 +83,6 @@ export class EditComponent implements OnInit,OnDestroy {
                 this.model = x;
             }
         })
-        console.log("edit: model="+JSON.stringify(this.model));
     }
 
     // get shoppingList users by id
@@ -106,7 +105,6 @@ export class EditComponent implements OnInit,OnDestroy {
                 }
             }
         })
-        console.log("edit: users="+JSON.stringify(this.users));
     }
 
     ngOnDestroy() {
@@ -115,16 +113,12 @@ export class EditComponent implements OnInit,OnDestroy {
 
     // edit shoppingList
     editList() {
-        console.log("Saving edit list: model="+JSON.stringify(this.model));
-        // this.model.users.push(this.model.email);
-        // this.model.users.push(this.initialEmail);
         this.emailAddrs = [];
         this.inviteUsers = JSON.parse(JSON.stringify(this.users));
         for (let i = 0; i < this.usersEdit.length; i++) {
             this.inviteUsers.push(this.usersEdit[i]);
         }
         this.inviteUsers.push(this.model.email);
-        console.log("inviteUsers="+this.inviteUsers);// a simple list of email addr strings, email, initialEmail and moreEmails
         this.CheckUsers();
     }
 
@@ -162,7 +156,6 @@ export class EditComponent implements OnInit,OnDestroy {
             name: this.model.name,
             siteUrl: window.location.origin
         };
-        console.log("Saving edit list 2: model="+JSON.stringify(sListTemp));
 
         self._editService.editSList(self.sListKey, sListTemp);
 
@@ -225,7 +218,6 @@ export class EditComponent implements OnInit,OnDestroy {
     createSListUser(usr): void {
         if (usr) {
             this._editService.createSListUser(usr);
-            console.log(usr);
         }
     }
 

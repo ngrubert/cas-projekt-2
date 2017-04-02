@@ -50,7 +50,7 @@ export class FinishComponent implements OnInit {
                 return err;
             }
             if (docs && docs.rows.length > 0) {
-                debugger
+                // debugger
                 self.sList = docs.rows[0].doc.sList;
                 self.url = docs.rows[0].doc.user;
                 self.localDBID = docs.rows[0].doc._id;
@@ -67,13 +67,9 @@ export class FinishComponent implements OnInit {
         document.getElementById('delete').style.display = 'block';
     }
 
-    // finishSlist change isFinished to true
-
-    finsihSlist() {
+    // button: finishSlist change isFinished to true
+    finishSlist() {
         let self = this;
-        debugger
-        console.log(this.finished);
-        console.log(this.articles);
         if (this.finished) {
             let finished = this.af.database.object(`sList/${this.sList}`);
             finished.update({isFinished: true});

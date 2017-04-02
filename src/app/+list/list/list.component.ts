@@ -74,7 +74,6 @@ export class ListComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         // document.removeEventListener('tap', this.enter, false);
-        console.log("Removed event listener");
     }
 
     // load initial required data
@@ -94,7 +93,6 @@ export class ListComponent implements OnInit, OnDestroy {
                 }
 
                 // get or add user from/to local database Pouchdb
-                console.log("list: LocalState: setting both from params");
                 LocalStateService.setUserKey(this.email);
                 LocalStateService.setSListKey(this.sList);
                 return Observable.from([1, 2, 3]).map(x => x);
@@ -106,7 +104,6 @@ export class ListComponent implements OnInit, OnDestroy {
 
         // get all articles for shopping list
         this.getArticleBySlist();
-        console.log("init: name=" + JSON.stringify(this.articlesList[0]));
 
         this.detailBox = document.getElementsByClassName('slist-article-details')[0];
 
@@ -166,7 +163,6 @@ export class ListComponent implements OnInit, OnDestroy {
                     if (!this.slistLang.match(/^(de|en)$/)) {
                         this.slistLang = (x.language.toLowerCase() == 'english') ? 'en' : 'de';
                     }
-                    console.log("getSTitle: slist title=" + title + ", slistLang=" + this.slistLang);
                 }
             }
         })
@@ -212,7 +208,6 @@ export class ListComponent implements OnInit, OnDestroy {
                 foundArticles.push(this.articles[i]);
             }
         }
-        console.log(foundArticles.length + " hits that start with " + inp);
         // if we still don't have enough, also show articles that contain the search string somewhere in the middle
         let contains = new RegExp(this.unaccentedLC(inp), "i"); // \\B is "non-word boundary"
         for (let i = 0; i < this.articles.length && foundArticles.length < MAX_HITS_DISPLAYED; i++) {
@@ -224,14 +219,12 @@ export class ListComponent implements OnInit, OnDestroy {
                 foundArticles.push(this.articles[i]);
             }
         }
-        console.log(foundArticles.length + " hits that start with or contain " + inp);
         if (foundArticles.length == 0) {
             let art = {
                 name: inp.charAt(0).toUpperCase() + inp.slice(1),
                 isDefault: false,
                 img: 'empty.png'
             };
-            console.log("zero articles found for search string '" + inp + "', adding new article: " + JSON.stringify(art));
             foundArticles.push(art);
         }
         return foundArticles;
@@ -274,7 +267,6 @@ export class ListComponent implements OnInit, OnDestroy {
                     item.amount = x[i].amount;
                     item.price = x[i].price;
                     this.articlesList.push(item);
-                    // console.log("SL1: "+JSON.stringify(item));
                     // get name and image from the article catalog
                     let articleDetail = this.af.database.object(`/articlesx/${this.slistLang}/${x[i].id}`);
                     articleDetail.subscribe(p => {
@@ -283,8 +275,6 @@ export class ListComponent implements OnInit, OnDestroy {
                                 if (this.articlesList[j].id == p.$key) {
                                     this.articlesList[j].name = p.name;
                                     this.articlesList[j].img = (p.img) ? p.img : "empty.png";
-                                    // console.log("SL2: l="+this.slistLang+" : "+JSON.stringify(this.articlesList[j]));
-                                    // console.log("SL3: name="+this.articlesList[j].name);
                                 }
                             }
                         }
@@ -296,16 +286,13 @@ export class ListComponent implements OnInit, OnDestroy {
 
     // add articles to shopping list
     addToList(item: any) {
-        // console.log("addToList new article: " + JSON.stringify(item));
         this.recentArticles.push(item);
         this.searchArticles = [];
         this.search = '';
         if (item.$key) {
-            console.log("Adding known article: " + item.name + " = " + item.$key);
             this.addArticleToList(item.$key);
         } else {
             // add a new article with the name the user has just given as a search string
-            console.log("Adding UNknown article: " + item.name);
             let art = item;
             let article$ = this._listService.getArticleByName(art.name, this.slistLang).map(x => x);
             article$.subscribe(x => {
@@ -415,7 +402,6 @@ export class ListComponent implements OnInit, OnDestroy {
         let updated: boolean = false;
         for (let i = 0; i < this.catalogs.length; i++) {
             if (this.catalogs[i].id == item.id) {
-                console.log("pushToCatalog item.name=" + item.name);
                 this.catalogs[i].name = item.name;
                 updated = true;
             }
@@ -430,11 +416,9 @@ export class ListComponent implements OnInit, OnDestroy {
         for (let i = 0; i <= this.catalogs.length; i++) {
             if (this.catalogs[i] && this.catalogs[i].id == id) {
                 let obj: listCatalog = {};
-                console.log("changeInCatalog item.name=" + item.name);
                 obj.name = item.name;
                 obj.id = item.$key;
                 this.pushToArticles(obj, this.catalogs[i].id);
-                console.log(this.catalogs);
             }
         }
     }
@@ -444,7 +428,6 @@ export class ListComponent implements OnInit, OnDestroy {
         let updated: boolean = false;
         for (let i = 0; i < this.usersCatalogs.length; i++) {
             if (this.usersCatalogs[i].id == item.id) {
-                console.log("pushToUsersCatalog item.name=" + item.name);
                 this.usersCatalogs[i].name = item.name;
                 updated = true;
             }
@@ -460,7 +443,6 @@ export class ListComponent implements OnInit, OnDestroy {
         for (let i = 0; i <= this.catalogs.length; i++) {
             if (this.usersCatalogs[i] && this.usersCatalogs[i].id == id) {
                 let obj: listCatalog = {};
-                console.log("changeInUsersCatalogs item.name=" + item.name);
                 obj.name = item.name;
                 obj.id = item.$key;
                 this.pushToUserArticles(obj, this.usersCatalogs[i].id);
@@ -476,7 +458,6 @@ export class ListComponent implements OnInit, OnDestroy {
             if (this.usersCatalogs[i].id == id) {
                 for (let j = 0; j < this.usersCatalogs[i].articles.length; j++) {
                     if (this.usersCatalogs[i].articles[j].id == item.id) {
-                        console.log("pushToUserArticles item.name=" + item.name);
                         this.usersCatalogs[i].articles[j].name = item.name;
                         updated = true;
                     }
@@ -495,7 +476,6 @@ export class ListComponent implements OnInit, OnDestroy {
             if (this.catalogs[i].id == id) {
                 for (let j = 0; j < this.catalogs[i].articles.length; j++) {
                     if (this.catalogs[i].articles[j].id == item.id) {
-                        console.log("pushToArticles item.name=" + item.name);
                         this.catalogs[i].articles[j].name = item.name;
                         updated = true;
                     }

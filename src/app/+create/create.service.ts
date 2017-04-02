@@ -45,7 +45,6 @@ export class CreateService {
 
     //create Shopping list
     createSListUser(usr: any): void {
-        console.log(this.sList);
         let sListKey = usr.$key;
         let insertData = {};
         insertData[sListKey] = true;

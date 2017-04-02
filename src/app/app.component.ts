@@ -36,12 +36,9 @@ export class AppComponent implements OnInit,OnDestroy {
         translate.addLangs(["de", "en"]);
         translate.setDefaultLang('de');
         let lang = LocalStateService.getLanguage();
-        if (lang) {
-            console.log("Using lang from cookie: " + lang);
-        } else {
+        if (!lang) {
             let browserLang = translate.getBrowserLang();
             lang = browserLang.match(/en|de/) ? browserLang.toString() : 'en';
-            console.log("Using lang from Browser: " + lang);
         }
         //LocalStateService.setLanguage(lang);
         //translate.use(lang);

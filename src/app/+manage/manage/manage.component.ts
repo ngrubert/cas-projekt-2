@@ -182,7 +182,6 @@ export class ManageComponent implements OnInit {
                 obj.name = item.name;
                 obj.id = item.$key;
                 this.pushToArticles(obj, this.catalogs[i].id);
-                console.log(this.catalogs);
             }
         }
     }
