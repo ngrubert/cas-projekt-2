@@ -26,7 +26,7 @@ var MAIL = {
 
 // add middleware
 app.use(express.static(path.join(__dirname, './dist')));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 
@@ -35,7 +35,7 @@ var transporter = nodemailer.createTransport({
     host: mailAccount.smtpHost,
     port: 587,
     secure: false,
-    auth: { user: mailAccount.smtpUser, pass: mailAccount.smtpPass }
+    auth: {user: mailAccount.smtpUser, pass: mailAccount.smtpPass}
 });
 
 var sList;
@@ -51,11 +51,11 @@ firebaseAdmin.initializeApp({
 var listRef = firebaseAdmin.database().ref();
 
 // sListUsers collection child_changed event send email
-listRef.child('sListUsers').on('child_changed', function(dataSnapshot) {
+listRef.child('sListUsers').on('child_changed', function (dataSnapshot) {
     const msg = dataSnapshot.val();
     const key = dataSnapshot.key;
 
-    firebaseAdmin.database().ref("sList/" + key).once('value').then(function(snap) {
+    firebaseAdmin.database().ref("sList/" + key).once('value').then(function (snap) {
         sList = snap.val();
         console.log("sList title = " + JSON.stringify(sList.title));
         console.log("sList siteUrl = " + JSON.stringify(sList.siteUrl));
@@ -63,7 +63,7 @@ listRef.child('sListUsers').on('child_changed', function(dataSnapshot) {
 
     for (var property in msg) {
         if (msg.hasOwnProperty(property)) {
-            if(msg[property]) {
+            if (msg[property]) {
                 msg[property] = false;
                 queryEmail(key, property);
                 // listRef.child('sListUsers').child(key).update(msg);
@@ -80,8 +80,8 @@ listRef.child('sListUsers').on('child_changed', function(dataSnapshot) {
 });
 
 // email id from user id
-var queryEmail = function(key,property){
-    listRef.child('users').orderByKey().equalTo(property).limitToLast(1).on("value", function(data) {
+var queryEmail = function (key, property) {
+    listRef.child('users').orderByKey().equalTo(property).limitToLast(1).on("value", function (data) {
         var obj = data.val();
         if (obj) {
             sendEmail(key, property, obj[property].email)
@@ -91,11 +91,15 @@ var queryEmail = function(key,property){
 
 
 // send email
-var sendEmail = function(key, property, mailId) {
+var sendEmail = function (key, property, mailId) {
     var sendUrl = sList.siteUrl + "/#/list/" + key + ";email=" + property;
     var lang = sList.language;
-    if (lang == "English") { lang = "en" }
-    if (lang == "German" ) { lang = "de" }
+    if (lang == "English") {
+        lang = "en"
+    }
+    if (lang == "German") {
+        lang = "de"
+    }
     var FMT = MAIL[lang];
     var mailOptions = {
         from: mailAccount.fromUser,                                    // sender address
@@ -105,7 +109,7 @@ var sendEmail = function(key, property, mailId) {
         html: util.format(FMT.html, sList.title, sList.name, sendUrl)  // html body
     };
     // send mail with defined transport object
-    transporter.sendMail(mailOptions, function(error, info){
+    transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
             return console.log('Error sending mail to ' + mailId + ': ' + error);
         }
@@ -115,7 +119,7 @@ var sendEmail = function(key, property, mailId) {
 
 
 // verify connection configuration
-transporter.verify(function(error, success) {
+transporter.verify(function (error, success) {
     if (error) {
         console.log('SMTP: user ' + mailAccount.smtpUser + ' at ' + mailAccount.smtpHost + ': ' + error);
     } else {
@@ -126,6 +130,6 @@ transporter.verify(function(error, success) {
 
 // start the server
 const port = 3000;
-app.listen(process.env.PORT || port, function() {
+app.listen(process.env.PORT || port, function () {
     console.log('Server running at http://localhost:' + port);
 });
