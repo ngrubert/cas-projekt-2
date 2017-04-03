@@ -30,7 +30,7 @@ export class AddArticleComponent implements OnInit {
     private user;
     db:any;
     private sId;
-    private modelValue;
+    public modelValue;
     af: AngularFire;
     catalogs: catalog[] = [];
     title: string = 'Add Article';

@@ -31,7 +31,7 @@ export class AddCategoryComponent implements OnInit {
     db:any;
     private user;
     private sId;
-    private modelValue;
+    public modelValue;
     title:string='Add Category';
     list:Array<any>=[];
     af: AngularFire;
