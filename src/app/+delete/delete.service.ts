@@ -1,12 +1,13 @@
-import { Injectable, Inject, OnInit} from '@angular/core';
+import {Injectable, Inject, OnInit} from '@angular/core';
 declare var PouchDB: any;
 
 @Injectable()
 export class DeleteService {
     constructor() {
     }
-    PouchInstance(){
+
+    PouchInstance() {
         return new PouchDB("sList");
     }
-    
+
 }

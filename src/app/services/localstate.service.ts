@@ -32,14 +32,14 @@ export class LocalStateService {
         d.setTime(d.getTime() + (100 * 24 * 60 * 60 * 1000)); // 100 days
 
         let cookie = localStorageKey + "=" + encodeURIComponent(item) + ";expires=" + d.toUTCString() + ";path=/";
-        console.log("setting cookie:"+cookie);
+        console.log("setting cookie:" + cookie);
         document.cookie = cookie;
     }
 
     private static getItem() {
         let name = localStorageKey + "=";
         let ca = document.cookie.split(';');
-        for(let i = 0; i < ca.length; i++) {
+        for (let i = 0; i < ca.length; i++) {
             let c = ca[i];
             while (c.charAt(0) == ' ') {
                 c = c.substring(1);
@@ -85,12 +85,12 @@ export class LocalStateService {
         this.putObject(state);
     }
 
-    private static getK(key: string) : string {
+    private static getK(key: string): string {
         let state: FerggState = this.getObject();
         if (state && state[key]) {
             console.log("LocalStore: get " + key + "=" + state[key]);
             return state[key];
-    }
+        }
         console.log("LocalStore: get " + key + "= null, nil, nada");
         return null;
     }
@@ -105,20 +105,23 @@ export class LocalStateService {
     static setSListKey(sListKey: string) {
         this.putKV('slistKey', sListKey);
     }
+
     static getSListKey(): string {
         return this.getK('slistKey')
-        }
+    }
 
     static setUserKey(userKey: string) {
         this.putKV('userKey', userKey);
     }
+
     static getUserKey(): string {
         return this.getK('userKey')
     }
 
     static setLanguage(language: string) {
         this.putKV('language', language);
-        }
+    }
+
     static getLanguage(): string {
         return this.getK('language')
     }

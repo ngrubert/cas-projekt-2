@@ -4,36 +4,35 @@ import {AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseR
 import {Observable} from 'rxjs/Observable';
 import {TranslateService} from '@ngx-translate/core';
 
-import { SharedComponent } from './../../../shared/shared.component';
-import { ManageService } from './../../manage.service';
-import { user } from './../../../model/user';
-import { list } from './../../../model/user';
+import {SharedComponent} from './../../../shared/shared.component';
+import {ManageService} from './../../manage.service';
+import {user} from './../../../model/user';
+import {list} from './../../../model/user';
 
 declare var PouchDB: any;
 
-export class catalog{
-    constructor(
-        public id?: string,
-        public name?: string,
-        public articles?:Array<any>
-    ){}
+export class catalog {
+    constructor(public id?: string,
+                public name?: string,
+                public articles?: Array<any>) {
+    }
 }
 
 @Component({
     selector: 'addcategory',
-    templateUrl:'./addcategory.component.html',
+    templateUrl: './addcategory.component.html',
     styleUrls: ['./addcategory.component.scss'],
     providers: [ManageService]
 })
 
 export class AddCategoryComponent implements OnInit {
     private url;
-    db:any;
+    db: any;
     private user;
     private sId;
     public modelValue;
-    title:string='Add Category';
-    list:Array<any>=[];
+    title: string = 'Add Category';
+    list: Array<any> = [];
     af: AngularFire;
     catalogs: catalog[] = [];
 
@@ -43,31 +42,34 @@ export class AddCategoryComponent implements OnInit {
                 private router: Router,
                 private translate: TranslateService) {
         this.af = af;
-        translate.get('MANAGE.ADDCATEGORY').subscribe((title: string) => { this.title = title; });
+        translate.get('MANAGE.ADDCATEGORY').subscribe((title: string) => {
+            this.title = title;
+        });
     }
 
     ngOnInit() {
         this.db = this._manageService.PouchDBRef();
-        this.user=this.route.params
+        this.user = this.route.params
             .switchMap((params: Params) => {
                 // this.url = '-K_PcS3U-bzP0Jgye_Xo';
                 this.sId = params['id'];
-                return Observable.from([1,2,3]).map(x=>x);
+                return Observable.from([1, 2, 3]).map(x => x);
             });
-        this.user.subscribe(c=>{
+        this.user.subscribe(c => {
             this.syncChanges();
         });
     }
+
     // get user email from local databas(pouch db)
     syncChanges() {
-        let self=this;
-        this.db.allDocs({include_docs: true, descending: true}, function(err, docs) {
-            if (err){
+        let self = this;
+        this.db.allDocs({include_docs: true, descending: true}, function (err, docs) {
+            if (err) {
                 console.log(err);
                 return err;
             }
-            if (docs && docs.rows.length>0){
-                self.url=docs.rows[0].doc.user;
+            if (docs && docs.rows.length > 0) {
+                self.url = docs.rows[0].doc.user;
                 self.getAllCategoriesForUser();
             }
         });
@@ -95,13 +97,13 @@ export class AddCategoryComponent implements OnInit {
     }
 
     // on save click from SharedComponent
-    onSaved(obj){
-        let item:any={
-            name:obj.name,
-            order:obj.order
+    onSaved(obj) {
+        let item: any = {
+            name: obj.name,
+            order: obj.order
         };
-        item.isDefault=false;
-        this._manageService.addCategory(item,obj.language.toLowerCase(),this.url);
+        item.isDefault = false;
+        this._manageService.addCategory(item, obj.language.toLowerCase(), this.url);
         this.router.navigate(['manage']);
     }
 

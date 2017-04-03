@@ -122,7 +122,7 @@ export class CreateService {
 
     // dump default catalogs with en and de names, articles with imgs
     createFirebaseCatalogx(catalog: Object) {
-        if (1==1) { return }
+        if (1 == 1) { return }
         let langs = ["en", "de"];
         for (let iLang in langs) {
             let lang = langs[iLang];
@@ -148,7 +148,9 @@ export class CreateService {
                         arts.push(articleItems[iLang] + "|" + articleItems[2]);
                     }
                     // use localeCompare to make sure Äpfel and Öl are sorted correctly
-                    arts = arts.sort(function(a, b) { return a.localeCompare(b, lang) });
+                    arts = arts.sort(function (a, b) {
+                        return a.localeCompare(b, lang)
+                    });
                     for (let i = 0; i < arts.length; i++) {
                         let articleItems = arts[i].split("|");
                         let img = articleItems[1];

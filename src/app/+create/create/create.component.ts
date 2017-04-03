@@ -83,7 +83,7 @@ export class CreateComponent implements OnInit,OnDestroy {
         if (this.initialEmail && this.initialEmail.trim() != "") {
             this.inviteUsers.push(this.initialEmail);
         }
-        for (let i=0; i < this.inviteUsers.length; i++) {
+        for (let i = 0; i < this.inviteUsers.length; i++) {
             this.inviteUsers[i] = this.inviteUsers[i].trim();
         }
         this.inviteUsers.push(this.model.email);

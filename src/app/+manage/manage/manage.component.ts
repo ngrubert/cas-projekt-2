@@ -1,27 +1,26 @@
-import { Component, OnInit ,Inject} from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import {Component, OnInit, Inject} from '@angular/core';
+import {Router, ActivatedRoute, Params} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 
-import { SharedComponent } from './../../shared/shared.component';
-import { ManageService } from './../manage.service';
-import { user } from './../../model/user';
+import {SharedComponent} from './../../shared/shared.component';
+import {ManageService} from './../manage.service';
+import {user} from './../../model/user';
 
-import { Observable } from 'rxjs/Observable';
+import {Observable} from 'rxjs/Observable';
 
-import { list } from './../../model/user';
-import { Subject } from 'rxjs/Subject';
-import {AngularFire,FirebaseListObservable,FirebaseObjectObservable,FirebaseRef} from 'angularfire2';
-export class catalog{
-    constructor(
-        public id?: string,
-        public name?: string,
-        public articles?:Array<any>
-    ){}
+import {list} from './../../model/user';
+import {Subject} from 'rxjs/Subject';
+import {AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseRef} from 'angularfire2';
+export class catalog {
+    constructor(public id?: string,
+                public name?: string,
+                public articles?: Array<any>) {
+    }
 }
 
 @Component({
     selector: 'manage',
-    templateUrl:'./manage.component.html',
+    templateUrl: './manage.component.html',
     styleUrls: ['./manage.component.scss'],
     providers: [ManageService]
 })
@@ -29,19 +28,20 @@ export class catalog{
 export class ManageComponent implements OnInit {
     private url;
     private user;
-    db:any;
+    db: any;
     af: AngularFire;
-    catalogs:catalog[]=[];
-    usersCatalogs:catalog[]=[];
+    catalogs: catalog[] = [];
+    usersCatalogs: catalog[] = [];
     searchitems: Observable<Array<string>>;
-    articles:Array<any>=[];
+    articles: Array<any> = [];
     lang: string;
-    searchArticles:Array<any>=[];
-    ownArticles:Array<any>=[];
+    searchArticles: Array<any> = [];
+    ownArticles: Array<any> = [];
     private searchTerms = new Subject<string>();
-    constructor(  af: AngularFire,
-                  public _manageService: ManageService,
-                  private route: ActivatedRoute,
+
+    constructor(af: AngularFire,
+                public _manageService: ManageService,
+                private route: ActivatedRoute,
                 private router: Router,
                 private translate: TranslateService) {
         this.af = af;
@@ -50,26 +50,27 @@ export class ManageComponent implements OnInit {
 
     ngOnInit() {
         this.db = this._manageService.PouchDBRef();
-        this.user=this.route.params
+        this.user = this.route.params
             .switchMap((params: Params) => {
                 // this.url = '-K_PcS3U-bzP0Jgye_Xo';
-                return Observable.from([1,2,3]).map(x=>x);
+                return Observable.from([1, 2, 3]).map(x => x);
             });
-        this.user.subscribe(x=>{
+        this.user.subscribe(x => {
             this.syncChanges();
         });
 
     }
+
     // get email id from the local database(PouchDB)
-    syncChanges(){
-        let self=this;
-        this.db.allDocs({include_docs: true, descending: true}, function(err, docs) {
-            if(err){
+    syncChanges() {
+        let self = this;
+        this.db.allDocs({include_docs: true, descending: true}, function (err, docs) {
+            if (err) {
                 console.log(err);
                 return err;
             }
-            if(docs && docs.rows.length>0){
-                self.url=docs.rows[0].doc.user;
+            if (docs && docs.rows.length > 0) {
+                self.url = docs.rows[0].doc.user;
                 self.getCatalog();
                 self.getUsersCatalog();
                 self.getOwnArticles();
@@ -77,25 +78,26 @@ export class ManageComponent implements OnInit {
             }
         });
     }
+
     // get all articles
-    getAllArticles(){
-        let articles$=this._manageService.getAllArticles();
-        articles$.subscribe(x=>{
-            this.articles=x;
+    getAllArticles() {
+        let articles$ = this._manageService.getAllArticles();
+        articles$.subscribe(x => {
+            this.articles = x;
         });
     }
 
     // filter users catalog
-    getMyCatalog(data,language){
-        let self=this;
-        if(data && data.length>0){
-            let arr=[];
-            for(let i=0;i<data.length;i++){
-                if(data[i].users){
+    getMyCatalog(data, language) {
+        let self = this;
+        if (data && data.length > 0) {
+            let arr = [];
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].users) {
                     for (var property in data[i].users) {
                         if (data[i].users.hasOwnProperty(property)) {
-                            if(property == self.url){
-                                data[i].language=language;
+                            if (property == self.url) {
+                                data[i].language = language;
                                 arr.push(data[i]);
                             }
                         }
@@ -103,44 +105,44 @@ export class ManageComponent implements OnInit {
                 }
             }
             return arr;
-        }else{
+        } else {
             return data;
         }
     }
 
 
     // get users from catalog by language english and german (user defined)
-    getUsersCatalog(){
-        let self=this;
+    getUsersCatalog() {
+        let self = this;
         let englishitems = this.af.database.list(`/catalogx/en`, {
-            query:{
+            query: {
                 orderByChild: 'isDefault',
-                equalTo:false
+                equalTo: false
             }
-        }).map(x=>{
+        }).map(x => {
             debugger
-            return self.getMyCatalog(x,'en');
+            return self.getMyCatalog(x, 'en');
 
         });
-        let germanitems = this.af.database.list('/catalogx/de',{
-            query:{
+        let germanitems = this.af.database.list('/catalogx/de', {
+            query: {
                 orderByChild: 'isDefault',
-                equalTo:false
+                equalTo: false
             }
-        }).map(x=>{
-            return self.getMyCatalog(x,'de');
+        }).map(x => {
+            return self.getMyCatalog(x, 'de');
         });
 
-        englishitems.concat(germanitems).subscribe(x=>{
-            let self=this;
-            this.usersCatalogs=[];
-            if(x!=undefined){
-                for(let i=0;i<x.length;i++){
-                    let item={
-                        name:x[i].name,
-                        id:x[i].$key,
-                        language:x[i].language,
-                        articles:[]
+        englishitems.concat(germanitems).subscribe(x => {
+            let self = this;
+            this.usersCatalogs = [];
+            if (x != undefined) {
+                for (let i = 0; i < x.length; i++) {
+                    let item = {
+                        name: x[i].name,
+                        id: x[i].$key,
+                        language: x[i].language,
+                        articles: []
                     };
                     this.usersCatalogs.push(item);
                     for (let property in x[i].articles) {
@@ -156,30 +158,30 @@ export class ManageComponent implements OnInit {
     }
 
 // get users from catalog by language english and german (default)
-    getCatalog(){
-        let self=this;
+    getCatalog() {
+        let self = this;
         let items = this.af.database.list(`/catalogx/${this.lang}`, {
-            query:{
+            query: {
                 orderByChild: 'isDefault',
-                equalTo:true
+                equalTo: true
             }
-        }).map(x=>{
-            return x.sort(function(a, b){
+        }).map(x => {
+            return x.sort(function (a, b) {
                 let keyA = a.order,
                     keyB = b.order;
                 // Compare the 2 dates
-                if(keyA < keyB) return -1;
-                if(keyA > keyB) return 1;
+                if (keyA < keyB) return -1;
+                if (keyA > keyB) return 1;
                 return 0;
             });
         }).subscribe(x => {
-            let self=this;
-            this.catalogs=[];
-            if(x!=undefined){
-                for(let i=0;i<x.length;i++){
-                    let item={
-                        name:x[i].name,
-                        articles:[]
+            let self = this;
+            this.catalogs = [];
+            if (x != undefined) {
+                for (let i = 0; i < x.length; i++) {
+                    let item = {
+                        name: x[i].name,
+                        articles: []
                     };
                     this.catalogs.push(item);
                     for (let property in x[i].articles) {
@@ -198,66 +200,67 @@ export class ManageComponent implements OnInit {
     }
 
     // add to catalog
-    pushToCatalog(item){
-        let updated:boolean=false;
-        for(let i=0;i<this.catalogs.length;i++){
+    pushToCatalog(item) {
+        let updated: boolean = false;
+        for (let i = 0; i < this.catalogs.length; i++) {
             if (this.catalogs[i].id == item.id) {
-                this.catalogs[i].name=item.name;
-                updated=true;
+                this.catalogs[i].name = item.name;
+                updated = true;
             }
         }
-        if(!updated)
+        if (!updated)
             this.catalogs.push(item);
 
     }
+
     // catalog mapping (user defined)
-    changeInCatalogs( item, id ) {
+    changeInCatalogs(item, id) {
         for (let i = 0; i <= this.catalogs.length; i++) {
-            if(this.catalogs[i] && this.catalogs[i].id==id){
+            if (this.catalogs[i] && this.catalogs[i].id == id) {
                 let obj: catalog = {};
-                obj.name=item.name;
-                obj.id=item.$key;
-                this.pushToArticles(obj,this.catalogs[i].id);
+                obj.name = item.name;
+                obj.id = item.$key;
+                this.pushToArticles(obj, this.catalogs[i].id);
                 console.log(this.catalogs);
             }
         }
     }
 
-    pushToUsersCatalog(item){
-        let updated:boolean=false;
-        for(let i=0;i<this.usersCatalogs.length;i++){
+    pushToUsersCatalog(item) {
+        let updated: boolean = false;
+        for (let i = 0; i < this.usersCatalogs.length; i++) {
             if (this.usersCatalogs[i].id == item.id) {
-                this.usersCatalogs[i].name=item.name;
-                this.usersCatalogs[i].id=item.id;
-                updated=true;
+                this.usersCatalogs[i].name = item.name;
+                this.usersCatalogs[i].id = item.id;
+                updated = true;
             }
         }
-        if(!updated)
+        if (!updated)
             this.usersCatalogs.push(item);
 
     }
 
     // catalog mapping (default)
-    changeInUsersCatalogs( item, id ) {
+    changeInUsersCatalogs(item, id) {
         for (let i = 0; i <= this.catalogs.length; i++) {
-            if(this.usersCatalogs[i] && this.usersCatalogs[i].id==id){
+            if (this.usersCatalogs[i] && this.usersCatalogs[i].id == id) {
                 let obj: catalog = {};
-                obj.name=item.name;
-                obj.id=item.$key;
-                this.pushToUserArticles(obj,this.usersCatalogs[i].id);
+                obj.name = item.name;
+                obj.id = item.$key;
+                this.pushToUserArticles(obj, this.usersCatalogs[i].id);
             }
         }
     }
 
     // catalog article mapping (user defined)
-    pushToUserArticles(item,id){
-        let updated:boolean=false;
-        for(let i=0;i<this.usersCatalogs.length;i++){
+    pushToUserArticles(item, id) {
+        let updated: boolean = false;
+        for (let i = 0; i < this.usersCatalogs.length; i++) {
             if (this.usersCatalogs[i].id == id) {
                 for (let j = 0; j < this.usersCatalogs[i].articles.length; j++) {
-                    if(this.usersCatalogs[i].articles[j].id==item.id){
-                        this.usersCatalogs[i].articles[j].name=item.name;
-                        updated=true;
+                    if (this.usersCatalogs[i].articles[j].id == item.id) {
+                        this.usersCatalogs[i].articles[j].name = item.name;
+                        updated = true;
                     }
                 }
                 if (!updated) {
@@ -268,14 +271,14 @@ export class ManageComponent implements OnInit {
     }
 
 // catalog article mapping (default)
-    pushToArticles(item,id){
-        let updated:boolean=false;
-        for(let i=0;i<this.catalogs.length;i++){
+    pushToArticles(item, id) {
+        let updated: boolean = false;
+        for (let i = 0; i < this.catalogs.length; i++) {
             if (this.catalogs[i].id == id) {
                 for (let j = 0; j < this.catalogs[i].articles.length; j++) {
-                    if(this.catalogs[i].articles[j].id==item.id){
-                        this.catalogs[i].articles[j].name=item.name;
-                        updated=true;
+                    if (this.catalogs[i].articles[j].id == item.id) {
+                        this.catalogs[i].articles[j].name = item.name;
+                        updated = true;
                     }
                 }
                 if (!updated) {
@@ -286,30 +289,30 @@ export class ManageComponent implements OnInit {
     }
 
     //get own articles
-    getOwnArticles(){
-        let ownAritcles=this._manageService.getOwnArticles(this.url);
-        ownAritcles.subscribe(x=>{
-            if(x && x.length>0){
-                for(let i=0;i<x.length;i++){
-                    this.af.database.object(`/articlesx/${this.lang}/${x[i].articleId}`).subscribe(p=>{
-                        let exists=false;
-                        for(let k=0;k<this.ownArticles.length;k++){
-                            if(this.ownArticles[k].$key==p.$key){
-                                exists=true;
+    getOwnArticles() {
+        let ownAritcles = this._manageService.getOwnArticles(this.url);
+        ownAritcles.subscribe(x => {
+            if (x && x.length > 0) {
+                for (let i = 0; i < x.length; i++) {
+                    this.af.database.object(`/articlesx/${this.lang}/${x[i].articleId}`).subscribe(p => {
+                        let exists = false;
+                        for (let k = 0; k < this.ownArticles.length; k++) {
+                            if (this.ownArticles[k].$key == p.$key) {
+                                exists = true;
                             }
                         }
-                        if(!exists)
+                        if (!exists)
                             this.ownArticles.push(p);
                     });
                 }
-            }else{
-                this.ownArticles=[];
+            } else {
+                this.ownArticles = [];
             }
         })
     }
 
 // toggle catalog on ui based on user interaction (tap/click events)
-    toggleCatalog(evt){
+    toggleCatalog(evt) {
         // let parentNode=evt.target.parentElement;
         // let currentEle=parentNode.getElementsByClassName('slist-articles')[0];
         if (evt) {
@@ -318,25 +321,25 @@ export class ManageComponent implements OnInit {
     }
 
     // delete article
-    deleteArticle(artId,catId,language){
-        this._manageService.removeArticleFromCategory(artId,catId,language);
+    deleteArticle(artId, catId, language) {
+        this._manageService.removeArticleFromCategory(artId, catId, language);
     }
 
     // show delete ui
-    showDelete(deleteButton,deleteArticle){
-        deleteButton.style.display='none';
-        deleteArticle.style.display='block';
+    showDelete(deleteButton, deleteArticle) {
+        deleteButton.style.display = 'none';
+        deleteArticle.style.display = 'block';
     }
 
     // hide delete option
-    hideDelete(deleteButton,deleteArticle){
-        deleteButton.style.display='flex';
-        deleteArticle.style.display='none';
+    hideDelete(deleteButton, deleteArticle) {
+        deleteButton.style.display = 'flex';
+        deleteArticle.style.display = 'none';
     }
 
-    deleteArticleFromMyarticles(art){
+    deleteArticleFromMyarticles(art) {
         alert(1)
-        this._manageService.removeIfExistsMyOwnArticles(art.$key,this.url);
+        this._manageService.removeIfExistsMyOwnArticles(art.$key, this.url);
     }
 
 }

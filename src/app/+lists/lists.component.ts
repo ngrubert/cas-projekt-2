@@ -37,7 +37,7 @@ export class ListsComponent implements OnInit {
     }
 
     ngOnInit() {
-        console.log("lists: sListEmpty:"+this.sListsEmpty);
+        console.log("lists: sListEmpty:" + this.sListsEmpty);
         this.sLists = [];
         this.getAllLists();
     }
@@ -95,7 +95,7 @@ export class ListsComponent implements OnInit {
 
     // user is known, store the selected list in local DB and go to shopping list page on click
     goToSlist(item) {
-        console.log("lists.compo: goToList: u="+this.url+", sl="+item.$key);
+        console.log("lists.compo: goToList: u=" + this.url + ", sl=" + item.$key);
         LocalStateService.setUserKey(this.url);
         LocalStateService.setSListKey(item.$key);
         this.router.navigate(['list', item.$key, {email: this.url}]);

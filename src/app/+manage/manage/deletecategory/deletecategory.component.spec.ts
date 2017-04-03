@@ -1,11 +1,11 @@
 /* tslint:disable:no-unused-variable */
 
-import { TestBed, async } from '@angular/core/testing';
-import { DeleteCategoryComponent } from './deletecategory.component';
-import { FormsModule } from '@angular/forms';
-import { ManageService } from './../../manage.service';
-import { SharedAddOrEditComponent } from './../sharedaddoredit/sharedaddoredit.component';
-import { UsersService } from './../../../services/users.service';
+import {TestBed, async} from '@angular/core/testing';
+import {DeleteCategoryComponent} from './deletecategory.component';
+import {FormsModule} from '@angular/forms';
+import {ManageService} from './../../manage.service';
+import {SharedAddOrEditComponent} from './../sharedaddoredit/sharedaddoredit.component';
+import {UsersService} from './../../../services/users.service';
 import {
     AngularFire,
     FirebaseObjectObservable,
@@ -27,7 +27,7 @@ import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/Rx';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 
 const APP_NAME = 'Fergg';
 
@@ -62,9 +62,12 @@ describe('DeleteCategoryComponent', () => {
                 DeleteCategoryComponent, SharedAddOrEditComponent
             ],
             imports: [MaterialModule,
-                RouterTestingModule, FormsModule, AngularFireModule.initializeApp(firebaseConfig),TranslateModule.forRoot()
+                RouterTestingModule, FormsModule, AngularFireModule.initializeApp(firebaseConfig), TranslateModule.forRoot()
             ],
-            providers: [{provide: ManageService, useValue: AppServiceStub}, {provide: UsersService, useValue: AppServiceStub}]
+            providers: [{provide: ManageService, useValue: AppServiceStub}, {
+                provide: UsersService,
+                useValue: AppServiceStub
+            }]
         });
         TestBed.compileComponents();
     });

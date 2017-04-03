@@ -71,7 +71,7 @@ export class ListService {
                 debugger;
                 if (x && x.length > 0) {
                     console.log("addArticleAndAddToList existing article: " + x.name);
-                    let obj = { id: x[0].$key };
+                    let obj = {id: x[0].$key};
                     this.addArticleToList(sList, obj);
                 } else {
                     let articleAdded: any = addArticle.push(art);
