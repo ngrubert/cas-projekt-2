@@ -31,7 +31,7 @@ export class EditArticleComponent implements OnInit,OnDestroy {
     af: AngularFire;
     private catId;
     private sId;
-    public /*private*/ modelValue;
+    public modelValue;
     private aId;
     private article;
     private checkArticle$;
@@ -46,10 +46,11 @@ export class EditArticleComponent implements OnInit,OnDestroy {
                 private route: ActivatedRoute,
                 private router: Router) {
         this.af = af;
-        this.db = new PouchDB("sList");
+
     }
 
     ngOnInit() {
+        this.db = this._manageService.PouchDBRef();
         this.user = this.route.params
             .switchMap((params: Params) => {
                 // this.url = '-K_PcS3U-bzP0Jgye_Xo';
@@ -95,14 +96,16 @@ export class EditArticleComponent implements OnInit,OnDestroy {
         categoryObs.subscribe(x => {
             this.list = [];
             this.listDup = x;
-            for (let i = 0; i < x.length; i++) {
-                let val: any = x[i];
-                let item = {
-                    name: val.name,
-                    value: val.$key,
-                    language: val.language
+            if (x && x.length > 0) {
+                for (let i = 0; i < x.length; i++) {
+                    let val: any = x[i];
+                    let item = {
+                        name: val.name,
+                        value: val.$key,
+                        language: val.language
+                    }
+                    this.list.push(item);
                 }
-                this.list.push(item);
             }
 
         });
@@ -147,17 +150,18 @@ export class EditArticleComponent implements OnInit,OnDestroy {
         this.checkArticle$ = this._manageService.checkArticleExists(obj.name);
         this.checkArticle$.subscribe(x => {
             if (x && x.length > 0) {
-                self._manageService.addArticleToCategory(x[0].$key, obj.order);
+                self._manageService.addArticleToCategory(x[0].$key, obj.order, languageObj.language)
             } else {
                 let item = {
                     name: obj.name,
                     isDefault: false
                 };
-                self._manageService.addArticleAndAddToCategory(item, obj.order);
+                self._manageService.addArticleAndAddToCategory(item, obj.order, languageObj.language)
             }
             if (obj.order != this.catId && x && x.length > 0) {
-                self._manageService.removeArticleFromCategory(x[0].$key, this.catId);
+                self._manageService.removeArticleFromCategory(x[0].$key, this.catId, languageObj.language)
             }
+            self._manageService.removeIfExistsMyOwnArticles(self.article.$key, this.url);
         });
     }
 }

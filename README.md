@@ -2,6 +2,24 @@
 
 This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.22-1.
 
+### Deployed Webapp
+
+App ausprobieren: https://fergg.karrer.net
+
+Folgende Funktionen sollten funktionieren:
+ - Einkaufsliste anlegen/löschen/bearbeiten/zurücksetzen/fertig
+ - Mit der Suchfunktion ("Was willst du einkaufen") Artikel hinzufügen
+ - Durch Öffnen der Rubriken (z.B. "Früchte und Gemüse") Artikel hinzufügen
+ - "Rote" Artikel in der obersten Liste anklicken --> Detail- Ansicht
+     - Artikel in den Einkaufswagen legen (wird grün)
+     - Artikel löschen
+     - Menge angeben (Stückzahl, kg usw.)
+     - längere Beschreibung angeben
+ - Durch Swipe nach rechts wird ein roter Artikel "grün", swipe nach links macht ihn wieder rot
+
+Die Menufunktion "Katalog bearbeiten" funktioniert leider *nicht*.     - 
+ 
+
 ### Development server
 
 If you have already installed Angular CLI, update it first:
@@ -12,17 +30,14 @@ If you have already installed Angular CLI, update it first:
     % sudo npm cache clean
     % sudo npm install -g angular-cli@latest
 
-
 #### Install project dependencies
 
     % cd <your project directory>
     % sudo npm install
 
-
 #### Build local project
 
     ng build --prod --aot
-
 
 #### Run Locally
 
@@ -42,8 +57,6 @@ update smtp host, username and password in mail-secret.js, an then run:
 #### Run tests
 
     ng test
-
-
 
 #### Firebase config
 

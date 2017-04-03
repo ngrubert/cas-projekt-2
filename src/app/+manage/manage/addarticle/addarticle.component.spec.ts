@@ -5,6 +5,7 @@ import {AddArticleComponent} from './addarticle.component';
 import {FormsModule} from '@angular/forms';
 import {ManageService} from './../../manage.service';
 import {SharedAddOrEditComponent} from './../sharedaddoredit/sharedaddoredit.component';
+import {UsersService} from './../../../services/users.service';
 import {
     AngularFire,
     FirebaseObjectObservable,
@@ -26,6 +27,7 @@ import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/Rx';
+import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 
 const APP_NAME = 'Fergg';
 
@@ -63,9 +65,12 @@ describe('AddArticleComponent', () => {
                 AddArticleComponent, SharedAddOrEditComponent
             ],
             imports: [MaterialModule,
-                RouterTestingModule, FormsModule, AngularFireModule.initializeApp(firebaseConfig)
+                RouterTestingModule, FormsModule, AngularFireModule.initializeApp(firebaseConfig), TranslateModule.forRoot()
             ],
-            providers: [{provide: ManageService, useValue: AppServiceStub}]
+            providers: [{provide: ManageService, useValue: AppServiceStub}, {
+                provide: UsersService,
+                useValue: AppServiceStub
+            }]
         });
         TestBed.compileComponents();
     });

@@ -121,9 +121,7 @@ export class CreateService {
 
     // dump default catalogs with en and de names, articles with imgs
     createFirebaseCatalogx(catalog: Object) {
-        if (1 == 1) {
-            return
-        }
+        if (1 == 1) { return }
         let langs = ["en", "de"];
         for (let iLang in langs) {
             let lang = langs[iLang];

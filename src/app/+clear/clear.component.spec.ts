@@ -17,13 +17,14 @@ import {
 } from 'angularfire2';
 
 import {Subscription} from 'rxjs/Subscription';
-
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Observable} from 'rxjs/Rx';
 import {firebaseConfig} from './../config/firebase-config';
 import {ClearService} from './clear.service';
+import {UsersService} from './../services/users.service';
 import 'rxjs/Rx';
+import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 
 const APP_NAME = 'Fergg';
 
@@ -58,9 +59,12 @@ describe('ClearComponent', () => {
                 ClearComponent
             ],
             imports: [
-                RouterTestingModule, FormsModule, AngularFireModule.initializeApp(firebaseConfig)
+                RouterTestingModule, FormsModule, AngularFireModule.initializeApp(firebaseConfig), TranslateModule.forRoot()
             ],
-            providers: [{provide: ClearService, useValue: AppServiceStub}]
+            providers: [{provide: ClearService, useValue: AppServiceStub}, {
+                provide: UsersService,
+                useValue: AppServiceStub
+            }]
         });
         TestBed.compileComponents();
     });
@@ -71,18 +75,4 @@ describe('ClearComponent', () => {
         expect(app).toBeTruthy();
     }));
 
-
-    // it(`should have as title 'app works!'`, async(() => {
-    //   let fixture = TestBed.createComponent(AppComponent);
-    //   fixture.detectChanges();
-    //   let app = fixture.debugElement.componentInstance;
-    //   expect(app.title).toEqual('app works!');
-    // }));
-
-    // it('should render title in a h1 tag', async(() => {
-    //   let fixture = TestBed.createComponent(AppComponent);
-    //   fixture.detectChanges();
-    //   let compiled = fixture.debugElement.nativeElement;
-    //   expect(compiled.querySelector('.toolbar-subtext').textContent).toContain('A Mobile Shopping List');
-    // }));
 });

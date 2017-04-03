@@ -8,7 +8,6 @@ import {ManageService} from './../../manage.service';
 import {user} from './../../../model/user';
 import {list} from './../../../model/user';
 
-declare var PouchDB: any;
 
 export class catalog {
     constructor(public id?: string,
@@ -30,23 +29,24 @@ export class DeleteCategoryComponent implements OnInit {
     private user;
     private sId;
     private catId;
-    public /*private*/ modelValue;
+    public modelValue;
     private language;
     af: AngularFire;
     catalogs: catalog[] = [];
     title: string = 'Edit Category';
     list: Array<any> = [];
-    category: any; // was: Object = {};
+    category: any;
 
     constructor(af: AngularFire,
                 public _manageService: ManageService,
                 private route: ActivatedRoute,
                 private router: Router) {
         this.af = af;
-        this.db = new PouchDB("sList");
+
     }
 
     ngOnInit() {
+        this.db = this._manageService.PouchDBRef();
         this.user = this.route.params
             .switchMap((params: Params) => {
                 // this.url = '-K_PcS3U-bzP0Jgye_Xo';
@@ -78,7 +78,7 @@ export class DeleteCategoryComponent implements OnInit {
 
     // get category
     getCategory() {
-        let getCategory$ = this._manageService.getCategoryById(this.catId);
+        let getCategory$ = this._manageService.getCategoryById(this.catId, this.language);
         getCategory$.subscribe(x => {
             this.category = x;
             this.modelValue = x.name;
@@ -92,7 +92,7 @@ export class DeleteCategoryComponent implements OnInit {
 
     // delete category by id and language
     deleteCategory(id) {
-        this._manageService.deleteCategory(id);
+        this._manageService.deleteCategory(id, this.language);
         this.router.navigate(['manage', {lan: this.language}]);
     }
 }

@@ -77,6 +77,7 @@ export class ListsComponent implements OnInit {
                                             .subscribe(x => {
                                                 if (x && x.title !== undefined) {
                                                     this.sLists.push(x);
+                                                    //console.log("sLists:"+JSON.stringify(this.sLists));
                                                 }
                                             })
                                     }

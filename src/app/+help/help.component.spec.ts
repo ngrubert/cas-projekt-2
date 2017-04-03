@@ -3,6 +3,7 @@
 import {TestBed, async} from '@angular/core/testing';
 import {HelpComponent} from './help.component';
 import {FormsModule} from '@angular/forms';
+import {UsersService} from './../services/users.service';
 import {
     AngularFire,
     FirebaseObjectObservable,
@@ -23,6 +24,7 @@ import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/Rx';
+import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 
 const APP_NAME = 'Fergg';
 
@@ -56,8 +58,9 @@ describe('HelpComponent', () => {
                 HelpComponent
             ],
             imports: [MaterialModule,
-                RouterTestingModule, FormsModule
+                RouterTestingModule, FormsModule, TranslateModule.forRoot()
             ],
+            providers: [{provide: UsersService, useValue: AppServiceStub}]
         });
         TestBed.compileComponents();
     });
@@ -67,19 +70,4 @@ describe('HelpComponent', () => {
         let app = fixture.debugElement.componentInstance;
         expect(app).toBeTruthy();
     }));
-
-
-    // it(`should have as title 'app works!'`, async(() => {
-    //   let fixture = TestBed.createComponent(AppComponent);
-    //   fixture.detectChanges();
-    //   let app = fixture.debugElement.componentInstance;
-    //   expect(app.title).toEqual('app works!');
-    // }));
-
-    // it('should render title in a h1 tag', async(() => {
-    //   let fixture = TestBed.createComponent(AppComponent);
-    //   fixture.detectChanges();
-    //   let compiled = fixture.debugElement.nativeElement;
-    //   expect(compiled.querySelector('.toolbar-subtext').textContent).toContain('A Mobile Shopping List');
-    // }));
 });

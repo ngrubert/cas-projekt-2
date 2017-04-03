@@ -11,7 +11,6 @@ import {EditService} from './../edit.service';
 import {user} from './../../model/user';
 import {list} from './../../model/user';
 
-//declare var PouchDB: any;
 
 @Component({
     selector: 'edit',
@@ -96,7 +95,7 @@ export class EditComponent implements OnInit,OnDestroy {
                     if (x.hasOwnProperty(property)) {
                         if (x[property] == false || x[property] == true) {
                             self.af.database.object(`/users/${property}`).subscribe(p => {
-                                //debugger
+                                // debugger
                                 if (p.email != self.model.email)
                                     this.users.push(p.email);
                             });

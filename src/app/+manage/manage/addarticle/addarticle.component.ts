@@ -9,7 +9,6 @@ import {ManageService} from './../../manage.service';
 import {user} from './../../../model/user';
 import {list} from './../../../model/user';
 
-declare var PouchDB: any;
 
 export class catalog {
     constructor(public id?: string,
@@ -30,7 +29,7 @@ export class AddArticleComponent implements OnInit {
     private user;
     db: any;
     private sId;
-    public /*private*/ modelValue;
+    public modelValue;
     af: AngularFire;
     catalogs: catalog[] = [];
     title: string = 'Add Article';
@@ -43,13 +42,13 @@ export class AddArticleComponent implements OnInit {
                 private router: Router,
                 private translate: TranslateService) {
         this.af = af;
-        this.db = new PouchDB("sList");
         translate.get('MANAGE.ADDARTICLE').subscribe((title: string) => {
             this.title = title;
         });
     }
 
     ngOnInit() {
+        this.db = this._manageService.PouchDBRef();
         this.user = this.route.params
             .switchMap((params: Params) => {
                 this.sId = params['id'];
@@ -78,7 +77,7 @@ export class AddArticleComponent implements OnInit {
         });
     }
 
-// get all Category for user
+    // get all Category for user
     getAllCategoriesForUser() {
         // this.list.push({name:'Category'});
         let categoryObs = this._manageService.getAllCategoriesForUser(this.url);
@@ -115,13 +114,13 @@ export class AddArticleComponent implements OnInit {
         this._manageService.checkArticleExists(obj.name)
             .subscribe(x => {
                 if (x && x.length > 0) {
-                    self._manageService.addArticleToCategory(x[0].$key, obj.order);
+                    self._manageService.addArticleToCategory(x[0].$key, obj.order, languageObj.language)
                 } else {
                     let item = {
                         name: obj.name,
                         isDefault: false
                     };
-                    self._manageService.addArticleAndAddToCategory(item, obj.order);
+                    self._manageService.addArticleAndAddToCategory(item, obj.order, languageObj.language)
                 }
             });
     }

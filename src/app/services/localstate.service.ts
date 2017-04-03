@@ -2,8 +2,8 @@
 
 export class FerggState {
     constructor(public userKey?: string,
-                public slistKey?: string,
-                public language?: string) {
+                public slistKey?: string) {
+
     }
 }
 
@@ -13,7 +13,7 @@ export class LocalStateService {
     constructor() {
     };
 
-    // ---- localStorage impl -- this doesn't work on Safari in provate browser mode ---
+    // ---- localStorage impl -- this doesn't work on Safari in private browser mode ---
     // private static setItemL(item: string) {
     //     localStorage.setItem(localStorageKey, item);
     // }

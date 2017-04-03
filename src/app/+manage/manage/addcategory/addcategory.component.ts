@@ -30,7 +30,7 @@ export class AddCategoryComponent implements OnInit {
     db: any;
     private user;
     private sId;
-    public /*private*/ modelValue;
+    public modelValue;
     title: string = 'Add Category';
     list: Array<any> = [];
     af: AngularFire;
@@ -42,13 +42,13 @@ export class AddCategoryComponent implements OnInit {
                 private router: Router,
                 private translate: TranslateService) {
         this.af = af;
-        this.db = new PouchDB("sList");
         translate.get('MANAGE.ADDCATEGORY').subscribe((title: string) => {
             this.title = title;
         });
     }
 
     ngOnInit() {
+        this.db = this._manageService.PouchDBRef();
         this.user = this.route.params
             .switchMap((params: Params) => {
                 // this.url = '-K_PcS3U-bzP0Jgye_Xo';
@@ -103,7 +103,7 @@ export class AddCategoryComponent implements OnInit {
             order: obj.order
         };
         item.isDefault = false;
-        this._manageService.addCategory(item);
+        this._manageService.addCategory(item, obj.language.toLowerCase(), this.url);
         this.router.navigate(['manage']);
     }
 

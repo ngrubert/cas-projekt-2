@@ -35,7 +35,7 @@ export class EditCategoryComponent implements OnInit {
     catalogs: catalog[] = [];
     title: string = 'Edit Category';
     list: Array<any> = [];
-    category: any; // was: Object={};
+    category: any;
     db: any;
 
     constructor(af: AngularFire,
@@ -43,10 +43,11 @@ export class EditCategoryComponent implements OnInit {
                 private route: ActivatedRoute,
                 private router: Router) {
         this.af = af;
-        this.db = new PouchDB("sList");
+
     }
 
     ngOnInit() {
+        this.db = this._manageService.PouchDBRef();
         this.user = this.route.params
             .switchMap((params: Params) => {
                 // this.url = '-K_PcS3U-bzP0Jgye_Xo';
@@ -78,17 +79,17 @@ export class EditCategoryComponent implements OnInit {
 
     // get category by category id from route and language
     getCategory() {
-        let getCategory$ = this._manageService.getCategoryById(this.catId);
+        let getCategory$ = this._manageService.getCategoryById(this.catId, this.language);
         getCategory$.subscribe(x => {
             this.category = x;
             this.modelValue = x.order;
 
-        });
+        })
 
         let categoryObs = this._manageService.getAllCategoriesForUser(this.url);
         categoryObs.subscribe(x => {
             this.list = [];
-            let flags = [], output = [], l = x.length, i;
+            var flags = [], output = [], l = x.length, i;
             for (i = 0; i < l; i++) {
                 if (flags[x[i].$key]) continue;
                 flags[x[i].$key] = true;
@@ -113,13 +114,13 @@ export class EditCategoryComponent implements OnInit {
     // on save click from shared component
     onSaved(obj) {
         obj.isDefault = false;
-        this._manageService.editCategory(obj, this.catId);
+        this._manageService.editCategory(obj, this.catId, this.language, this.url);
         this.router.navigate(['manage']);
     }
 
     // deleteCategory click redirect to deletecategory component
     deleteCategory(id) {
-        this.router.navigate(['manage/deletecategory', id])
+        this.router.navigate(['manage/deletecategory', id, {lan: this.language}])
     }
 
 }
