@@ -11,106 +11,109 @@ import { list } from './../../../model/user';
 declare var PouchDB: any;
 
 export class catalog{
-    constructor(
-        public id?: string,
-        public name?: string,
-        public articles?:Array<any>    
-        ){}   
+	constructor(
+		public id?: string,
+		public name?: string,
+		public articles?:Array<any>
+	){}
 }
 
 @Component({
-    selector: 'editarticle',
-    templateUrl:'./editarticle.component.html',
-    styleUrls: ['./editarticle.component.scss'],
-    providers: [ManageService]
+	selector: 'editarticle',
+	templateUrl:'./editarticle.component.html',
+	styleUrls: ['./editarticle.component.scss'],
+	providers: [ManageService]
 })
 
 export class EditArticleComponent implements OnInit,OnDestroy {
-    private url;
+	private url;
 	db:any;
-    private user;
-    af: AngularFire;
+	private user;
+	af: AngularFire;
 	private catId;
 	private sId;
-	public /*private*/ modelValue;
+	public modelValue;
 	private aId;
 	private article;
 	private checkArticle$;
-    catalogs:catalog[]=[];
+	catalogs:catalog[]=[];
 	titleValue:string;
-    title:string='Edit Article';
-    list:Array<any>=[];
+	title:string='Edit Article';
+	list:Array<any>=[];
 	listDup:Array<any>=[];
-    constructor(  af: AngularFire,
-        public _manageService: ManageService,
-        private route: ActivatedRoute,
-        private router: Router
-    ) {
-        this.af = af;
-		this.db = new PouchDB("sList");
-    }
+	constructor(  af: AngularFire,
+				  public _manageService: ManageService,
+				  private route: ActivatedRoute,
+				  private router: Router
+	) {
+		this.af = af;
 
-    ngOnInit() {
-        this.user=this.route.params
+	}
+
+	ngOnInit() {
+		this.db = this._manageService.PouchDBRef();
+		this.user=this.route.params
             .switchMap((params: Params) => {
-                // this.url = '-K_PcS3U-bzP0Jgye_Xo';
+				// this.url = '-K_PcS3U-bzP0Jgye_Xo';
 				this.sId=params['id'];
-                this.catId=params['catId'];
+				this.catId=params['catId'];
 				this.modelValue=params['catId'];
 				debugger
 				this.aId=params['artId'];
-                return Observable.from([1,2,3]).map(x=>x);
-            });
-        this.user.subscribe(x=>{
+				return Observable.from([1,2,3]).map(x=>x);
+			});
+		this.user.subscribe(x=>{
 			this.syncChanges();
 		});
-        
-		
-    }
+
+
+	}
 // get user email from local databas(pouch db)
 	syncChanges() {
-        let self=this;
-        this.db.allDocs({include_docs: true, descending: true}, function(err, docs) {
-            if (err){
-            console.log(err);
-            return err;
-            }
-            if (docs && docs.rows.length>0){
-            self.url=docs.rows[0].doc.user;
-			// get all Category for user
-            self.getAllCategoriesForUser();
-			// get article for user
-			self.getArticle();
-            }
-        });
-    }
+		let self=this;
+		this.db.allDocs({include_docs: true, descending: true}, function(err, docs) {
+			if (err){
+				console.log(err);
+				return err;
+			}
+			if (docs && docs.rows.length>0){
+				self.url=docs.rows[0].doc.user;
+				// get all Category for user
+				self.getAllCategoriesForUser();
+				// get article for user
+				self.getArticle();
+			}
+		});
+	}
 
 	ngOnDestroy() {
-		
+
 	}
-	
-    getAllCategoriesForUser() {
-        // this.list.push({name:'Category'});
-        let categoryObs=this._manageService.getAllCategoriesForUser(this.url);
-        categoryObs.subscribe(x=>{
+
+	getAllCategoriesForUser() {
+		// this.list.push({name:'Category'});
+		let categoryObs=this._manageService.getAllCategoriesForUser(this.url);
+		categoryObs.subscribe(x=>{
 			this.list=[];
-            this.listDup=x;
-			for (let i=0;i<x.length;i++){
-				let val:any=x[i];
-				let item={
-					name:val.name,
-					value:val.$key,
-					language:val.language
+			this.listDup=x;
+			if(x && x.length>0){
+				for (let i=0;i<x.length;i++){
+					let val:any=x[i];
+					let item={
+						name:val.name,
+						value:val.$key,
+						language:val.language
+					}
+					this.list.push(item);
 				}
-				this.list.push(item);
 			}
-			
-        });
-    }
-	
+
+		});
+	}
+
 	getArticle() {
 		let article=this._manageService.getArticle(this.aId)
-			.map(x=>x);
+            .map(x=>x);
 		article.subscribe(x=>{
 			if (x){
 				this.article=x;
@@ -128,8 +131,8 @@ export class EditArticleComponent implements OnInit,OnDestroy {
 		}
 		this.router.navigate(['manage']);
 	}
-	
-	// check if categoryObs changed 
+
+	// check if categoryObs changed
 	objChanged(obj):boolean{
 		let objChangedValue=true;
 		if (obj.name == this.article.name && obj.order == this.catId){
@@ -137,27 +140,28 @@ export class EditArticleComponent implements OnInit,OnDestroy {
 		}
 		return objChangedValue;
 	}
-	
+
 	// check if article exists
 	checkArticleExists(obj){
 		let languageObj=this.list.find(function(item){
-            return item.value==obj.order;
-        })
+			return item.value==obj.order;
+		})
 		let self=this;
 		this.checkArticle$=this._manageService.checkArticleExists(obj.name);
-			this.checkArticle$.subscribe(x=>{
-				if (x && x.length>0){
-					self._manageService.addArticleToCategory(x[0].$key,obj.order);
-				} else {
-					let item={
-						name:obj.name,
-						isDefault:false
-					};
-					self._manageService.addArticleAndAddToCategory(item,obj.order);
-				}
-				if (obj.order != this.catId && x && x.length >0){
-					self._manageService.removeArticleFromCategory(x[0].$key,this.catId);
-				}
-			});
+		this.checkArticle$.subscribe(x=>{
+			if (x && x.length>0){
+				self._manageService.addArticleToCategory(x[0].$key,obj.order,languageObj.language)
+			} else {
+				let item={
+					name:obj.name,
+					isDefault:false
+				};
+				self._manageService.addArticleAndAddToCategory(item,obj.order,languageObj.language)
+			}
+			if (obj.order != this.catId && x && x.length >0){
+				self._manageService.removeArticleFromCategory(x[0].$key,this.catId,languageObj.language)
+			}
+			self._manageService.removeIfExistsMyOwnArticles(self.article.$key,this.url);
+		});
 	}
 }

@@ -5,17 +5,16 @@ import { Observable } from 'rxjs/Observable';
 import { AngularFire, FirebaseListObservable,FirebaseObjectObservable, FirebaseRef} from 'angularfire2';
 // import 'rxjs/add/operator/map';
 // import 'rxjs/add/operator/catch';
-
+import { FinishService } from './finish.service';
 import { SharedComponent } from './../shared/shared.component';
-import { UsersService } from './../services/users.service';
 import { user } from './../model/user';
 
-declare var PouchDB: any;
 
 @Component({
-  selector: 'finish',
-  templateUrl: './finish.component.html',
-  styleUrls: ['./finish.component.scss']
+    selector: 'finish',
+    templateUrl: './finish.component.html',
+    styleUrls: ['./finish.component.scss'],
+    providers:[FinishService]
 })
 
 export class FinishComponent implements OnInit {
@@ -28,38 +27,38 @@ export class FinishComponent implements OnInit {
     localDBID;
     finished:any;
     articles:any;
-    constructor(public _userService: UsersService,private route: ActivatedRoute,
-        private router: Router,af: AngularFire) {
-this.db = new PouchDB("sList");
+    constructor(private route: ActivatedRoute,
+                private router: Router,af: AngularFire,
+                private _finishService: FinishService) {
         this.af = af;
     }
 
     ngOnInit() {
+        this.db = this._finishService.PouchInstance();
         // this.getUsers();
         this.syncChanges();
         this.showSideMenu();
     }
 
     // get user email id from localDB (PouchDB)
-     syncChanges() {
+    syncChanges() {
         let self=this;
         this.db.allDocs({include_docs: true, descending: true}, function(err, docs) {
             if (err){
-            console.log(err);
-            return err;
+                console.log(err);
+                return err;
             }
             if (docs && docs.rows.length>0){
                 debugger
-               self.sList=docs.rows[0].doc.sList;
-               self.url=docs.rows[0].doc.user;
-               self.localDBID=docs.rows[0].doc._id;
+                self.sList=docs.rows[0].doc.sList;
+                self.url=docs.rows[0].doc.user;
+                self.localDBID=docs.rows[0].doc._id;
             }
         });
     }
 
     // showside menu extra
     showSideMenu() {
-        
         document.getElementById('edit').style.display='block';
         document.getElementById('clear').style.display='block';
         document.getElementById('finished').style.display='block';

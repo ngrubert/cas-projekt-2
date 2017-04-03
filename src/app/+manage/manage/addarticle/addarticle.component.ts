@@ -4,18 +4,18 @@ import {AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseR
 import {Observable} from 'rxjs/Observable';
 import {TranslateService} from '@ngx-translate/core';
 
-import {SharedComponent} from './../../../shared/shared.component';
-import {ManageService} from './../../manage.service';
-import {user} from './../../../model/user';
-import {list} from './../../../model/user';
+import { SharedComponent } from './../../../shared/shared.component';
+import { ManageService } from './../../manage.service';
+import { user } from './../../../model/user';
+import { list } from './../../../model/user';
 
-declare var PouchDB: any;
 
-export class catalog {
-    constructor(public id?: string,
-                public name?: string,
-                public articles?: Array<any>) {
-    }
+export class catalog{
+    constructor(
+        public id?: string,
+        public name?: string,
+        public articles?:Array<any>
+    ){}
 }
 
 @Component({
@@ -28,9 +28,9 @@ export class catalog {
 export class AddArticleComponent implements OnInit {
     private url;
     private user;
-    db: any;
+    db:any;
     private sId;
-    public /*private*/ modelValue;
+    private modelValue;
     af: AngularFire;
     catalogs: catalog[] = [];
     title: string = 'Add Article';
@@ -43,86 +43,85 @@ export class AddArticleComponent implements OnInit {
                 private router: Router,
                 private translate: TranslateService) {
         this.af = af;
-        this.db = new PouchDB("sList");
         translate.get('MANAGE.ADDARTICLE').subscribe((title: string) => { this.title = title; });
     }
 
     ngOnInit() {
-        this.user = this.route.params
+        this.db = this._manageService.PouchDBRef();
+        this.user=this.route.params
             .switchMap((params: Params) => {
                 this.sId = params['id'];
-                return Observable.from([1, 2, 3]).map(x => x);
+                return Observable.from([1,2,3]).map(x=>x);
             });
-        this.user.subscribe(c => {
-            console.log(c);
+        this.user.subscribe(c=>
+        {console.log(c);
             this.syncChanges()
 
         });
 
     }
-
     // get user email from local databas(pouch db)
     syncChanges() {
-        let self = this;
-        this.db.allDocs({include_docs: true, descending: true}, function (err, docs) {
+        let self=this;
+        this.db.allDocs({include_docs: true, descending: true}, function(err, docs) {
             if (err) {
                 console.log(err);
                 return err;
             }
-            if (docs && docs.rows.length > 0) {
-                self.url = docs.rows[0].doc.user;
+            if (docs && docs.rows.length>0) {
+                self.url=docs.rows[0].doc.user;
                 self.getAllCategoriesForUser();
             }
         });
     }
-
-// get all Category for user
+    // get all Category for user
     getAllCategoriesForUser() {
         // this.list.push({name:'Category'});
-        let categoryObs = this._manageService.getAllCategoriesForUser(this.url);
-        categoryObs.subscribe(x => {
-            this.list = [];
-            this.listDup = x;
-            for (let i = 0; i < x.length; i++) {
-                let val: any = x[i];
-                let item = {
-                    name: val.name,
-                    value: val.$key,
-                    language: val.language
+        let categoryObs=this._manageService.getAllCategoriesForUser(this.url);
+        categoryObs.subscribe(x=>{
+            this.list=[];
+            this.listDup=x;
+            for (let i=0;i<x.length;i++){
+                let val:any=x[i];
+                let item={
+                    name:val.name,
+                    value:val.$key,
+                    language:val.language
                 }
                 this.list.push(item);
             }
 
         });
     }
-
     // on save click from SharedComponent
-    onSaved(obj) {
-        obj.isDefault = false;
+    onSaved(obj){
+        obj.isDefault=false;
         this.checkArticleExists(obj);
         this.router.navigate(['manage']);
 
     }
 
-    checkArticleExists(obj) {
+    checkArticleExists(obj){
         debugger
-        let languageObj = this.list.find(function (item) {
-            return item.value == obj.order;
+        let languageObj=this.list.find(function(item){
+            return item.value==obj.order;
         })
-        let self = this;
+        let self=this;
         this._manageService.checkArticleExists(obj.name)
-            .subscribe(x => {
-                if (x && x.length > 0) {
-                    self._manageService.addArticleToCategory(x[0].$key, obj.order);
+            .subscribe(x=>{
+                if (x && x.length>0){
+                    self._manageService.addArticleToCategory(x[0].$key,obj.order,languageObj.language)
                 } else {
-                    let item = {
-                        name: obj.name,
-                        isDefault: false
+                    let item={
+                        name:obj.name,
+                        isDefault:false
                     };
-                    self._manageService.addArticleAndAddToCategory(item, obj.order);
+                    self._manageService.addArticleAndAddToCategory(item,obj.order,languageObj.language)
                 }
             });
     }
+
+
 
 
 }

@@ -1,9 +1,10 @@
 /* tslint:disable:no-unused-variable */
 
 import { TestBed, async } from '@angular/core/testing';
-import {FinishComponent } from './finish.component';
+import { FinishComponent } from './finish.component';
 import { FormsModule } from '@angular/forms';
 import { FinishService } from './finish.service';
+import { UsersService } from './../services/users.service';
 import {
   AngularFire,
   FirebaseObjectObservable,
@@ -20,11 +21,11 @@ import {
 import { Subscription } from 'rxjs/Subscription';
 import { firebaseConfig } from './../config/firebase-config';
 import { MaterialModule } from '@angular/material';
-
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs/Rx';
- import 'rxjs/Rx';
+import 'rxjs/Rx';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 
 const APP_NAME = 'Fergg';
 
@@ -59,9 +60,9 @@ let subscription:Subscription;
       FinishComponent
       ],
       imports: [MaterialModule,
-      RouterTestingModule ,FormsModule,AngularFireModule.initializeApp(firebaseConfig)
+      RouterTestingModule,FormsModule,AngularFireModule.initializeApp(firebaseConfig),TranslateModule.forRoot()
       ],
-      providers:[{provide: FinishService, useValue: AppServiceStub }]
+      providers:[{provide: FinishService, useValue: AppServiceStub}, {provide: UsersService, useValue: AppServiceStub}]
     });
     TestBed.compileComponents();
   });
@@ -71,19 +72,4 @@ let subscription:Subscription;
     let app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   }));
-  
-
-  // it(`should have as title 'app works!'`, async(() => {
-  //   let fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   let app = fixture.debugElement.componentInstance;
-  //   expect(app.title).toEqual('app works!');
-  // }));
-
-  // it('should render title in a h1 tag', async(() => {
-  //   let fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   let compiled = fixture.debugElement.nativeElement;
-  //   expect(compiled.querySelector('.toolbar-subtext').textContent).toContain('A Mobile Shopping List');
-  // }));
 });

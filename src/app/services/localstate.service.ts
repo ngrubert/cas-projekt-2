@@ -2,8 +2,8 @@
 
 export class FerggState {
     constructor(public userKey?: string,
-                public slistKey?: string,
-                public language?: string) {
+                public slistKey?: string) {
+
     }
 }
 
@@ -13,7 +13,7 @@ export class LocalStateService {
     constructor() {
     };
 
-    // ---- localStorage impl -- this doesn't work on Safari in provate browser mode ---
+    // ---- localStorage impl -- this doesn't work on Safari in private browser mode ---
     // private static setItemL(item: string) {
     //     localStorage.setItem(localStorageKey, item);
     // }
@@ -90,7 +90,7 @@ export class LocalStateService {
         if (state && state[key]) {
             console.log("LocalStore: get " + key + "=" + state[key]);
             return state[key];
-        }
+    }
         console.log("LocalStore: get " + key + "= null, nil, nada");
         return null;
     }
@@ -107,7 +107,7 @@ export class LocalStateService {
     }
     static getSListKey(): string {
         return this.getK('slistKey')
-    }
+        }
 
     static setUserKey(userKey: string) {
         this.putKV('userKey', userKey);
@@ -118,7 +118,7 @@ export class LocalStateService {
 
     static setLanguage(language: string) {
         this.putKV('language', language);
-    }
+        }
     static getLanguage(): string {
         return this.getK('language')
     }

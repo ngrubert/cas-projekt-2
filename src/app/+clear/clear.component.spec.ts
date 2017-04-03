@@ -1,7 +1,7 @@
 /* tslint:disable:no-unused-variable */
 
 import { TestBed, async } from '@angular/core/testing';
-import {ClearComponent } from './clear.component';
+import { ClearComponent } from './clear.component';
 import { FormsModule } from '@angular/forms';
 import {
   AngularFire,
@@ -17,13 +17,14 @@ import {
 } from 'angularfire2';
 
 import { Subscription } from 'rxjs/Subscription';
-
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs/Rx';
 import { firebaseConfig } from './../config/firebase-config';
-import {ClearService} from './clear.service';
- import 'rxjs/Rx';
+import { ClearService } from './clear.service';
+import { UsersService } from './../services/users.service';
+import 'rxjs/Rx';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 
 const APP_NAME = 'Fergg';
 
@@ -34,7 +35,7 @@ class RouterStub {
 
 describe('ClearComponent', () => {
 
-let subscription:Subscription;
+  let subscription:Subscription;
   let app: firebase.app.App;
   let rootRef: firebase.database.Reference;
   let questionsRef: firebase.database.Reference;
@@ -58,9 +59,9 @@ let subscription:Subscription;
       ClearComponent
       ],
       imports: [
-      RouterTestingModule ,FormsModule,AngularFireModule.initializeApp(firebaseConfig)
+       RouterTestingModule,FormsModule,AngularFireModule.initializeApp(firebaseConfig), TranslateModule.forRoot()
       ],
-      providers:[{provide: ClearService, useValue: AppServiceStub }]
+      providers:[{provide: ClearService, useValue: AppServiceStub},{provide: UsersService, useValue: AppServiceStub}]
     });
     TestBed.compileComponents();
   });
@@ -71,18 +72,4 @@ let subscription:Subscription;
     expect(app).toBeTruthy();
   }));
   
-
-  // it(`should have as title 'app works!'`, async(() => {
-  //   let fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   let app = fixture.debugElement.componentInstance;
-  //   expect(app.title).toEqual('app works!');
-  // }));
-
-  // it('should render title in a h1 tag', async(() => {
-  //   let fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   let compiled = fixture.debugElement.nativeElement;
-  //   expect(compiled.querySelector('.toolbar-subtext').textContent).toContain('A Mobile Shopping List');
-  // }));
 });

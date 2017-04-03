@@ -11,7 +11,6 @@ import {EditService} from './../edit.service';
 import {user} from './../../model/user';
 import {list} from './../../model/user';
 
-//declare var PouchDB: any;
 
 @Component({
     selector: 'edit',

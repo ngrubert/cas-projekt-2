@@ -119,7 +119,7 @@ transporter.verify(function(error, success) {
     if (error) {
         console.log('SMTP: user ' + mailAccount.smtpUser + ' at ' + mailAccount.smtpHost + ': ' + error);
     } else {
-        console.log('Smtp user ' + mailAccount.smtpUser + ' at ' + mailAccount.smtpHost + ' seems ok');
+        console.log('SMTP: user ' + mailAccount.smtpUser + ' at ' + mailAccount.smtpHost + ' seems ok');
     }
 });
 
