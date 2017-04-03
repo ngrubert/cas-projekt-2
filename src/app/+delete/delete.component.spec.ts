@@ -4,6 +4,7 @@ import { TestBed, async } from '@angular/core/testing';
 import {DeleteComponent } from './delete.component';
 import { FormsModule } from '@angular/forms';
 import { DeleteService } from './delete.service';
+import { UsersService } from './../services/users.service';
 import {
   AngularFire,
   FirebaseObjectObservable,
@@ -20,11 +21,11 @@ import {
 import { Subscription } from 'rxjs/Subscription';
 import { firebaseConfig } from './../config/firebase-config';
 import { MaterialModule } from '@angular/material';
-
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs/Rx';
- import 'rxjs/Rx';
+import 'rxjs/Rx';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 
 const APP_NAME = 'Fergg';
 
@@ -58,10 +59,10 @@ let subscription:Subscription;
       declarations: [
       DeleteComponent
       ],
-      imports: [MaterialModule,
-      RouterTestingModule ,FormsModule,AngularFireModule.initializeApp(firebaseConfig)
+      imports: [MaterialModule.forRoot(),
+      RouterTestingModule,FormsModule,AngularFireModule.initializeApp(firebaseConfig),TranslateModule.forRoot()
       ],
-      providers:[{provide: DeleteService, useValue: AppServiceStub }]
+      providers:[{provide: DeleteService, useValue: AppServiceStub}, {provide: UsersService, useValue: AppServiceStub}]
     });
     TestBed.compileComponents();
   });
